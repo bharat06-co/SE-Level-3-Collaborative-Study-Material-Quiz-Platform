@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { saveQuiz, setQuizPublication } from './quizApi';
 import './quizEditor.css';
 
-const newQuestion = () => ({ text: '', type: 'mcq', options: ['', ''], answerKey: 0 });
+const newQuestion = () => ({ text: '', type: 'mcq', options: ['', ''], answerKey: null });
 
 function validate(title, topic, questions) {
   const errors = {};
@@ -14,7 +14,9 @@ function validate(title, topic, questions) {
       if (q.options.length < 2 || q.options.length > 6 || q.options.some((option) => !option.trim())) {
         errors[`options-${index}`] = 'Provide 2–6 nonempty options.';
       }
-      if (q.answerKey < 0 || q.answerKey >= q.options.length) errors[`answer-${index}`] = 'Choose the correct option.';
+      if (!Number.isInteger(q.answerKey) || q.answerKey < 0 || q.answerKey >= q.options.length) errors[`answer-${index}`] = 'Choose the correct option.';
+    } else if (typeof q.answerKey !== 'boolean') {
+      errors[`answer-${index}`] = 'Choose true or false.';
     }
   });
   return errors;
@@ -37,8 +39,8 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
   }
   function changeType(index, type) {
     changeQuestion(index, type === 'mcq'
-      ? { type, options: ['', ''], answerKey: 0 }
-      : { type, options: undefined, answerKey: false });
+      ? { type, options: ['', ''], answerKey: null }
+      : { type, options: undefined, answerKey: null });
   }
   function payload() {
     return {
@@ -129,16 +131,20 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
                     <button type="button" disabled={q.options.length >= 6} onClick={() => changeQuestion(index, { options: [...q.options, ''] })}>Add option</button>
                     <button type="button" disabled={q.options.length <= 2} onClick={() => changeQuestion(index, { options: q.options.slice(0, -1), answerKey: Math.min(q.answerKey, q.options.length - 2) })}>Remove last option</button>
                     <label>Correct option
-                      <select value={q.answerKey} onChange={(event) => changeQuestion(index, { answerKey: Number(event.target.value) })}>
+                      <select value={q.answerKey ?? ''} onChange={(event) => changeQuestion(index, { answerKey: Number(event.target.value) })}>
+                        <option value="">Choose an option</option>
                         {q.options.map((_, optionIndex) => <option key={optionIndex} value={optionIndex}>Option {optionIndex + 1}</option>)}
                       </select>
+                      {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
                     </label>
                   </div>
                 ) : (
                   <label>Correct answer
-                    <select value={String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === 'true' })}>
+                    <select value={q.answerKey === null ? '' : String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === 'true' })}>
+                      <option value="">Choose an answer</option>
                       <option value="false">False</option><option value="true">True</option>
                     </select>
+                    {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
                   </label>
                 )}
                 <button type="button" onClick={() => setQuestions((current) => current.filter((_, i) => i !== index))}>Remove question {index + 1}</button>

@@ -39,6 +39,7 @@ test('shows inline validation and keeps invalid drafts local', async () => {
   expect(screen.getByText('Topic is required.')).toBeInTheDocument();
   expect(screen.getByText('Question text is required.')).toBeInTheDocument();
   expect(screen.getByText('Provide 2–6 nonempty options.')).toBeInTheDocument();
+  expect(screen.getByText('Choose the correct option.')).toBeInTheDocument();
   expect(save).not.toHaveBeenCalled();
 });
 
