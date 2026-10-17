@@ -20,6 +20,12 @@ function rank(scores, names = new Map()) {
   });
 }
 
+// Topic totals are sums of floating-point percentages. Six decimal places
+// define a stable score unit for sorting, ties, and the displayed response.
+function canonicalTopicScore(score) {
+  return Math.round(score * 1_000_000) / 1_000_000;
+}
+
 function createLeaderboardService(repo = leaderboardRepo) {
   return {
     async get(query) {
@@ -31,11 +37,13 @@ function createLeaderboardService(repo = leaderboardRepo) {
         scores = await repo.quizScores(quizId);
       } else {
         const quizIds = await repo.findPublishedQuizIds(topic);
-        scores = await repo.topicScores(quizIds);
+        scores = (await repo.topicScores(quizIds)).map((row) => ({
+          ...row, score: canonicalTopicScore(row.score),
+        }));
       }
       const names = await repo.studentNames(scores.map((row) => row.studentId));
       return { mode: quizId ? 'quiz' : 'topic', ...(quizId ? { quizId } : { topic }), items: rank(scores, names) };
     },
   };
 }
-module.exports = { createLeaderboardService, rank };
+module.exports = { createLeaderboardService, rank, canonicalTopicScore };

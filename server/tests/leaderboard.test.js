@@ -67,6 +67,20 @@ test('topic ranking sums best percentages and excludes unpublished quizzes', asy
   expect(result.items.map(({ rank, score }) => [rank, score])).toEqual([[1, 140], [2, 100], [3, 60]]);
 });
 
+test('fractional percentage totals use the same precision for order, ties, and display', async () => {
+  const repo = {
+    findPublishedQuizIds: async () => [quizId, otherId],
+    topicScores: async () => [
+      { studentId: studentIds[0], score: 99.99999999999999 },
+      { studentId: studentIds[1], score: 100 },
+      { studentId: studentIds[2], score: 99.9999 },
+    ],
+    studentNames: async () => new Map(),
+  };
+  const result = await createLeaderboardService(repo).get({ topic: 'dbms' });
+  expect(result.items.map(({ rank, score }) => [rank, score])).toEqual([[1, 100], [1, 100], [3, 99.9999]]);
+});
+
 test('invalid selectors and unpublished quiz are rejected', async () => {
   const service = fixture();
   for (const query of [{}, { quizId: 'abc' }, { quizId, topic: 'dbms' }]) {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loadLeaderboard, loadPublishedQuizzes } from './api';
 import './leaderboard.css';
 
@@ -11,6 +11,17 @@ export default function Leaderboard({ fetchRanking = loadLeaderboard, fetchQuizz
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [hasResult, setHasResult] = useState(false);
+  const requestId = useRef(0);
+
+  useEffect(() => () => { requestId.current += 1; }, []);
+
+  function invalidate() {
+    requestId.current += 1;
+    setItems([]);
+    setHasResult(false);
+    setError('');
+    setBusy(false);
+  }
 
   useEffect(() => {
     let active = true;
@@ -22,25 +33,28 @@ export default function Leaderboard({ fetchRanking = loadLeaderboard, fetchQuizz
 
   async function showRanking(event) {
     event.preventDefault();
+    const currentRequest = ++requestId.current;
     setError('');
     setBusy(true);
     try {
       const result = await fetchRanking(mode === 'quiz' ? { quizId } : { topic: topic.trim() });
-      setItems(result.items);
-      setHasResult(true);
+      if (currentRequest === requestId.current) {
+        setItems(result.items);
+        setHasResult(true);
+      }
     } catch {
-      setError('The leaderboard could not be loaded. Please try again.');
-      setHasResult(false);
+      if (currentRequest === requestId.current) {
+        setError('The leaderboard could not be loaded. Please try again.');
+        setHasResult(false);
+      }
     } finally {
-      setBusy(false);
+      if (currentRequest === requestId.current) setBusy(false);
     }
   }
 
   function chooseMode(nextMode) {
     setMode(nextMode);
-    setItems([]);
-    setHasResult(false);
-    setError('');
+    invalidate();
   }
 
   return (
@@ -54,14 +68,14 @@ export default function Leaderboard({ fetchRanking = loadLeaderboard, fetchQuizz
       <form onSubmit={showRanking}>
         {mode === 'quiz' ? (
           <label htmlFor="leaderboard-quiz">Choose a quiz
-            <select id="leaderboard-quiz" value={quizId} onChange={(event) => setQuizId(event.target.value)} required>
+            <select id="leaderboard-quiz" value={quizId} onChange={(event) => { setQuizId(event.target.value); invalidate(); }} required>
               <option value="">Select a published quiz</option>
               {quizzes.map((quiz) => <option key={quiz.id} value={quiz.id}>{quiz.title}</option>)}
             </select>
           </label>
         ) : (
           <label htmlFor="leaderboard-topic">Topic
-            <input id="leaderboard-topic" value={topic} onChange={(event) => setTopic(event.target.value)} required />
+            <input id="leaderboard-topic" value={topic} onChange={(event) => { setTopic(event.target.value); invalidate(); }} required />
           </label>
         )}
         <button type="submit" disabled={busy}>{busy ? 'Loading…' : 'Show rankings'}</button>
