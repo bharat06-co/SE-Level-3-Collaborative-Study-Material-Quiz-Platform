@@ -2,11 +2,13 @@ const { AppError } = require('../../utils/AppError');
 const { createSchema, updateSchema, idSchema, listSchema, questionSchema, parse } = require('./quiz.schemas');
 const { quizRepo } = require('./quiz.repo');
 
-function canAuthor(auth) {
-  return auth.role === 'admin' || auth.role === 'educator' || (auth.role === 'student' && auth.contributor === true);
+function canCreate(auth) {
+  return auth.role === 'educator' || (auth.role === 'student' && auth.contributor === true);
 }
-function requireAuthor(auth) {
-  if (!canAuthor(auth)) throw new AppError(403, 'FORBIDDEN', 'Quiz authoring is not permitted.');
+function requireAuthor(auth, allowAdmin = true) {
+  if (!canCreate(auth) && !(allowAdmin && auth.role === 'admin')) {
+    throw new AppError(403, 'FORBIDDEN', 'Quiz authoring is not permitted.');
+  }
 }
 function owns(quiz, auth) {
   return auth.role === 'admin' || String(quiz.authorId) === String(auth.userId);
@@ -33,9 +35,24 @@ function assertVisible(quiz, auth) {
   }
 }
 function createQuizService(repo = quizRepo) {
+  async function mutate(auth, id, validate, data) {
+    requireAuthor(auth);
+    const validId = parse(idSchema, id);
+    // Compare-and-swap protects the publish gate across API processes. A stale
+    // read is retried and every rule is checked again against the fresh quiz.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const quiz = await repo.findById(validId);
+      if (!quiz) throw new AppError(404, 'NOT_FOUND', 'Quiz not found.');
+      if (!owns(quiz, auth)) throw new AppError(403, 'FORBIDDEN', 'Only the author or an administrator may change this quiz.');
+      validate(quiz);
+      const updated = await repo.updateIfVersion(validId, quiz.__v, data);
+      if (updated) return updated;
+    }
+    throw new AppError(409, 'QUIZ_CONFLICT', 'Quiz changed during this request. Please retry.');
+  }
   return {
     async create(auth, body) {
-      requireAuthor(auth);
+      requireAuthor(auth, false);
       const data = parse(createSchema, body);
       const quiz = await repo.create({ ...data, authorId: auth.userId, status: 'draft' });
       return publicView(quiz);
@@ -58,36 +75,27 @@ function createQuizService(repo = quizRepo) {
       return { ...result, items: result.items.map(publicView) };
     },
     async update(auth, id, body) {
-      const validId = parse(idSchema, id);
-      const quiz = await repo.findById(validId);
-      if (!quiz) throw new AppError(404, 'NOT_FOUND', 'Quiz not found.');
-      if (!owns(quiz, auth)) throw new AppError(403, 'FORBIDDEN', 'Only the author or an administrator may change this quiz.');
       const data = parse(updateSchema, body);
-      if (quiz.status === 'published' && data.questions && (!data.questions.length || !data.questions.every(validQuestion))) {
-        throw new AppError(422, 'QUIZ_NOT_PUBLISHABLE', 'A published quiz needs at least one valid question.');
-      }
-      return publicView(await repo.updateById(validId, data));
+      return publicView(await mutate(auth, id, (quiz) => {
+        if (quiz.status === 'published' && data.questions && (!data.questions.length || !data.questions.every(validQuestion))) {
+          throw new AppError(422, 'QUIZ_NOT_PUBLISHABLE', 'A published quiz needs at least one valid question.');
+        }
+      }, data));
     },
     async publish(auth, id) {
-      const validId = parse(idSchema, id);
-      const quiz = await repo.findById(validId);
-      if (!quiz) throw new AppError(404, 'NOT_FOUND', 'Quiz not found.');
-      if (!owns(quiz, auth)) throw new AppError(403, 'FORBIDDEN', 'Only the author or an administrator may change this quiz.');
-      if (!quiz.questions?.length || !quiz.questions.every(validQuestion)) {
-        throw new AppError(422, 'QUIZ_NOT_PUBLISHABLE', 'Quiz needs at least one valid question.');
-      }
-      const updated = await repo.updateById(validId, { status: 'published' });
+      const updated = await mutate(auth, id, (quiz) => {
+        if (!quiz.questions?.length || !quiz.questions.every(validQuestion)) {
+          throw new AppError(422, 'QUIZ_NOT_PUBLISHABLE', 'Quiz needs at least one valid question.');
+        }
+      }, { status: 'published' });
       return { id: String(updated._id), status: updated.status };
     },
     async unpublish(auth, id) {
-      const validId = parse(idSchema, id);
-      const quiz = await repo.findById(validId);
-      if (!quiz) throw new AppError(404, 'NOT_FOUND', 'Quiz not found.');
-      if (!owns(quiz, auth)) throw new AppError(403, 'FORBIDDEN', 'Only the author or an administrator may change this quiz.');
-      const updated = await repo.updateById(validId, { status: 'draft' });
+      const updated = await mutate(auth, id, () => {}, { status: 'draft' });
       return { id: String(updated._id), status: updated.status };
     },
     async remove(auth, id) {
+      requireAuthor(auth);
       const validId = parse(idSchema, id);
       const quiz = await repo.findById(validId);
       if (!quiz) throw new AppError(404, 'NOT_FOUND', 'Quiz not found.');

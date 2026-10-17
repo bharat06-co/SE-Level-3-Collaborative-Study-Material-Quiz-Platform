@@ -22,7 +22,7 @@ function setup() {
   const records = new Map();
   const repo = {
     async create(data) {
-      const quiz = { _id: new mongoose.Types.ObjectId(), ...data,
+      const quiz = { _id: new mongoose.Types.ObjectId(), __v: 0, ...data,
         allowRetake: data.allowRetake ?? true,
         questions: (data.questions || []).map((q) => ({ _id: new mongoose.Types.ObjectId(), ...q })),
       };
@@ -30,10 +30,12 @@ function setup() {
       return quiz;
     },
     async findById(id) { return records.get(String(id)) || null; },
-    async updateById(id, data) {
+    async updateIfVersion(id, version, data) {
       const quiz = records.get(String(id));
+      if (!quiz || quiz.__v !== version) return null;
       Object.assign(quiz, data);
       if (data.questions) quiz.questions = data.questions.map((q) => ({ _id: new mongoose.Types.ObjectId(), ...q }));
+      quiz.__v += 1;
       return quiz;
     },
     async deleteById(id) { records.delete(String(id)); },
@@ -57,7 +59,7 @@ function setup() {
       return agent;
     };
   }
-  return { app, service, records, identities, as };
+  return { app, service, records, identities, as, repo };
 }
 
 describe('quiz authoring and security', () => {
@@ -112,6 +114,67 @@ describe('quiz authoring and security', () => {
     await expect(service.update(educator, draft.id, { questions: [] })).rejects.toMatchObject({ statusCode: 422 });
     await service.remove(admin, draft.id);
     await expect(service.get(educator, draft.id)).rejects.toMatchObject({ statusCode: 404 });
+  });
+
+  test('creation obeys the RBAC matrix', async () => {
+    const { as, records, identities } = setup();
+    const path = '/api/v1/quizzes';
+    expect((await as(admin)('post', path, { title: 'Admin quiz', topic: 'dbms' })).status).toBe(403);
+    expect(records.size).toBe(0);
+    expect((await as(educator)('post', path, { title: 'Educator quiz', topic: 'dbms' })).status).toBe(201);
+    expect((await as(contributor)('post', path, { title: 'Contributor quiz', topic: 'dbms' })).status).toBe(201);
+    identities[otherId] = student;
+    expect((await as(student)('post', path, { title: 'Student quiz', topic: 'dbms' })).status).toBe(403);
+    expect(records.size).toBe(2);
+  });
+
+  test('revoked contributor cannot mutate an owned quiz, while admin may moderate it', async () => {
+    const { service, records } = setup();
+    const draft = await service.create(contributor, { title: 'Owned quiz', topic: 'dbms', questions: validQuestions });
+    const before = JSON.stringify(records.get(draft.id));
+    for (const change of [
+      () => service.update(student, draft.id, { title: 'Unauthorized edit' }),
+      () => service.publish(student, draft.id),
+      () => service.unpublish(student, draft.id),
+      () => service.remove(student, draft.id),
+    ]) {
+      await expect(change()).rejects.toMatchObject({ statusCode: 403 });
+      expect(JSON.stringify(records.get(draft.id))).toBe(before);
+    }
+    await service.update(contributor, draft.id, { title: 'Allowed edit' });
+    await service.publish(admin, draft.id);
+    expect(records.get(draft.id).status).toBe('published');
+  });
+
+  test.each(['publish-first', 'edit-first'])('concurrent edit and publish: %s never stores an empty published quiz', async (order) => {
+    const { service, repo, records } = setup();
+    const draft = await service.create(educator, { title: 'Racing quiz', topic: 'dbms', questions: validQuestions });
+    const original = repo.updateIfVersion;
+    let release;
+    let entered;
+    const paused = new Promise((resolve) => { release = resolve; });
+    const atWrite = new Promise((resolve) => { entered = resolve; });
+    let intercepted = false;
+    repo.updateIfVersion = async (id, version, data) => {
+      if (!intercepted && (order === 'publish-first' ? data.questions : data.status === 'published')) {
+        intercepted = true;
+        entered();
+        await paused;
+      }
+      return original(id, version, data);
+    };
+    const first = order === 'publish-first'
+      ? service.update(educator, draft.id, { questions: [] })
+      : service.publish(educator, draft.id);
+    await atWrite;
+    const second = order === 'publish-first'
+      ? service.publish(educator, draft.id)
+      : service.update(educator, draft.id, { questions: [] });
+    await second;
+    release();
+    await expect(first).rejects.toMatchObject({ statusCode: 422, code: 'QUIZ_NOT_PUBLISHABLE' });
+    const stored = records.get(draft.id);
+    expect(stored.status === 'published' && stored.questions.length === 0).toBe(false);
   });
 
   test('model validates persisted question shape and indexed fields', () => {
