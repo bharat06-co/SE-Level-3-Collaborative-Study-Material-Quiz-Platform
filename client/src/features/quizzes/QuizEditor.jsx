@@ -22,7 +22,7 @@ function validate(title, topic, questions) {
   return errors;
 }
 
-export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setPublication = setQuizPublication }) {
+function QuizEditorForm({ initialQuiz, onSaved, save = saveQuiz, setPublication = setQuizPublication }) {
   const [id, setId] = useState(initialQuiz?.id || null);
   const [status, setStatus] = useState(initialQuiz?.status || 'draft');
   const [title, setTitle] = useState(initialQuiz?.title || '');
@@ -33,8 +33,10 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
   function changeQuestion(index, patch) {
+    setDirty(true);
     setQuestions((current) => current.map((q, i) => i === index ? { ...q, ...patch } : q));
   }
   function changeType(index, type) {
@@ -61,6 +63,7 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
       const saved = await save(id, payload());
       setId(saved.id);
       setStatus(saved.status);
+      setDirty(false);
       setMessage('Quiz saved.');
       onSaved?.(saved);
     } catch (error) {
@@ -89,20 +92,20 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
       <p>Current status: <strong>{status}</strong></p>
       <form onSubmit={handleSave} noValidate>
         <label>Title
-          <input value={title} onChange={(event) => setTitle(event.target.value)} aria-invalid={Boolean(errors.title)} />
+          <input value={title} onChange={(event) => { setTitle(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.title)} />
           {errors.title && <span role="alert">{errors.title}</span>}
         </label>
         <label>Topic
-          <input value={topic} onChange={(event) => setTopic(event.target.value)} aria-invalid={Boolean(errors.topic)} />
+          <input value={topic} onChange={(event) => { setTopic(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.topic)} />
           {errors.topic && <span role="alert">{errors.topic}</span>}
         </label>
-        <label className="quiz-editor-check"><input type="checkbox" checked={allowRetake} onChange={(event) => setAllowRetake(event.target.checked)} />Allow retakes</label>
+        <label className="quiz-editor-check"><input type="checkbox" checked={allowRetake} onChange={(event) => { setAllowRetake(event.target.checked); setDirty(true); }} />Allow retakes</label>
         {initialQuiz && !replaceQuestions && (
           <section>
             <h2>Questions</h2>
             <p>Existing answer keys are hidden in quiz responses. Replace all questions to enter new keys.</p>
             <ol>{initialQuiz.questions?.map((q) => <li key={q.id}>{q.text}</li>)}</ol>
-            <button type="button" onClick={() => setReplaceQuestions(true)}>Replace questions</button>
+            <button type="button" onClick={() => { setReplaceQuestions(true); setDirty(true); }}>Replace questions</button>
           </section>
         )}
         {replaceQuestions && (
@@ -129,9 +132,9 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
                     ))}
                     {errors[`options-${index}`] && <span role="alert">{errors[`options-${index}`]}</span>}
                     <button type="button" disabled={q.options.length >= 6} onClick={() => changeQuestion(index, { options: [...q.options, ''] })}>Add option</button>
-                    <button type="button" disabled={q.options.length <= 2} onClick={() => changeQuestion(index, { options: q.options.slice(0, -1), answerKey: Math.min(q.answerKey, q.options.length - 2) })}>Remove last option</button>
+                    <button type="button" disabled={q.options.length <= 2} onClick={() => changeQuestion(index, { options: q.options.slice(0, -1), answerKey: q.answerKey === q.options.length - 1 ? null : q.answerKey })}>Remove last option</button>
                     <label>Correct option
-                      <select value={q.answerKey ?? ''} onChange={(event) => changeQuestion(index, { answerKey: Number(event.target.value) })}>
+                      <select value={q.answerKey ?? ''} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : Number(event.target.value) })}>
                         <option value="">Choose an option</option>
                         {q.options.map((_, optionIndex) => <option key={optionIndex} value={optionIndex}>Option {optionIndex + 1}</option>)}
                       </select>
@@ -140,27 +143,34 @@ export default function QuizEditor({ initialQuiz, onSaved, save = saveQuiz, setP
                   </div>
                 ) : (
                   <label>Correct answer
-                    <select value={q.answerKey === null ? '' : String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === 'true' })}>
+                    <select value={q.answerKey === null ? '' : String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : event.target.value === 'true' })}>
                       <option value="">Choose an answer</option>
                       <option value="false">False</option><option value="true">True</option>
                     </select>
                     {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
                   </label>
                 )}
-                <button type="button" onClick={() => setQuestions((current) => current.filter((_, i) => i !== index))}>Remove question {index + 1}</button>
+                <button type="button" onClick={() => { setQuestions((current) => current.filter((_, i) => i !== index)); setDirty(true); }}>Remove question {index + 1}</button>
               </fieldset>
             ))}
-            <button type="button" onClick={() => setQuestions((current) => [...current, newQuestion()])}>Add question</button>
+            <button type="button" onClick={() => { setQuestions((current) => [...current, newQuestion()]); setDirty(true); }}>Add question</button>
           </section>
         )}
         <button type="submit" disabled={busy}>{id ? 'Save changes' : 'Save draft'}</button>
       </form>
       {id && <div className="quiz-editor-actions">
         {status === 'draft'
-          ? <button type="button" disabled={busy} onClick={() => changePublication(true)}>Publish</button>
-          : <button type="button" disabled={busy} onClick={() => changePublication(false)}>Unpublish</button>}
+          ? <button type="button" disabled={busy || dirty} onClick={() => changePublication(true)}>Publish</button>
+          : <button type="button" disabled={busy || dirty} onClick={() => changePublication(false)}>Unpublish</button>}
+        {dirty && <p>Save changes before changing publication status.</p>}
       </div>}
       {message && <p role="status">{message}</p>}
     </section>
   );
+}
+
+// Changing quiz identity starts a fresh editor. Unsaved edits in the previous
+// quiz are discarded so a save can never target an earlier quiz ID.
+export default function QuizEditor(props) {
+  return <QuizEditorForm key={props.initialQuiz?.id ?? 'new'} {...props} />;
 }
