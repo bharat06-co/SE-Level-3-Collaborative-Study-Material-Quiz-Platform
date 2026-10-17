@@ -3,7 +3,11 @@ const { Quiz } = require('./quiz.model');
 const quizRepo = {
   create: (data) => Quiz.create(data),
   findById: (id) => Quiz.findById(id).lean(),
-  updateById: (id, data) => Quiz.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean(),
+  updateIfVersion: (id, version, data) => Quiz.findOneAndUpdate(
+    { _id: id, __v: version },
+    { $set: data, $inc: { __v: 1 } },
+    { new: true, runValidators: true },
+  ).lean(),
   deleteById: (id) => Quiz.findByIdAndDelete(id).lean(),
   list: async (filter, page, limit) => {
     const [items, total] = await Promise.all([
