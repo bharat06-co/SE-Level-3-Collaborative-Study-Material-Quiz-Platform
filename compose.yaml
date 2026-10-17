@@ -1,0 +1,48 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks: [database]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand('ping').ok ? 0 : 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/team1_study_dev
+      CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      TRUST_PROXY_HOPS: 1
+      LOG_LEVEL: info
+    volumes:
+      - uploads:/app/server/uploads
+    networks: [application, database]
+    depends_on:
+      mongo:
+        condition: service_healthy
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    networks: [application]
+    depends_on:
+      api:
+        condition: service_healthy
+volumes:
+  mongo-data:
+  uploads:
+networks:
+  application:
+  database:
+    internal: true
