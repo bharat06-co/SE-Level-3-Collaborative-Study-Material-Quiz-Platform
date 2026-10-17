@@ -32,3 +32,12 @@ test('handles a material with no topic and a failed request', async () => {
   rerender(<RelatedQuizzes topic="dbms" findQuizzes={findQuizzes} />);
   expect(await screen.findByRole('alert')).toHaveTextContent('could not be loaded');
 });
+
+test('deduplicates changing pages and stops on no progress', async () => {
+  http.get.mockReset();
+  http.get.mockResolvedValueOnce({ data: { items: [{ id: 'q1' }], total: 3 } })
+    .mockResolvedValueOnce({ data: { items: [{ id: 'q1' }, { id: 'q2' }], total: 3 } })
+    .mockResolvedValueOnce({ data: { items: [{ id: 'q1' }, { id: 'q2' }], total: 3 } });
+  await expect(findPublishedQuizzesByTopic('DBMS')).rejects.toThrow('no progress');
+  expect(http.get).toHaveBeenCalledTimes(3);
+});

@@ -3,12 +3,18 @@ import { http } from '../../api/http';
 
 export async function findPublishedQuizzesByTopic(topic, { signal } = {}) {
   const items = [];
+  const seen = new Set();
   let page = 1;
   let total;
   do {
     const response = await http.get('/quizzes', { params: { topic, status: 'published', page, limit: 50 }, signal });
-    items.push(...response.data.items);
+    if (!Array.isArray(response.data.items)) throw new Error('Invalid quiz page.');
+    const before = seen.size;
+    for (const quiz of response.data.items) {
+      if (!seen.has(quiz.id)) { seen.add(quiz.id); items.push(quiz); }
+    }
     total = response.data.total;
+    if (items.length < total && seen.size === before) throw new Error('Related quiz pages made no progress.');
     page += 1;
   } while (items.length < total);
   return items;
