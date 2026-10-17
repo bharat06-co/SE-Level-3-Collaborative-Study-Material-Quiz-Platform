@@ -1,6 +1,6 @@
 # NFR-002 scalability run
 
-Run `ayush-scalability.js` against an isolated staging stack after authentication, published quizzes and persisted attempts are integrated. Use one published quiz with `allowRetake=true`, at least one valid question, and 100 distinct student accounts. Export short-lived access tokens to a private JSON file shaped as `[ { "accessToken": "..." }, ... ]`. Keep the file outside Git. Tokens must remain valid for the whole 10-minute run. Use test accounts and an expendable staging database because the run creates many attempts.
+Run `ayush-scalability.js` against an isolated staging stack after authentication, published quizzes and persisted attempts are integrated. Use one published quiz with `allowRetake=true`, at least one valid question, and 100 distinct student accounts. Export short-lived access tokens to a private JSON file shaped as `[ { "accessToken": "..." }, ... ]`. The script rejects fewer than 100 records, blank token strings and duplicates; it cannot verify token validity before the request. Keep the file outside Git. Tokens must remain valid for the whole 10-minute run. Use test accounts and an expendable staging database because the run creates many attempts.
 
 From the repository root, with k6 installed:
 

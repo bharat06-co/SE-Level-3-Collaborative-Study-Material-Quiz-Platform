@@ -6,12 +6,23 @@ import { SharedArray } from 'k6/data';
 
 // The private JSON file must contain 100 distinct student access tokens.
 // Never commit it or print its contents in run logs.
-const students = new SharedArray('student tokens', () => JSON.parse(open(__ENV.K6_USERS_FILE)));
+if (!__ENV.K6_USERS_FILE) throw new Error('Set K6_USERS_FILE to a private token file.');
+const students = new SharedArray('student tokens', () => {
+  const records = JSON.parse(open(__ENV.K6_USERS_FILE));
+  if (!Array.isArray(records) || records.length < 100) {
+    throw new Error('K6_USERS_FILE must contain at least 100 student token objects.');
+  }
+  const tokens = records.map((student) => student?.accessToken);
+  if (tokens.some((token) => typeof token !== 'string' || !token.trim()) || new Set(tokens).size !== records.length) {
+    throw new Error('K6_USERS_FILE must contain distinct, nonempty accessToken strings.');
+  }
+  return records;
+});
 const baseUrl = __ENV.K6_BASE_URL?.replace(/\/$/, '');
 const quizId = __ENV.K6_QUIZ_ID;
 
-if (!baseUrl || !quizId || students.length < 100) {
-  throw new Error('Set K6_BASE_URL, K6_QUIZ_ID and K6_USERS_FILE with at least 100 tokens.');
+if (!baseUrl || !quizId) {
+  throw new Error('Set K6_BASE_URL and K6_QUIZ_ID for the staging run.');
 }
 
 const serverErrors = new Rate('server_5xx');
