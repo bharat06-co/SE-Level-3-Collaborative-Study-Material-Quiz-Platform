@@ -29,7 +29,7 @@ export default function App() {
         <p>Pull the latest main branch, create a task branch, then implement your assigned issue against the SRS, SAD and STP.</p>
         <ul><li>Anisha: accounts and authentication.</li><li>Aryaroop: material and moderation.</li><li>Ayush: quizzes and leaderboard.</li><li>Bharat: attempts, scoring and progress.</li></ul>
       </section>
-      <p className="note">Feature routes, models, authentication and business screens are intentionally not implemented in this starter.</p>
+      <p className="note">Authentication, authoring and history screens are intentionally not implemented in this foundation view. The attempt screen is available at /quizzes/:quizId/attempt once real quiz and authentication integration is ready.</p>
     </main>
   );
 }

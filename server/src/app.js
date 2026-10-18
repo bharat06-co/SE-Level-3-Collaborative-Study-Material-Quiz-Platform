@@ -7,8 +7,9 @@ const { createLogger } = require('./config/logger');
 const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
+const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
 
-function createApp({ origins = ['http://localhost:5173', 'http://127.0.0.1:5173'], trustProxyHops = 0, databaseIsConnected = () => false, logger = createLogger('silent'), registerRoutes = () => {} } = {}) {
+function createApp({ origins = ['http://localhost:5173', 'http://127.0.0.1:5173'], trustProxyHops = 0, databaseIsConnected = () => false, logger = createLogger('silent'), registerRoutes = () => {}, attempts = {} } = {}) {
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', trustProxyHops);
@@ -32,6 +33,7 @@ function createApp({ origins = ['http://localhost:5173', 'http://127.0.0.1:5173'
   });
   // Feature owners mount real routers here. No fake auth or placeholder success endpoints.
   registerRoutes(app);
+  app.use('/api/v1', createAttemptRouter(attempts));
   app.use((req, res, next) => next(new AppError(404, 'NOT_FOUND', 'Resource not found.')));
   app.use(errorHandler(logger));
   return app;
