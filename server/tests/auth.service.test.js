@@ -1,4 +1,3 @@
-
 jest.mock('../src/modules/auth/user.repository', () => ({
   create: jest.fn(),
 }));
@@ -6,6 +5,7 @@ jest.mock('../src/modules/auth/user.repository', () => ({
 const bcrypt = require('bcryptjs');
 const userRepository = require('../src/modules/auth/user.repository');
 const { registerUser } = require('../src/modules/auth/auth.service');
+const User = require('../src/models/User');
 
 describe('FR-001 registration', () => {
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('FR-001 registration', () => {
       name: 'Test Student',
       email: '  STUDENT@example.com ',
       password: 'Study1234',
-      role: 'administrator',
+      role: 'admin',
       contributor: true,
     });
 
@@ -51,6 +51,103 @@ describe('FR-001 registration', () => {
     });
 
     expect(userRepository.create).not.toHaveBeenCalled();
+  });
+
+  test('accepts a password of exactly 72 UTF-8 bytes', async () => {
+    const password = 'A1' + 'x'.repeat(70);
+
+    expect(Buffer.byteLength(password, 'utf8')).toBe(72);
+
+    userRepository.create.mockImplementation(async (data) => ({
+      ...data,
+      _id: { toString: () => 'test-user-id' },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
+    await expect(
+      registerUser({
+        name: 'Valid Name',
+        email: 'valid@example.com',
+        password,
+      }),
+    ).resolves.toMatchObject({ email: 'valid@example.com' });
+
+    expect(userRepository.create).toHaveBeenCalledTimes(1);
+  });
+
+  test('rejects a password exceeding 72 UTF-8 bytes before hashing or saving', async () => {
+    const password = 'A1' + 'x'.repeat(71);
+
+    expect(Buffer.byteLength(password, 'utf8')).toBe(73);
+
+    const hashSpy = jest.spyOn(bcrypt, 'hash');
+
+    try {
+      await expect(
+        registerUser({
+          name: 'Valid Name',
+          email: 'valid@example.com',
+          password,
+        }),
+      ).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+
+      expect(hashSpy).not.toHaveBeenCalled();
+      expect(userRepository.create).not.toHaveBeenCalled();
+    } finally {
+      hashSpy.mockRestore();
+    }
+  });
+
+  test('rejects multibyte passwords exceeding 72 UTF-8 bytes', async () => {
+    const password = 'A1' + 'é'.repeat(36);
+
+    expect(password.length).toBe(38);
+    expect(Buffer.byteLength(password, 'utf8')).toBe(74);
+
+    await expect(
+      registerUser({
+        name: 'Valid Name',
+        email: 'valid@example.com',
+        password,
+      }),
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
+
+    expect(userRepository.create).not.toHaveBeenCalled();
+  });
+
+  test('real User schema accepts the agreed roles', () => {
+    for (const role of ['student', 'educator', 'admin']) {
+      const user = new User({
+        name: 'Test User',
+        email: role + '@example.com',
+        passwordHash: 'test-hash',
+        role,
+      });
+
+      const error = user.validateSync();
+
+      expect(error?.errors?.role).toBeUndefined();
+    }
+  });
+
+  test('real User schema rejects an unsupported role', () => {
+    const user = new User({
+      name: 'Test User',
+      email: 'bad-role@example.com',
+      passwordHash: 'test-hash',
+      role: 'administrator',
+    });
+
+    const error = user.validateSync();
+
+    expect(error?.errors?.role).toBeDefined();
   });
 
   test('returns 409 when the email already exists', async () => {
