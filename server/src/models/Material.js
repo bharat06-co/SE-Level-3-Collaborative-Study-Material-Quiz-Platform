@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const MAX_TAGS = 10;
+const TAG_MAX_LENGTH = 30;
+
 const materialSchema = new mongoose.Schema(
   {
     title: {
@@ -23,6 +26,16 @@ const materialSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    tags: {
+      type: [String],
+      validate: {
+        validator(tags) {
+          if (!Array.isArray(tags) || tags.length < 1 || tags.length > MAX_TAGS) return false;
+          return tags.every((tag) => typeof tag === 'string' && tag.length >= 1 && tag.length <= TAG_MAX_LENGTH);
+        },
+        message: `Tags must contain ${MAX_TAGS} or fewer unique lowercase tags of 1-${TAG_MAX_LENGTH} characters.`,
+      },
     },
     fileUrl: {
       type: String,
@@ -70,9 +83,9 @@ const materialSchema = new mongoose.Schema(
   },
 );
 
-materialSchema.index({ title: 'text', description: 'text' });
+materialSchema.index({ title: 'text', description: 'text', tags: 'text' });
 materialSchema.index({ topic: 1 });
 materialSchema.index({ ownerId: 1 });
 materialSchema.index({ visibility: 1, hidden: 1 });
 
-module.exports = { Material: mongoose.model('Material', materialSchema) };
+module.exports = { MAX_TAGS, TAG_MAX_LENGTH, Material: mongoose.model('Material', materialSchema) };

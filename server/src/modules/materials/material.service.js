@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { z } = require('zod');
 const { AppError } = require('../../utils/AppError');
 const { validateFile, MAX_FILE_SIZE_BYTES } = require('./fileValidation');
+const { MAX_TAGS, TAG_MAX_LENGTH } = require('../../models/Material');
 
 const metadataSchema = z.object({
   title: z.string().trim().min(3).max(120),
@@ -10,6 +11,27 @@ const metadataSchema = z.object({
   topic: z.string().trim().min(1).max(100),
   rightsConfirmed: z.literal('true'),
 });
+
+function normalizeTags(tagsInput) {
+  if (typeof tagsInput !== 'string' || tagsInput.trim().length === 0) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: 'Provide 1-10 tags.' }]);
+  }
+  const parsed = tagsInput
+    .split(',')
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(Boolean);
+  const tags = [...new Set(parsed)];
+  if (tags.length < 1) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: 'Provide 1-10 tags.' }]);
+  }
+  if (tags.length > MAX_TAGS) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: `At most ${MAX_TAGS} tags are allowed.` }]);
+  }
+  if (tags.some((tag) => tag.length > TAG_MAX_LENGTH || tag.length < 1)) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: `Each tag must be 1-${TAG_MAX_LENGTH} characters.` }]);
+  }
+  return tags;
+}
 
 function validationDetails(zodError) {
   return zodError.issues.map((issue) => ({
@@ -66,6 +88,7 @@ function createMaterialService({ repository, storage } = {}) {
     if (!meta.success) {
       throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(meta.error));
     }
+    const tags = normalizeTags(metadataInput.tags);
     const { mimeType, extension } = validateFile({ originalName: file.originalname, size: file.size, bytes: file.buffer });
 
     const materialId = new mongoose.Types.ObjectId();
@@ -78,6 +101,7 @@ function createMaterialService({ repository, storage } = {}) {
         description: meta.data.description,
         category: meta.data.category,
         topic: meta.data.topic,
+        tags,
         fileUrl: `/api/v1/materials/${materialId.toString()}/file`,
         storageKey,
         mimeType,
