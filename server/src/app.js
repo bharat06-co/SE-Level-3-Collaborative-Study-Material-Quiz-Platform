@@ -9,6 +9,11 @@ const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
 const authRouter = require('./modules/auth/auth.routes');
+const { authUnavailable } = require('./middleware/authStub');
+const { createMaterialsRouter } = require('./modules/materials/material.routes');
+const { createMaterialRepository } = require('./modules/materials/material.repository');
+const { createMaterialService } = require('./modules/materials/material.service');
+const { createStorage } = require('./adapters/storage');
 
 function createApp({
   origins = ['http://localhost:5173', 'http://127.0.0.1:5173'],
@@ -16,7 +21,18 @@ function createApp({
   databaseIsConnected = () => false,
   logger = createLogger('silent'),
   registerRoutes = () => {},
+  storageDir = 'data/uploads',
+  authMiddleware = authUnavailable,
 } = {}) {
+  const materialRepository = createMaterialRepository();
+  const materialService = createMaterialService({
+    repository: materialRepository,
+    storage: createStorage({ storageDir }),
+  });
+  const materialsRouter = createMaterialsRouter({
+    service: materialService,
+    authMiddleware,
+  });
   const app = express();
 
   app.disable('x-powered-by');
@@ -78,6 +94,7 @@ function createApp({
       checks: { process: 'up', database: 'connected' },
     });
   });
+  app.use('/api/v1', materialsRouter);
 
   // Register feature routes before the 404 and error handlers.
   registerRoutes(app);
