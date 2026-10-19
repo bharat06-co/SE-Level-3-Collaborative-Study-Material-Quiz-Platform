@@ -24,17 +24,18 @@ const schema = z.object({
     .enum(['silent', 'fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('info'),
 
- JWT_ACCESS_SECRET: z
-  .string()
-  .optional()
-  .refine(
-    (secret) => secret === undefined || secret.length >= 64,
-    'JWT access secret must contain at least 64 characters',
-  ),
+  JWT_ACCESS_SECRET: z
+    .string()
+    .optional()
+    .refine(
+      (secret) => secret === undefined || secret.length >= 64,
+      'JWT access secret must contain at least 64 characters',
+    ),
   JWT_ACCESS_TTL: z
     .string()
     .regex(/^[1-9]\d*(s|m|h|d)$/, 'Use a duration such as 15m')
     .default('15m'),
+  STORAGE_DIR: z.string().min(1).default('data/uploads'),
 });
 
 function readEnv(input = process.env) {
