@@ -1,5 +1,7 @@
 
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { readEnv } = require('../../config/env');
 const { AppError } = require('../../utils/AppError');
 const userRepository = require('./user.repository');
 
@@ -87,4 +89,67 @@ async function registerUser(input) {
   }
 }
 
-module.exports = { registerUser };
+async function loginUser(input) {
+  const { email, password } = input || {};
+
+  if (
+    typeof email !== 'string' ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
+    typeof password !== 'string' ||
+    password.length === 0
+  ) {
+    throw new AppError(
+      400,
+      'VALIDATION_ERROR',
+      'A valid email address and password are required.',
+    );
+  }
+
+  const config = readEnv();
+
+  if (!config.JWT_ACCESS_SECRET) {
+    throw new AppError(
+      503,
+      'SERVICE_UNAVAILABLE',
+      'Authentication is temporarily unavailable.',
+    );
+  }
+
+  const user = await userRepository.findByEmail(email.trim().toLowerCase());
+
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    throw new AppError(
+      401,
+      'INVALID_CREDENTIALS',
+      'Email or password is incorrect.',
+    );
+  }
+
+  const accessToken = jwt.sign(
+    {
+      role: user.role,
+      contributor: user.contributor,
+    },
+    config.JWT_ACCESS_SECRET,
+    {
+      algorithm: 'HS256',
+      subject: user._id.toString(),
+      expiresIn: config.JWT_ACCESS_TTL,
+    },
+  );
+
+  return {
+    accessToken,
+    tokenType: 'Bearer',
+    expiresIn: config.JWT_ACCESS_TTL,
+    user: {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      contributor: user.contributor,
+    },
+  };
+}
+
+module.exports = { registerUser, loginUser };

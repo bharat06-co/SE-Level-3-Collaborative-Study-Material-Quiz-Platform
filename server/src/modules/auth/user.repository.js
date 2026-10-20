@@ -5,4 +5,8 @@ async function create(userData) {
   return User.create(userData);
 }
 
-module.exports = { create };
+async function findByEmail(email) {
+  return User.findOne({ email }).select('+passwordHash');
+}
+
+module.exports = { create, findByEmail };
