@@ -103,23 +103,31 @@ describe('FR-001 registration', () => {
   });
 
   test('rejects multibyte passwords exceeding 72 UTF-8 bytes', async () => {
-    const password = 'A1' + 'é'.repeat(36);
+    // \u00e9 represents é: 1 JavaScript character but 2 UTF-8 bytes.
+    const password = 'A1' + '\u00e9'.repeat(36);
 
     expect(password.length).toBe(38);
     expect(Buffer.byteLength(password, 'utf8')).toBe(74);
 
-    await expect(
-      registerUser({
-        name: 'Valid Name',
-        email: 'valid@example.com',
-        password,
-      }),
-    ).rejects.toMatchObject({
-      statusCode: 400,
-      code: 'VALIDATION_ERROR',
-    });
+    const hashSpy = jest.spyOn(bcrypt, 'hash');
 
-    expect(userRepository.create).not.toHaveBeenCalled();
+    try {
+      await expect(
+        registerUser({
+          name: 'Valid Name',
+          email: 'valid@example.com',
+          password,
+        }),
+      ).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+
+      expect(hashSpy).not.toHaveBeenCalled();
+      expect(userRepository.create).not.toHaveBeenCalled();
+    } finally {
+      hashSpy.mockRestore();
+    }
   });
 
   test('real User schema accepts the agreed roles', () => {
