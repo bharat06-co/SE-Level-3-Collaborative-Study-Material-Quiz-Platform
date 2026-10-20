@@ -53,3 +53,36 @@ Domain schemas are intentionally not invented in this foundation. Read SAD §3.6
 
 ## Review before future changes
 Original SAD references `TOKEN_EXPIRED` but its error-table completeness needs clarification; don't invent client refresh behavior until auth PR agrees it. SEC-007/STP references material deletion while API catalogue completeness was flagged earlier; review the exact design and log the approved addition if needed. The foundation implements neither behavior and does not claim either discrepancy is resolved.
+
+## Registration Contract — FR-001
+
+### Shared User model
+
+- Model file: `server/src/models/User.js`
+- Export: CommonJS default Mongoose `User` model.
+- Collection: `users`.
+- Registration endpoint: `POST /api/v1/auth/register`.
+- Successful response: HTTP `201` with a `{ user: ... }` object.
+- The response must not expose the password or `passwordHash`.
+- Password hashes use bcrypt with cost factor 12 and are excluded from default User queries.
+- Email addresses are trimmed and lowercased before storage.
+- The accepted role values are `student`, `educator`, and `admin`.
+- Public registration always assigns `role: student` and `contributor: false`. Client-supplied role and contributor values must not grant privileges.
+
+### Password security clarification
+
+Registration rejects passwords longer than 72 UTF-8 bytes before hashing or persistence. This limit prevents bcrypt from silently treating passwords with the same first 72 bytes as equivalent.
+
+This is a working security clarification for implementation; it is not represented as an explicit maximum specified by the original SRS. The submitted SRS, SAD, and STP PDFs remain unchanged.
+
+Password validation in future login, password reset, and password change flows must be consistent with the registration policy. Any user-facing password guidance should distinguish UTF-8 byte length from character count.
+
+### Current authentication scope
+
+FR-001 provides backend registration and the shared User model. It does not, by itself, implement verified login, JWT authentication middleware, refresh-token handling, logout, or the complete browser registration UI.
+
+Protected-route integration must use the agreed authentication context:
+
+`req.auth = { userId, role, contributor }`
+
+Protected requests must obtain current user privileges from the database so role or contributor changes can take effect. Do not create production test identities or introduce fake authentication middleware to bypass integration requirements.
