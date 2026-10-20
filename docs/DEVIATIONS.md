@@ -54,3 +54,11 @@ SRS v1.2 prints 28 but enumerates 27 (6 accounts, 9 material, 7 quiz/leaderboard
 - No new collection or transaction/replica-set requirement. Real MongoDB race tests passed for independent Express/repository instances sharing the database.
 - The quiz's status/retake policy is read as a submission snapshot. Concurrent author edits/unpublish operations are not serialized with submission; cross-operation atomicity is not claimed. Coordinate any stronger policy with Ayush.
 - No submitted PDF changed and no claim this extension was original SRS wording.
+
+
+## DEV-06 — SEC-004 defensive traversal and plain-text working policy
+- Proposed implementation clarification, pending owner/integration review; not original SRS numeric limits or faculty approval.
+- Bound shared parsed-input traversal to depth 64 and 20,000 visited values. Iterative traversal rejects excessive complexity with 400 rather than recursive stack exhaustion. Reject reserved `__proto__`, `prototype`, and `constructor` keys as well as MongoDB operator/dotted keys. String values are preserved.
+- Plain-text comments preserve markup literally in storage and use context-safe React text nodes on output. Do not HTML-encode stored strings or add a production test-comment endpoint.
+- Plain-text helper trims outside whitespace, checks JavaScript UTF-16 length (default 1–1000 for comments), and rejects null bytes. Apply feature-specific bounds for other fields; do not apply trimming to passwords.
+- This shared implementation is not evidence that unmerged feature modules or the future FR-014 comment page already satisfy end-to-end SEC-004 acceptance.
