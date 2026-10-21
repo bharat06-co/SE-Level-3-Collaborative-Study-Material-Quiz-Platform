@@ -5,4 +5,8 @@ async function create(userData) {
   return User.create(userData);
 }
 
-module.exports = { create };
+async function findById(id) {
+  return User.findById(id).select('_id role contributor');
+}
+
+module.exports = { create, findById };
