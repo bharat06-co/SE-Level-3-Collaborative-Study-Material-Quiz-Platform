@@ -4,6 +4,13 @@ jest.mock('../src/modules/auth/user.repository', () => ({
   findByEmail: jest.fn(),
 }));
 
+jest.mock('../src/modules/auth/refresh-token.repository', () => ({
+  create: jest.fn(),
+  findByTokenHash: jest.fn(),
+  revokeById: jest.fn(),
+  consumeActiveToken: jest.fn(),
+}));
+
 jest.mock('../src/config/env', () => ({
   readEnv: jest.fn(),
 }));
@@ -11,6 +18,7 @@ jest.mock('../src/config/env', () => ({
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../src/modules/auth/user.repository');
+const refreshTokenRepository = require('../src/modules/auth/refresh-token.repository');
 const { readEnv } = require('../src/config/env');
 const {
   registerUser,
@@ -190,15 +198,20 @@ describe('FR-001 registration', () => {
 describe('FR-002 login', () => {
   const password = 'Study1234';
   const userId = 'login-user-id';
+  const jwtSecret = 'test-secret-'.repeat(6);
+
   let user;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     readEnv.mockReturnValue({
-      JWT_ACCESS_SECRET: 'test-secret-'.repeat(6),
+      JWT_ACCESS_SECRET: jwtSecret,
       JWT_ACCESS_TTL: '15m',
     });
+
+    // Login's refresh-token persistence is mocked in these unit tests.
+    refreshTokenRepository.create.mockResolvedValue({});
 
     user = {
       _id: { toString: () => userId },
@@ -221,8 +234,10 @@ describe('FR-002 login', () => {
     expect(userRepository.findByEmail).toHaveBeenCalledWith(
       'student@example.com',
     );
+
     expect(result.tokenType).toBe('Bearer');
-    expect(result.expiresIn).toBe('15m');
+    expect(result.expiresIn).toBe(900);
+
     expect(result.user).toEqual({
       id: userId,
       name: 'Test Student',
@@ -230,18 +245,30 @@ describe('FR-002 login', () => {
       role: 'student',
       contributor: false,
     });
-    expect(result).not.toHaveProperty('passwordHash');
 
-    const decoded = jwt.verify(
-      result.accessToken,
-      'test-secret-'.repeat(6),
-      { algorithms: ['HS256'] },
-    );
+    expect(result).not.toHaveProperty('passwordHash');
+    expect(typeof result.refreshToken).toBe('string');
+    expect(result.refreshToken.length).toBeGreaterThan(0);
+
+    expect(refreshTokenRepository.create).toHaveBeenCalledTimes(1);
+
+    const [storedRefreshToken] = refreshTokenRepository.create.mock.calls[0];
+
+    expect(storedRefreshToken.userId.toString()).toBe(userId);
+    expect(storedRefreshToken.tokenHash).not.toBe(result.refreshToken);
+    expect(storedRefreshToken.tokenHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(storedRefreshToken.expiresAt).toBeInstanceOf(Date);
+    expect(storedRefreshToken.revokedAt).toBeNull();
+
+    // Verify the JWT's signature, identity, claims, and actual lifetime.
+    const decoded = jwt.verify(result.accessToken, jwtSecret, {
+      algorithms: ['HS256'],
+    });
 
     expect(decoded.sub).toBe(userId);
     expect(decoded.role).toBe('student');
     expect(decoded.contributor).toBe(false);
-    expect(decoded.exp - decoded.iat).toBe(15 * 60);
+    expect(decoded.exp - decoded.iat).toBe(900);
   });
 
   test('rejects an incorrect password with a generic credentials error', async () => {
@@ -257,6 +284,8 @@ describe('FR-002 login', () => {
       code: 'INVALID_CREDENTIALS',
       message: 'Email or password is incorrect.',
     });
+
+    expect(refreshTokenRepository.create).not.toHaveBeenCalled();
   });
 
   test('rejects an unknown email with the same generic credentials error', async () => {
@@ -272,6 +301,8 @@ describe('FR-002 login', () => {
       code: 'INVALID_CREDENTIALS',
       message: 'Email or password is incorrect.',
     });
+
+    expect(refreshTokenRepository.create).not.toHaveBeenCalled();
   });
 
   test('refuses to issue a token when the JWT secret is missing', async () => {
@@ -291,6 +322,7 @@ describe('FR-002 login', () => {
     });
 
     expect(userRepository.findByEmail).not.toHaveBeenCalled();
+    expect(refreshTokenRepository.create).not.toHaveBeenCalled();
   });
 
   test.each([
@@ -305,5 +337,6 @@ describe('FR-002 login', () => {
     });
 
     expect(userRepository.findByEmail).not.toHaveBeenCalled();
+    expect(refreshTokenRepository.create).not.toHaveBeenCalled();
   });
 });

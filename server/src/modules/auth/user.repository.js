@@ -9,4 +9,14 @@ async function findByEmail(email) {
   return User.findOne({ email }).select('+passwordHash');
 }
 
-module.exports = { create, findByEmail };
+async function findById(id, options = {}) {
+  let query = User.findById(id);
+
+  if (options.session) {
+    query = query.session(options.session);
+  }
+
+  return query;
+}
+
+module.exports = { create, findByEmail, findById };
