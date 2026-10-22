@@ -4,7 +4,7 @@ This module implements quiz persistence, validation, owner checks, publishing, a
 
 ## Authentication dependency
 
-`createQuizRouter({ authenticate })` requires Anisha's verified Bearer-token middleware. That middleware must set `req.auth = { userId, role, contributor }` from a validated token and database user, never from request JSON or a caller-controlled header. The router fails closed when identity is absent. Mount it at `/api/v1/quizzes` in `server/src/app.js` after the auth module and exact context contract have merged. Until then it is deliberately unmounted from the production app. The tests inject an identity through a test-only middleware, so they prove the quiz rules but not JWT integration.
+`createQuizRouter({ authenticate })` requires Anisha's verified Bearer-token middleware. That middleware must set `req.auth = { userId, role, contributor }` from a validated token and current database user, never from request JSON or a caller-controlled header. The app mounts the quiz router with a default middleware that always returns 401. Once FR-004 is reviewed and merged, pass `createAuthenticate()` as `quizAuthenticate` to `createApp` from `server/src/index.js`. Until then production quiz requests fail closed. The tests inject identity only inside a test harness, so they prove quiz rules but not JWT integration.
 
 ## Attempt integration
 
