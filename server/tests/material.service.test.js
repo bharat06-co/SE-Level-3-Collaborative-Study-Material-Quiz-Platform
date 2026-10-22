@@ -147,6 +147,24 @@ describe('Material service (unit, mocked repository/storage)', () => {
     expect(Material.collection.name).toBe('studymaterials');
   });
 
+  test('model rejects direct writers that bypass tag normalisation', () => {
+    const base = {
+      title: 'ER Diagrams',
+      description: 'Entity relationship notes',
+      category: 'Notes',
+      topic: 'dbms',
+      fileUrl: '/api/v1/materials/64ff31e5fe2f1f25a49f4b72/file',
+      storageKey: '64ff31e5fe2f1f25a49f4b72.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: 8,
+      ownerId: userId,
+    };
+    expect(new Material({ ...base, tags: ['UPPER', 'UPPER'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: ['er', 'ER'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: [' er', 'dbms'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: ['er', 'dbms'] }).validateSync()).toBeUndefined();
+  });
+
   test('service requires injected dependencies', () => {
     expect(() => createMaterialService()).toThrow('Material service requires a repository and storage adapter.');
   });

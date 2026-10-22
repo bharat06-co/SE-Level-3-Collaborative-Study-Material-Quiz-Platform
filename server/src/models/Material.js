@@ -32,7 +32,12 @@ const materialSchema = new mongoose.Schema(
       validate: {
         validator(tags) {
           if (!Array.isArray(tags) || tags.length < 1 || tags.length > MAX_TAGS) return false;
-          return tags.every((tag) => typeof tag === 'string' && tag.length >= 1 && tag.length <= TAG_MAX_LENGTH);
+          if (new Set(tags).size !== tags.length) return false;
+          return tags.every((tag) => typeof tag === 'string'
+            && tag.length >= 1
+            && tag.length <= TAG_MAX_LENGTH
+            && tag === tag.trim()
+            && tag === tag.toLowerCase());
         },
         message: `Tags must contain ${MAX_TAGS} or fewer unique lowercase tags of 1-${TAG_MAX_LENGTH} characters.`,
       },
