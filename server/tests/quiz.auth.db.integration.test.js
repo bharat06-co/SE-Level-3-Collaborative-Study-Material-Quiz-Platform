@@ -69,6 +69,12 @@ describe('authenticated quiz flow with MongoDB', () => {
     expect(created.body.status).toBe('draft');
     expect(JSON.stringify(created.body)).not.toMatch(/answerKey|correctAnswer/);
 
+    const edited = await request(app).put(`${path}/${created.body.id}`)
+      .set('Authorization', bearer).send({ title: 'DBMS revised' });
+    expect(edited.status).toBe(200);
+    expect(edited.body.title).toBe('DBMS revised');
+    expect(JSON.stringify(edited.body)).not.toMatch(/answerKey|correctAnswer/);
+
     const published = await request(app).post(`${path}/${created.body.id}/publish`)
       .set('Authorization', bearer);
     expect(published.status).toBe(200);
@@ -78,12 +84,70 @@ describe('authenticated quiz flow with MongoDB', () => {
       .set('Authorization', bearer);
     expect(visible.status).toBe(200);
     expect(JSON.stringify(visible.body)).not.toMatch(/answerKey|correctAnswer/);
+    const listed = await request(app).get(path).set('Authorization', bearer);
+    expect(listed.status).toBe(200);
+    expect(listed.body.items.some((item) => item.id === created.body.id)).toBe(true);
+    expect(JSON.stringify(listed.body)).not.toMatch(/answerKey|correctAnswer/);
     expect((await Quiz.findById(created.body.id).lean()).questions[0].answerKey).toBe(1);
+
+    const unpublished = await request(app).post(`${path}/${created.body.id}/unpublish`)
+      .set('Authorization', bearer);
+    expect(unpublished.status).toBe(200);
+    expect(unpublished.body.status).toBe('draft');
+    expect((await request(app).get(`${path}/${created.body.id}`)).status).toBe(401);
+    expect((await request(app).post(`${path}/${created.body.id}/publish`)
+      .set('Authorization', bearer)).status).toBe(200);
 
     await User.findByIdAndUpdate(user._id, { contributor: false });
     const revoked = await request(app).put(`${path}/${created.body.id}`)
       .set('Authorization', bearer).send({ title: 'Unauthorized edit' });
     expect(revoked.status).toBe(403);
-    expect((await Quiz.findById(created.body.id).lean()).title).toBe('DBMS basics');
+    expect((await Quiz.findById(created.body.id).lean()).title).toBe('DBMS revised');
+  });
+
+  test('another educator cannot change an author quiz, while an administrator can moderate it', async () => {
+    const passwordHash = await bcrypt.hash('Study1234', 10);
+    await User.create([
+      { name: 'Owner', email: 'owner@example.com', passwordHash, role: 'educator' },
+      { name: 'Other', email: 'other@example.com', passwordHash, role: 'educator' },
+      { name: 'Admin', email: 'admin@example.com', passwordHash, role: 'admin' },
+    ]);
+    async function bearer(email) {
+      const response = await request(app).post('/api/v1/auth/login')
+        .send({ email, password: 'Study1234' });
+      expect(response.status).toBe(200);
+      return `Bearer ${response.body.accessToken}`;
+    }
+    const owner = await bearer('owner@example.com');
+    const other = await bearer('other@example.com');
+    const admin = await bearer('admin@example.com');
+    const path = '/api/v1/quizzes';
+    const quiz = {
+      title: 'Protected quiz', topic: 'security',
+      questions: [{ text: 'Choose B', type: 'mcq', options: ['A', 'B'], answerKey: 1 }],
+    };
+    const created = await request(app).post(path).set('Authorization', owner).send(quiz);
+    expect(created.status).toBe(201);
+    const id = created.body.id;
+
+    expect((await request(app).get(`${path}/${id}`).set('Authorization', other)).status).toBe(404);
+    expect((await request(app).put(`${path}/${id}`).set('Authorization', other)
+      .send({ title: 'Taken over' })).status).toBe(403);
+    expect((await request(app).post(`${path}/${id}/publish`).set('Authorization', other)).status).toBe(403);
+    expect((await request(app).post(`${path}/${id}/unpublish`).set('Authorization', other)).status).toBe(403);
+    expect((await request(app).delete(`${path}/${id}`).set('Authorization', other)).status).toBe(403);
+    expect((await request(app).post(path).set('Authorization', admin).send(quiz)).status).toBe(403);
+
+    const moderated = await request(app).put(`${path}/${id}`).set('Authorization', admin)
+      .send({ title: 'Moderated quiz' });
+    expect(moderated.status).toBe(200);
+    expect(moderated.body.title).toBe('Moderated quiz');
+    expect(JSON.stringify(moderated.body)).not.toMatch(/answerKey|correctAnswer/);
+    expect((await request(app).post(`${path}/${id}/publish`).set('Authorization', admin)).status).toBe(200);
+    const published = await request(app).get(`${path}/${id}`).set('Authorization', other);
+    expect(published.status).toBe(200);
+    expect(JSON.stringify(published.body)).not.toMatch(/answerKey|correctAnswer/);
+    expect((await request(app).post(`${path}/${id}/unpublish`).set('Authorization', admin)).status).toBe(200);
+    expect((await request(app).get(`${path}/${id}`).set('Authorization', other)).status).toBe(404);
   });
 });
