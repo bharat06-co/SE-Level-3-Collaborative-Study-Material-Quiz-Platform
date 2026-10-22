@@ -63,6 +63,23 @@ function setup() {
 }
 
 describe('quiz authoring and security', () => {
+  test('application quiz mount fails closed and accepts only injected authentication', async () => {
+    const path = '/api/v1/quizzes/not-an-object-id';
+    const unauthenticated = await request(createApp()).get(path).set('X-Test-Identity', authorId);
+    expect(unauthenticated.status).toBe(401);
+    expect(unauthenticated.body.error.code).toBe('UNAUTHENTICATED');
+
+    const authenticatedApp = createApp({
+      quizAuthenticate(req, res, next) {
+        req.auth = educator;
+        next();
+      },
+    });
+    const authenticated = await request(authenticatedApp).get(path);
+    expect(authenticated.status).toBe(400);
+    expect(authenticated.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
   test('question boundaries and answer keys reject invalid data', async () => {
     const { service } = setup();
     for (const questions of [
