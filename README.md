@@ -207,3 +207,66 @@ The full dependency audit currently reports moderate findings in a test-only cov
 - Backlog: https://github.com/users/bharat06-co/projects/1/views/1
 - Sprint 1: 17–23 Oct 2026. Sprint 2: 24–30 Oct 2026.
 - See `docs/DEVIATIONS.md` for recorded working clarifications; submitted PDFs/history remain untouched.
+## C. Local development without Docker
+
+These instructions assume MongoDB Community Server and `mongosh` are installed locally.
+
+### 1. Start MongoDB as a replica set
+
+The application uses MongoDB transactions for refresh-token rotation. A standalone MongoDB server is not sufficient; configure the local server with replica-set name `rs0`.
+
+Stop the local MongoDB service before changing its startup options. Start `mongod` with the appropriate existing database storage path for your installation and these options:
+
+```bash
+mongod --dbpath "<your-existing-mongodb-data-directory>" --replSet rs0 --bind_ip 127.0.0.1 --port 27017
+```
+
+Do not use a new or empty data directory if you need to preserve existing local databases. Keep this terminal running.
+
+### 2. Initialize the replica set
+
+In a second terminal, run:
+
+```bash
+mongosh "mongodb://127.0.0.1:27017/admin"
+```
+
+At the `mongosh` prompt, initialize the replica set:
+
+```javascript
+rs.initiate({
+  _id: "rs0",
+  members: [{ _id: 0, host: "127.0.0.1:27017" }]
+})
+```
+
+Wait for the replica set to elect a primary, then verify:
+
+```javascript
+db.hello()
+```
+
+Confirm that `setName` is `rs0` and `isWritablePrimary` is `true`.
+
+If the replica set has already been initialized, do not initialize it again; inspect its existing configuration instead.
+
+### 3. Configure the backend
+
+Copy `server/.env.example` to `server/.env` if you do not already have a local environment file. Preserve any existing settings and configure:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/team1_study_dev?replicaSet=rs0
+```
+
+Set `JWT_ACCESS_SECRET` in your local environment to a securely generated random secret of at least 64 characters. Do not commit real secrets or share them in source control.
+
+### 4. Start the backend
+
+From the repository root, install dependencies if necessary, then start the server:
+
+```bash
+npm install
+npm run dev --workspace=./server
+```
+
+The API uses port `3000` by default. If startup fails, verify that MongoDB is running, the replica set has a primary, and `MONGODB_URI` matches the local replica-set configuration.
