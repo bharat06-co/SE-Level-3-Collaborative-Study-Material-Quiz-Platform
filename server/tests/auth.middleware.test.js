@@ -8,6 +8,7 @@ jest.mock('../src/config/env', () => ({
 }));
 
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const request = require('supertest');
 const { createApp } = require('../src/app');
 const { readEnv } = require('../src/config/env');
@@ -23,6 +24,21 @@ function makeToken(overrides = {}, options = {}) {
     SECRET,
     { algorithm: 'HS256', expiresIn: '15m', ...options },
   );
+}
+
+function makeTokenWithRawPayload(payload) {
+  const header = Buffer.from(
+    JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
+  ).toString('base64url');
+
+  const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+
+  const signature = crypto
+    .createHmac('sha256', SECRET)
+    .update(`${header}.${body}`)
+    .digest('base64url');
+
+  return `${header}.${body}.${signature}`;
 }
 
 function makeApp() {
@@ -98,6 +114,33 @@ describe('FR-004 authentication middleware', () => {
 
   test('rejects an expired token', async () => {
     const token = makeToken({}, { expiresIn: -1 });
+
+    const response = await request(makeApp())
+      .get('/protected')
+      .set('Authorization', 'Bearer ' + token);
+
+    expect(response.status).toBe(401);
+    expect(userRepository.findById).not.toHaveBeenCalled();
+  });
+
+  test('rejects a token with a missing exp claim', async () => {
+    const token = jwt.sign({ sub: USER_ID }, SECRET, {
+      algorithm: 'HS256',
+    });
+
+    const response = await request(makeApp())
+      .get('/protected')
+      .set('Authorization', 'Bearer ' + token);
+
+    expect(response.status).toBe(401);
+    expect(userRepository.findById).not.toHaveBeenCalled();
+  });
+
+  test('rejects a token with a nonnumeric exp claim', async () => {
+    const token = makeTokenWithRawPayload({
+      sub: USER_ID,
+      exp: 'tomorrow',
+    });
 
     const response = await request(makeApp())
       .get('/protected')

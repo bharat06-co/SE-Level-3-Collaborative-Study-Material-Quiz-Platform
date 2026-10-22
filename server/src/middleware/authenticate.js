@@ -51,11 +51,13 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
         );
       }
 
-      if (
+       if (
         !payload ||
         typeof payload !== 'object' ||
         typeof payload.sub !== 'string' ||
-        !/^[a-f\d]{24}$/i.test(payload.sub)
+        !/^[a-f\d]{24}$/i.test(payload.sub) ||
+        typeof payload.exp !== 'number' ||
+        !Number.isFinite(payload.exp)
       ) {
         throw new AppError(
           401,
