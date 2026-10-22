@@ -35,6 +35,7 @@ describe('quiz routes with merged authentication middleware', () => {
 
     const missing = await request(app).post('/api/v1/quizzes').send({});
     expect(missing.status).toBe(401);
+    expect(missing.body.error.code).toBe('UNAUTHORIZED');
     expect(findUserById).not.toHaveBeenCalled();
 
     const denied = await request(app).post('/api/v1/quizzes')
@@ -48,5 +49,31 @@ describe('quiz routes with merged authentication middleware', () => {
     expect(allowedToValidate.status).toBe(400);
     expect(allowedToValidate.body.error.code).toBe('VALIDATION_ERROR');
     expect(findUserById).toHaveBeenCalledTimes(2);
+  });
+
+  test('quiz routes return authentication errors before authorisation or validation', async () => {
+    const findUserById = jest.fn(async () => ({ _id: userId, role: 'educator', contributor: false }));
+    const app = createApp({ quizAuthenticate: createAuthenticate({ findUserById }) });
+    const expired = jwt.sign({ sub: userId }, secret, { algorithm: 'HS256', expiresIn: -1 });
+    const valid = jwt.sign({ sub: userId }, secret, { algorithm: 'HS256', expiresIn: '15m' });
+    const [header, payload, signature] = valid.split('.');
+    const tampered = `${header}.${payload}.${signature[0] === 'A' ? 'B' : 'A'}${signature.slice(1)}`;
+    const cases = [
+      [undefined, 'Authentication is required.'],
+      ['Basic credentials', 'Authentication is required.'],
+      ['Bearer', 'Authentication is required.'],
+      ['Bearer invalid-token', 'Authentication token is invalid or expired.'],
+      [`Bearer ${expired}`, 'Authentication token is invalid or expired.'],
+      [`Bearer ${tampered}`, 'Authentication token is invalid or expired.'],
+    ];
+    for (const [authorization, message] of cases) {
+      let call = request(app).post('/api/v1/quizzes').send({});
+      if (authorization) call = call.set('Authorization', authorization);
+      const response = await call;
+      expect(response.status).toBe(401);
+      expect(response.body.error).toEqual(expect.objectContaining({ code: 'UNAUTHORIZED', message }));
+      expect(response.body.error.requestId).toEqual(expect.any(String));
+    }
+    expect(findUserById).not.toHaveBeenCalled();
   });
 });
