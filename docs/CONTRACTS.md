@@ -57,7 +57,7 @@ Original SAD references `TOKEN_EXPIRED` but its error-table completeness needs c
 ## FR-030–FR-032 attempt integration boundary (this increment)
 
 - Real route: `POST /api/v1/quizzes/:quizId/attempts`. Layering: router → auth/role/schema middleware → controller → service/scorer → repository.
-- **Default startup rejects submission with 401** until Anisha's verified bearer-token middleware is supplied. The server never accepts identities from client JSON, fake tokens or custom identity headers. Test-only identity injection is not production authentication.
+- **Production startup supplies the shared `createAuthenticate()` middleware** to quiz and attempt routes through `createAuthenticatedFeatures()`. Bare `createApp()` calls remain fail-closed unless explicitly configured. The server never accepts identities from client JSON, fake tokens or custom identity headers. Test-only identity injection is not production authentication.
 - Wiring point: `createApp({ ..., attempts: { authenticate: actualVerifiedAuthMiddleware } })`; the middleware must populate trusted `req.auth = {userId, role, contributor}` with `userId` a stringified MongoDB ObjectId. Align the adapter once with Anisha's final context; do not duplicate JWT verification or add a dev bypass. Student (including contributor) allowed; educator/admin denied.
 - Repository reads only server-side `quizzes` scoring data, using `_id` + `status:'published'`, projection `_id,allowRetake,questions`. No competing Quiz schema is registered. Ayush must confirm stored question `_id`, `type`, `options`, `answerKey` and Boolean `allowRetake` match SAD. This private lookup is not a client quiz endpoint and does not make answer keys public.
 - Body follows SAD §4.3.4. Wrong types, unknown/duplicate question IDs are 400. Extra top-level client scores/identity/results are stripped and ignored. Null, omitted response or omitted question means unanswered; 0 and false remain valid answers.
@@ -66,7 +66,40 @@ Original SAD references `TOKEN_EXPIRED` but its error-table completeness needs c
 - MongoDB is required; no in-memory fallback for application persistence. Index build/DB failures fail the request rather than produce a false 201. Tests inject mock repositories separately; the supplied real MongoDB script verifies storage and races in an isolated random test database.
 - Do not close #26 until real verified-auth/published-quiz integration and relevant acceptance evidence pass. FR-031 scorer and FR-032 UI have isolated test evidence; do not mark the full integrated flow Done until real authentication/quiz-route wiring is verified.
 
-- Optional repository adapter: `createAttemptRepository({ findQuizForScoring: createQuizService().getQuizForScoring })` can reuse Ayush’s server-only lookup. This is never imported by the client. The existing direct collection lookup remains the fallback until peer integration.
-- Frontend uses the existing shared Axios instance. Anisha owns its verified bearer/refresh integration; this feature does not read/store tokens, invent a login context or accept identity through URL/body fields.
+- Optional repository adapter: `createAttemptRepository({ findQuizForScoring: createQuizService().getQuizForScoring })` can reuse Ayush’s server-only lookup. This is never imported by the client. Production now uses this private adapter; the direct collection lookup is retained for isolated repository use.
+- Frontend uses the existing shared Axios instance. The student entry page signs in through the real `/auth/login`, keeps access tokens only in React memory and passes Bearer headers explicitly. It does not persist tokens or accept server identity through URL/body fields. It requires re-login on 401; automatic token refresh remains shared-client follow-up work.
 - Public quiz GET is validated/projected to public fields. Answer keys are shown only from the acknowledged submission response. Results appear without a page reload; 0 and false are preserved, omitted/null answers remain blank.
 - The new AppRoutes is mounted inside the existing BrowserRouter in main.jsx. Coordinate later route additions in the same router rather than nesting another BrowserRouter.
+
+## Registration Contract — FR-001
+
+### Shared User model
+
+- Model file: `server/src/models/User.js`
+- Export: CommonJS default Mongoose `User` model.
+- Collection: `users`.
+- Registration endpoint: `POST /api/v1/auth/register`.
+- Successful response: HTTP `201` with a `{ user: ... }` object.
+- The response must not expose the password or `passwordHash`.
+- Password hashes use bcrypt with cost factor 12 and are excluded from default User queries.
+- Email addresses are trimmed and lowercased before storage.
+- The accepted role values are `student`, `educator`, and `admin`.
+- Public registration always assigns `role: student` and `contributor: false`. Client-supplied role and contributor values must not grant privileges.
+
+### Password security clarification
+
+Registration rejects passwords longer than 72 UTF-8 bytes before hashing or persistence. This limit prevents bcrypt from silently treating passwords with the same first 72 bytes as equivalent.
+
+This is a working security clarification for implementation; it is not represented as an explicit maximum specified by the original SRS. The submitted SRS, SAD, and STP PDFs remain unchanged.
+
+Password validation in future login, password reset, and password change flows must be consistent with the registration policy. Any user-facing password guidance should distinguish UTF-8 byte length from character count.
+
+### Current authentication scope
+
+FR-001 provides backend registration and the shared User model. It does not, by itself, implement verified login, JWT authentication middleware, refresh-token handling, logout, or the complete browser registration UI.
+
+Protected-route integration must use the agreed authentication context:
+
+`req.auth = { userId, role, contributor }`
+
+Protected requests must obtain current user privileges from the database so role or contributor changes can take effect. Do not create production test identities or introduce fake authentication middleware to bypass integration requirements.

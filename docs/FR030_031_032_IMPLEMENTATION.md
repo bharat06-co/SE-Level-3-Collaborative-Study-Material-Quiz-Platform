@@ -21,21 +21,13 @@ UI route `/quizzes/:quizId/attempt` uses the public quiz GET then POST, the exis
 
 Results show correct/incorrect/unanswered in text, not color alone, and convert MCQ answer indices to option labels. Retakes reload the quiz; no-retake results do not offer a retry. Refreshable history is not part of FR-032.
 
-## Remaining integration — do not bypass it
+## Auth/quiz integration completed locally
 
-The default production router intentionally returns 401 until the real authentication dependency is supplied. PR #56 implements registration only; it does not yet supply JWT verification. Do not decode unverified JWTs, trust request JSON identity, add a special header/test token or expose a fixture login to unblock this.
+Production startup uses `createAuthenticatedFeatures()` to supply the same shared `createAuthenticate()` middleware to quiz and attempt routes, with `createQuizService().getQuizForScoring` as the private scoring lookup. No identity injection or competing Quiz model is used in startup.
 
-Once the reviewed middleware exists, `server/src/index.js` must pass its real export into:
+`/attempt` and `/quizzes/:quizId/attempt` require real student login. Tokens stay in memory and are sent explicitly on quiz reads and submissions. Logout clears the local session; 401 requires sign-in again. The feature-specific entry point is temporary until shared client navigation/auth arrives.
 
-```js
-createApp({ /* existing config */ attempts: { authenticate: verifiedAuthMiddleware } });
-```
-
-This is a wiring example, not a currently defined import. It must populate verified `req.auth = {userId, role, contributor}`, userId as a 24-hex string, with current DB privileges. Student contributors can submit.
-
-Ayush’s real quiz GET route must be mounted. For server scoring, the repository can directly read the fixed quizzes collection or take `findQuizForScoring` set to Ayush’s server-only `createQuizService().getQuizForScoring`. No duplicate Quiz model is introduced. Coordinate the actual app/index wiring after peer PRs are reviewed; do not merge all their unreviewed source into this patch.
-
-Confirm the DEV-05 storage extension with the database lead: optional internal retakeGuard + partial unique index for no-retake writes; stored historical correctAnswer/unanswered. It preserves allowed retakes and D-3 outcomes without quiz versioning. Quiz status/policy is a read snapshot; concurrent author edits are not transactionally serialized with submission.
+Current verification is recorded in `docs/FR030_AUTH_INTEGRATION_VERIFICATION.md`. The preparation results below are retained as historical evidence, not current deployment claims. Remote CI, peer review, Docker/staging and final merged-app verification remain pending.
 
 ## Executed evidence for this preparation snapshot
 
@@ -77,4 +69,4 @@ Use local/development MongoDB only. The script forces a random test database and
 
 Title: `feat(attempts): submit, score and display quiz feedback (FR-030–032)`
 
-Use `Related to #26, #27, #28` while real auth integration is pending. Do not automatically close the issues or mark the integrated flow Done based only on isolated tests. Include actual local outputs and pending integration in the PR body; inspect the new GitHub Actions result after pushing.
+Use `Related to #26, #27, #28` until final peer review, remote CI and merge are complete. Do not automatically close the issues or mark the integrated flow Done based only on isolated tests. Include actual local outputs and pending integration in the PR body; inspect the new GitHub Actions result after pushing.
