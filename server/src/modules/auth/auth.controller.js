@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   refreshUserSession,
+  logoutUser,
 } = require('./auth.service');
 
 const REFRESH_COOKIE_OPTIONS = {
@@ -40,8 +41,9 @@ async function login(req, res, next) {
     const result = await loginUser(req.body || {});
     setRefreshCookie(res, result.refreshToken);
 
-   const responseBody = { ...result };
-delete responseBody.refreshToken;
+    const responseBody = { ...result };
+    delete responseBody.refreshToken;
+
     return res.status(200).json(responseBody);
   } catch (error) {
     return next(error);
@@ -50,14 +52,33 @@ delete responseBody.refreshToken;
 
 async function refresh(req, res, next) {
   try {
-    const rawToken = req.cookies?.rt || readCookieHeader(req.headers.cookie, 'rt');
+    const rawToken =
+      req.cookies?.rt || readCookieHeader(req.headers.cookie, 'rt');
 
     const result = await refreshUserSession(rawToken);
     setRefreshCookie(res, result.refreshToken);
 
     const responseBody = { ...result };
-delete responseBody.refreshToken;
+    delete responseBody.refreshToken;
+
     return res.status(200).json(responseBody);
+  } catch (error) {
+    clearRefreshCookie(res);
+    return next(error);
+  }
+}
+
+async function logout(req, res, next) {
+  try {
+    const rawToken =
+      req.cookies?.rt || readCookieHeader(req.headers.cookie, 'rt');
+
+    await logoutUser(rawToken);
+    clearRefreshCookie(res);
+
+    return res.status(200).json({
+      message: 'Logged out successfully.',
+    });
   } catch (error) {
     clearRefreshCookie(res);
     return next(error);
@@ -80,4 +101,4 @@ function readCookieHeader(header, name) {
   return undefined;
 }
 
-module.exports = { register, login, refresh };
+module.exports = { register, login, refresh, logout };

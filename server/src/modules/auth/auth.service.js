@@ -129,6 +129,7 @@ async function registerUser(input) {
 
 function signAccessToken(user, config) {
   const expiresIn = getAccessTokenExpirySeconds(config.JWT_ACCESS_TTL);
+
   const accessToken = jwt.sign(
     { role: user.role, contributor: user.contributor },
     config.JWT_ACCESS_SECRET,
@@ -216,7 +217,11 @@ async function loginUser(input) {
 
 async function refreshUserSession(rawToken) {
   if (typeof rawToken !== 'string' || rawToken.length === 0) {
-    throw new AppError(401, 'INVALID_REFRESH_TOKEN', 'Refresh token is invalid.');
+    throw new AppError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid.',
+    );
   }
 
   const config = readEnv();
@@ -234,16 +239,12 @@ async function refreshUserSession(rawToken) {
   );
   const now = new Date();
 
-  if (!existing) {
-    throw new AppError(401, 'INVALID_REFRESH_TOKEN', 'Refresh token is invalid.');
-  }
-
-  if (existing.revokedAt) {
-    throw new AppError(401, 'INVALID_REFRESH_TOKEN', 'Refresh token is invalid.');
-  }
-
-  if (existing.expiresAt <= now) {
-    throw new AppError(401, 'INVALID_REFRESH_TOKEN', 'Refresh token is invalid.');
+  if (!existing || existing.revokedAt || existing.expiresAt <= now) {
+    throw new AppError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid.',
+    );
   }
 
   const session = await mongoose.startSession();
@@ -299,8 +300,45 @@ async function refreshUserSession(rawToken) {
   return result;
 }
 
+async function logoutUser(rawToken) {
+  if (typeof rawToken !== 'string' || rawToken.length === 0) {
+    throw new AppError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid.',
+    );
+  }
+
+  const existing = await refreshTokenRepository.findByTokenHash(
+    hashRefreshToken(rawToken),
+  );
+
+  if (
+    !existing ||
+    existing.revokedAt ||
+    existing.expiresAt <= new Date()
+  ) {
+    throw new AppError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid.',
+    );
+  }
+
+  const revoked = await refreshTokenRepository.revokeById(existing._id);
+
+  if (!revoked) {
+    throw new AppError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid.',
+    );
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
   refreshUserSession,
+  logoutUser,
 };

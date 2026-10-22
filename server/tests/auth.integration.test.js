@@ -437,6 +437,68 @@ delete otherOverrides.passwordHash;
 
       expect(responses.filter((response) => response.status === 200)).toHaveLength(1);
       expect(responses.filter((response) => response.status === 401)).toHaveLength(1);
+
     });
   });
-});
+
+  describe('FR-003 logout', () => {
+    test('revokes the active refresh token and clears the cookie', async () => {
+      const { refreshToken } = await loginAndGetRefreshToken();
+
+      const response = await request(app)
+        .post('/api/v1/auth/logout')
+        .set('Cookie', `rt=${refreshToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('Logged out successfully.');
+
+      const clearedCookie = (response.headers['set-cookie'] || []).find(
+        (cookie) => cookie.startsWith('rt='),
+      );
+
+      expect(clearedCookie).toBeDefined();
+      expect(clearedCookie).toMatch(/Expires=/i);
+      expect(clearedCookie).toMatch(/HttpOnly/i);
+      expect(clearedCookie).toMatch(/Path=\/api\/v1\/auth/i);
+
+      const storedToken = await RefreshToken.findOne({
+        tokenHash: hashToken(refreshToken),
+      });
+
+      expect(storedToken).not.toBeNull();
+      expect(storedToken.revokedAt).toBeInstanceOf(Date);
+    });
+
+    test('rejects reuse of a refresh token after logout', async () => {
+      const { refreshToken } = await loginAndGetRefreshToken();
+
+      const logoutResponse = await request(app)
+        .post('/api/v1/auth/logout')
+        .set('Cookie', `rt=${refreshToken}`);
+
+      expect(logoutResponse.status).toBe(200);
+
+      const refreshResponse = await request(app)
+        .post('/api/v1/auth/refresh')
+        .set('Cookie', `rt=${refreshToken}`);
+
+      expect(refreshResponse.status).toBe(401);
+      expect(refreshResponse.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+    });
+
+    test('rejects logout without a refresh token', async () => {
+      const response = await request(app).post('/api/v1/auth/logout');
+
+      expect(response.status).toBe(401);
+      expect(response.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+    });
+
+    test('rejects logout with an unknown refresh token', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/logout')
+        .set('Cookie', 'rt=not-a-real-token');
+
+      expect(response.status).toBe(401);
+      expect(response.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+    });
+  });
