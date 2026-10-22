@@ -22,7 +22,7 @@ function validate(title, topic, questions) {
   return errors;
 }
 
-function QuizEditorForm({ initialQuiz, onSaved, save = saveQuiz, setPublication = setQuizPublication }) {
+function QuizEditorForm({ initialQuiz, onSaved, onPublicationChange, save = saveQuiz, setPublication = setQuizPublication }) {
   const [id, setId] = useState(initialQuiz?.id || null);
   const [status, setStatus] = useState(initialQuiz?.status || 'draft');
   const [title, setTitle] = useState(initialQuiz?.title || '');
@@ -79,6 +79,7 @@ function QuizEditorForm({ initialQuiz, onSaved, save = saveQuiz, setPublication 
       const result = await setPublication(id, publish);
       setStatus(result.status);
       setMessage(publish ? 'Quiz published.' : 'Quiz unpublished.');
+      onPublicationChange?.(result);
     } catch (error) {
       setMessage(error.response?.data?.error?.message || 'Publication could not be changed.');
     } finally {
@@ -89,6 +90,7 @@ function QuizEditorForm({ initialQuiz, onSaved, save = saveQuiz, setPublication 
   return (
     <section className="quiz-editor" aria-labelledby="quiz-editor-title">
       <h1 id="quiz-editor-title">{id ? 'Edit quiz' : 'Create quiz'}</h1>
+      {id && <p>Quiz ID: <code>{id}</code></p>}
       <p>Current status: <strong>{status}</strong></p>
       <form onSubmit={handleSave} noValidate>
         <label>Title
