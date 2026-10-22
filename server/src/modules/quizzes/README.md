@@ -4,7 +4,7 @@ This module implements quiz persistence, validation, owner checks, publishing, a
 
 ## Authentication dependency
 
-`createQuizRouter({ authenticate })` requires verified Bearer-token middleware. Production startup passes `createAuthenticate()` to `createApp`, so quiz routes accept `Authorization: Bearer <access_token>` and read `req.auth = { userId, role, contributor }` from the verified token and current database user. Requests without valid authentication are rejected. `createApp` retains a fail-closed default for isolated callers that do not supply middleware. The quiz HTTP tests use isolated identities; the authentication integration test exercises the real middleware and quiz route together.
+`createQuizRouter({ authenticate })` requires verified Bearer-token middleware. Production startup passes `createAuthenticate()` to `createApp`, so quiz routes accept `Authorization: Bearer <access_token>` and read `req.auth = { userId, role, contributor }` from the verified token and current database user. Requests without valid authentication are rejected. `createApp` retains a fail-closed default for isolated callers that do not supply middleware. The quiz HTTP tests use isolated identities; separate integration tests exercise the real middleware and a MongoDB-backed login-to-quiz flow.
 
 ## Attempt integration
 
