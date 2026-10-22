@@ -4,6 +4,7 @@ const fsp = require('node:fs/promises');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
 const { createApp } = require('../src/app');
 const User = require('../src/models/User');
@@ -42,9 +43,11 @@ function binaryParser(res, callback) {
 }
 
 function uploadRequest(token, overrides = {}) {
-  return request(app)
-    .post('/api/v1/materials')
-    .set('Authorization', `Bearer ${token}`)
+  let builder = request(app).post('/api/v1/materials');
+
+  if (token) builder = builder.set('Authorization', `Bearer ${token}`);
+
+  return builder
     .field('title', FIELDS.title)
     .field('description', FIELDS.description)
     .field('category', FIELDS.category)
@@ -334,6 +337,55 @@ describe('Materials with the shared authentication middleware', () => {
       });
     expect(noTokenUpload.status).toBe(401);
     expect(await Material.countDocuments()).toBe(1);
+  });
+
+  test.each([
+    ['missing authorization', 'UNAUTHENTICATED', () => undefined],
+    ['malformed authorization header', 'UNAUTHENTICATED', () => 'Basic abc123'],
+    ['invalid access token', 'TOKEN_INVALID', () => 'Bearer not-a-real-token'],
+    [
+      'expired access token',
+      'TOKEN_INVALID',
+      (ownerId) => `Bearer ${jwt.sign({}, TEST_JWT_SECRET, {
+        algorithm: 'HS256',
+        subject: ownerId,
+        expiresIn: -1,
+      })}`,
+    ],
+    [
+      'access token missing exp',
+      'TOKEN_INVALID',
+      (ownerId) => `Bearer ${jwt.sign({}, TEST_JWT_SECRET, {
+        algorithm: 'HS256',
+        subject: ownerId,
+      })}`,
+    ],
+  ])('contract: %s is rejected with 401 %s', async (_case, expectedCode, authorizationFor) => {
+    const { user } = await createAndLogin({
+      name: 'Owner Student',
+      email: 'owner@example.com',
+      contributor: true,
+    });
+    const id = new mongoose.Types.ObjectId().toString();
+    let builder = request(app).get(`/api/v1/materials/${id}`);
+    const authorization = authorizationFor(user._id.toString());
+
+    if (authorization !== undefined) {
+      builder = builder.set('Authorization', authorization);
+    }
+
+    const response = await builder;
+
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe(expectedCode);
+  });
+
+  test('contract: upload without an access token is rejected with 401 UNAUTHENTICATED', async () => {
+    const response = await uploadRequest(null);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('UNAUTHENTICATED');
+    expect(await Material.countDocuments()).toBe(0);
   });
 
   test('authenticated detail rejects malformed and unknown IDs', async () => {
