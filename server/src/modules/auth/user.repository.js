@@ -5,8 +5,22 @@ async function create(userData) {
   return User.create(userData);
 }
 
-async function findById(id) {
-  return User.findById(id).select('_id role contributor');
+async function findByEmail(email) {
+  return User.findOne({ email }).select('+passwordHash');
 }
 
-module.exports = { create, findById };
+async function findById(id, options = {}) {
+  let query = User.findById(id);
+
+  if (options.session) {
+    query = query.session(options.session);
+  }
+
+  if (options.select) {
+    query = query.select(options.select);
+  }
+
+  return query;
+}
+
+module.exports = { create, findByEmail, findById };
