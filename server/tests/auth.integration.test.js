@@ -502,3 +502,4 @@ delete otherOverrides.passwordHash;
       expect(response.body.error.code).toBe('INVALID_REFRESH_TOKEN');
     });
   });
+});
