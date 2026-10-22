@@ -43,10 +43,12 @@ test('shows inline validation and keeps invalid drafts local', async () => {
   expect(save).not.toHaveBeenCalled();
 });
 
-test('edits metadata without replacing hidden answer keys and publishes', async () => {
+test('edits metadata without replacing hidden answer keys, publishes and unpublishes', async () => {
   const user = userEvent.setup();
   const save = jest.fn().mockResolvedValue({ id: 'q1', status: 'draft' });
-  const setPublication = jest.fn().mockResolvedValue({ id: 'q1', status: 'published' });
+  const setPublication = jest.fn()
+    .mockResolvedValueOnce({ id: 'q1', status: 'published' })
+    .mockResolvedValueOnce({ id: 'q1', status: 'draft' });
   render(<QuizEditor initialQuiz={{ id: 'q1', title: 'DBMS basics', topic: 'dbms', status: 'draft', allowRetake: true, questions: [{ id: 'x', text: 'Old question' }] }} save={save} setPublication={setPublication} />);
   expect(screen.getByText('Old question')).toBeInTheDocument();
   await user.clear(screen.getByLabelText('Title'));
@@ -56,6 +58,10 @@ test('edits metadata without replacing hidden answer keys and publishes', async 
   await user.click(screen.getByRole('button', { name: 'Publish' }));
   expect(setPublication).toHaveBeenCalledWith('q1', true);
   expect(await screen.findByText('Quiz published.')).toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: 'Unpublish' }));
+  expect(setPublication).toHaveBeenCalledWith('q1', false);
+  expect(await screen.findByText('Quiz unpublished.')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Publish' })).toBeInTheDocument();
 });
 
 async function fillMcq(user) {
