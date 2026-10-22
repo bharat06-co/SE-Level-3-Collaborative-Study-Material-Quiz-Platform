@@ -1,9 +1,14 @@
 const { validateFile, MAX_FILE_SIZE_BYTES, extractExtension } = require('../src/modules/materials/fileValidation');
+const { createGenericZip, createOoxmlPackage, createZip } = require('./helpers/zipFixture');
 
 const PDF_HEADER = [0x25, 0x50, 0x44, 0x46];
-const PNG_HEADER = [0x89, 0x50, 0x4e, 0x47];
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 const JPG_HEADER = [0xff, 0xd8, 0xff];
 const ZIP_HEADER = [0x50, 0x4b, 0x03, 0x04];
+
+const PNG_1X1 = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lK3iWQAAAABJRU5ErkJggg==', 'base64');
+const DOCX_PACKAGE = createOoxmlPackage('docx');
+const PPTX_PACKAGE = createOoxmlPackage('pptx');
 
 function bytes(...pattern) {
   return Buffer.from(pattern);
@@ -12,12 +17,14 @@ function bytes(...pattern) {
 describe('SEC-006 file validation (unit)', () => {
   test.each([
     ['report.pdf', bytes(...PDF_HEADER)],
-    ['notes.docx', bytes(...ZIP_HEADER)],
-    ['slides.pptx', bytes(...ZIP_HEADER)],
-    ['figure.png', bytes(...PNG_HEADER)],
+    ['notes.docx', DOCX_PACKAGE],
+    ['slides.pptx', PPTX_PACKAGE],
+    ['stored.docx', createOoxmlPackage('docx', { compress: false })],
+    ['figure.png', PNG_1X1],
+    ['signature-only.png', bytes(...PNG_SIGNATURE)],
     ['photo.jpg', bytes(...JPG_HEADER)],
   ])('accepts matching extension and signature: %s', (originalName, content) => {
-    const result = validateFile({ originalName, size: 1024, bytes: content });
+    const result = validateFile({ originalName, size: content.length, bytes: content });
     expect(result).toMatchObject({ extension: originalName.split('.')[1] });
     expect(typeof result.mimeType).toBe('string');
   });
@@ -28,8 +35,8 @@ describe('SEC-006 file validation (unit)', () => {
     ['wrong-ext.svg', bytes(0x3c, 0x73, 0x76, 0x67)],
     ['no-ext', bytes(...PDF_HEADER)],
     ['trailing-dot.pdf.', bytes(...PDF_HEADER)],
-  ])('rejects digit-signature mismatches and unsupported types: %s', (originalName, content) => {
-    expect(() => validateFile({ originalName, size: 1024, bytes: content }))
+  ])('rejects signature mismatches and unsupported types: %s', (originalName, content) => {
+    expect(() => validateFile({ originalName, size: content.length, bytes: content }))
       .toThrow(expect.objectContaining({ statusCode: 415, code: 'UNSUPPORTED_FILE_TYPE' }));
   });
 
@@ -38,13 +45,63 @@ describe('SEC-006 file validation (unit)', () => {
       .toThrow(expect.objectContaining({ statusCode: 415 }));
   });
 
+  test('a truncated four-byte PNG prefix is rejected', () => {
+    expect(() => validateFile({ originalName: 'image.png', size: 8, bytes: bytes(0x89, 0x50, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00) }))
+      .toThrow(expect.objectContaining({ statusCode: 415, code: 'UNSUPPORTED_FILE_TYPE' }));
+  });
+
+  test('a PNG with an invalid trailing signature is rejected', () => {
+    expect(() => validateFile({ originalName: 'image.png', size: 12, bytes: bytes(0x89, 0x50, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04) }))
+      .toThrow(expect.objectContaining({ statusCode: 415, code: 'UNSUPPORTED_FILE_TYPE' }));
+  });
+
+  describe('OOXML package inspection', () => {
+    test.each([
+      ['arbitrary.docx', createGenericZip(), 'docx'],
+      ['arbitrary.pptx', createGenericZip(), 'pptx'],
+      ['renamed.docx', PPTX_PACKAGE, 'docx'],
+      ['renamed.pptx', DOCX_PACKAGE, 'pptx'],
+    ])('rejects a ZIP that is not the declared Office format: %s', (originalName, content) => {
+      expect(() => validateFile({ originalName, size: content.length, bytes: content }))
+        .toThrow(expect.objectContaining({ statusCode: 415, code: 'UNSUPPORTED_FILE_TYPE' }));
+    });
+
+    test('rejects a truncated DOCX package', () => {
+      const truncated = DOCX_PACKAGE.subarray(0, DOCX_PACKAGE.length - 12);
+      expect(() => validateFile({ originalName: 'broken.docx', size: truncated.length, bytes: truncated }))
+        .toThrow(expect.objectContaining({ statusCode: 415 }));
+    });
+
+    test('rejects a DOCX package with no content-types declaration', () => {
+      const content = createZip([{ name: 'word/document.xml', content: '<w:document/>' }]);
+      expect(() => validateFile({ originalName: 'broken.docx', size: content.length, bytes: content }))
+        .toThrow(expect.objectContaining({ statusCode: 415 }));
+    });
+
+    test('rejects a DOCX package with the wrong main-part content type', () => {
+      const contentTypes = '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/></Types>';
+      const content = createZip([
+        { name: '[Content_Types].xml', content: contentTypes },
+        { name: 'word/document.xml', content: '<w:document/>' },
+      ]);
+      expect(() => validateFile({ originalName: 'broken.docx', size: content.length, bytes: content }))
+        .toThrow(expect.objectContaining({ statusCode: 415 }));
+    });
+
+    test('rejects a four-byte ZIP signature with no archive structure', () => {
+      const content = bytes(...ZIP_HEADER);
+      expect(() => validateFile({ originalName: 'fake.docx', size: content.length, bytes: content }))
+        .toThrow(expect.objectContaining({ statusCode: 415 }));
+    });
+  });
+
   test(`accepts a file of exactly ${MAX_FILE_SIZE_BYTES} bytes`, () => {
     const buffer = Buffer.alloc(MAX_FILE_SIZE_BYTES, 0x33, 'latin1');
     bytes(...PDF_HEADER).copy(buffer, 0);
     expect(() => validateFile({ originalName: 'big.pdf', size: MAX_FILE_SIZE_BYTES, bytes: buffer })).not.toThrow();
   });
 
-  test(`accepts a file of exactly ${MAX_FILE_SIZE_BYTES + 1} bytes`, () => {
+  test(`rejects a file of exactly ${MAX_FILE_SIZE_BYTES + 1} bytes`, () => {
     const buffer = Buffer.alloc(MAX_FILE_SIZE_BYTES + 1, 0x33, 'latin1');
     Buffer.from(PDF_HEADER).copy(buffer, 0);
     expect(() => validateFile({ originalName: 'big.pdf', size: MAX_FILE_SIZE_BYTES + 1, bytes: buffer }))
