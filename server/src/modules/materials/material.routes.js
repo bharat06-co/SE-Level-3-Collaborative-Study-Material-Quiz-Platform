@@ -1,3 +1,4 @@
+const path = require('node:path');
 const express = require('express');
 const multer = require('multer');
 const { AppError } = require('../../utils/AppError');
@@ -20,6 +21,31 @@ function parserErrorToAppError(error) {
     return new AppError(400, 'VALIDATION_ERROR', 'Invalid multipart request.', [{ field: 'file', message: messages[error.code] || 'The multipart request is invalid.' }]);
   }
   return new AppError(400, 'VALIDATION_ERROR', 'Malformed multipart request.', [{ field: 'request', message: 'The multipart request could not be parsed.' }]);
+}
+
+function materialView(document, auth) {
+  const view = {
+    id: document._id.toString(),
+    title: document.title,
+    description: document.description,
+    category: document.category,
+    topic: document.topic,
+    tags: document.tags || [],
+    fileUrl: document.fileUrl,
+    mimeType: document.mimeType,
+    sizeBytes: document.sizeBytes,
+    ownerId: document.ownerId.toString(),
+    visibility: document.visibility,
+    createdAt: document.createdAt,
+    updatedAt: document.updatedAt,
+  };
+
+  if (String(document.ownerId) === String(auth.userId) || auth.role === 'admin') {
+    view.sharedWith = (document.sharedWith || []).map(String);
+    view.hidden = document.hidden;
+  }
+
+  return view;
 }
 
 function createMaterialsRouter({ service, authMiddleware } = {}) {
@@ -46,6 +72,26 @@ function createMaterialsRouter({ service, authMiddleware } = {}) {
       fileUrl: document.fileUrl,
     };
     return res.status(201).json(view);
+  }));
+
+  router.get('/materials/:id/file', asyncHandler(async (req, res) => {
+    const { document, bytes } = await service.getMaterialFile(req.auth, req.params.id);
+    const extension = path.extname(document.storageKey).slice(1).toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+    const filename = `material-${document._id.toString()}.${extension}`;
+
+    res.set({
+      'Content-Type': document.mimeType,
+      'Content-Length': String(bytes.length),
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Cache-Control': 'private, no-store',
+    });
+
+    return res.send(bytes);
+  }));
+
+  router.get('/materials/:id', asyncHandler(async (req, res) => {
+    const document = await service.getMaterial(req.auth, req.params.id);
+    return res.json(materialView(document, req.auth));
   }));
 
   return router;

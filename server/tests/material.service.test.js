@@ -11,7 +11,26 @@ const validMetadata = {
   rightsConfirmed: 'true',
 };
 const userId = '64ff31e5fe2f1f25a49f4b72';
+const sharedUserId = '64ff31e5fe2f1f25a49f4b73';
+const outsiderUserId = '64ff31e5fe2f1f25a49f4b74';
+const adminUserId = '64ff31e5fe2f1f25a49f4b75';
+const materialId = '64ff31e5fe2f1f25a49f4b76';
 const contributorAuth = { userId, role: 'student', contributor: true };
+const sharedAuth = { userId: sharedUserId, role: 'student', contributor: false };
+const outsiderAuth = { userId: outsiderUserId, role: 'student', contributor: false };
+const adminAuth = { userId: adminUserId, role: 'admin', contributor: true };
+
+function materialDocument(overrides = {}) {
+  return {
+    _id: materialId,
+    ownerId: userId,
+    visibility: 'private',
+    sharedWith: [],
+    hidden: false,
+    storageKey: `${materialId}.pdf`,
+    ...overrides,
+  };
+}
 
 async function expectRejectedUpload(service, auth, metadata, file, { detailsField, ...expected }) {
   await expect(service.uploadMaterial(auth, metadata, file)).rejects.toMatchObject({ ...expected });
@@ -31,7 +50,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
   let service;
 
   beforeEach(() => {
-    repository = { create: jest.fn(async (doc) => ({ ...doc })) };
+    repository = { create: jest.fn(async (doc) => ({ ...doc })), findById: jest.fn() };
     storage = { put: jest.fn(async () => ({ key: '' })), get: jest.fn(), remove: jest.fn(async () => ({})) };
     service = createMaterialService({ repository, storage });
   });
@@ -117,5 +136,72 @@ describe('Material service (unit, mocked repository/storage)', () => {
   test('missing file is rejected before storage', async () => {
     await expectRejectedUpload(service, contributorAuth, validMetadata, undefined, { statusCode: 400, code: 'VALIDATION_ERROR' });
     expect(storage.put).not.toHaveBeenCalled();
+  });
+
+  test('owner can retrieve a private material (TC-MAT-17)', async () => {
+    const document = materialDocument();
+    repository.findById.mockResolvedValue(document);
+
+    await expect(service.getMaterial(contributorAuth, materialId)).resolves.toBe(document);
+    expect(repository.findById).toHaveBeenCalledWith(materialId);
+  });
+
+  test('other users receive 404 for a private material (TC-MAT-17)', async () => {
+    repository.findById.mockResolvedValue(materialDocument());
+
+    await expect(service.getMaterial(outsiderAuth, materialId)).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+  });
+
+  test('shared material is visible only to owner and listed users (TC-MAT-05)', async () => {
+    repository.findById.mockResolvedValue(materialDocument({ visibility: 'shared', sharedWith: [sharedUserId] }));
+
+    await expect(service.getMaterial(sharedAuth, materialId)).resolves.toBeDefined();
+    await expect(service.getMaterial(outsiderAuth, materialId)).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+  });
+
+  test('public material is visible to any authenticated user (TC-MAT-05)', async () => {
+    repository.findById.mockResolvedValue(materialDocument({ visibility: 'public' }));
+
+    await expect(service.getMaterial(outsiderAuth, materialId)).resolves.toBeDefined();
+  });
+
+  test('hidden material is visible to owner and admin only', async () => {
+    repository.findById.mockResolvedValue(materialDocument({ visibility: 'public', hidden: true }));
+
+    await expect(service.getMaterial(contributorAuth, materialId)).resolves.toBeDefined();
+    await expect(service.getMaterial(adminAuth, materialId)).resolves.toBeDefined();
+    await expect(service.getMaterial(outsiderAuth, materialId)).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+  });
+
+  test('detail requires authentication, a valid ID and an existing material', async () => {
+    await expect(service.getMaterial(undefined, materialId)).rejects.toMatchObject({ statusCode: 401, code: 'UNAUTHENTICATED' });
+    await expect(service.getMaterial(contributorAuth, 'not-an-object-id')).rejects.toMatchObject({ statusCode: 400, code: 'VALIDATION_ERROR' });
+    repository.findById.mockResolvedValue(null);
+    await expect(service.getMaterial(contributorAuth, materialId)).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+  });
+
+  test('file retrieval returns stored bytes only after access is granted', async () => {
+    const bytes = Buffer.from('stored material');
+    repository.findById.mockResolvedValue(materialDocument());
+    storage.get.mockResolvedValue(bytes);
+
+    await expect(service.getMaterialFile(contributorAuth, materialId)).resolves.toEqual({
+      document: expect.objectContaining({ _id: materialId }),
+      bytes,
+    });
+    expect(storage.get).toHaveBeenCalledWith(`${materialId}.pdf`);
+
+    storage.get.mockClear();
+    await expect(service.getMaterialFile(outsiderAuth, materialId)).rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+    expect(storage.get).not.toHaveBeenCalled();
+  });
+
+  test('file retrieval hides storage failures and invalid buffers', async () => {
+    repository.findById.mockResolvedValue(materialDocument());
+    storage.get.mockRejectedValueOnce(new Error('ENOENT: /secret/path'));
+    await expect(service.getMaterialFile(contributorAuth, materialId)).rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
+
+    storage.get.mockResolvedValueOnce('not a buffer');
+    await expect(service.getMaterialFile(contributorAuth, materialId)).rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
   });
 });

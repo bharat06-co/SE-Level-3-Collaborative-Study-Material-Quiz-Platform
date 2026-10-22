@@ -24,6 +24,28 @@ function authorised(auth) {
   return auth.role === 'student' && auth.contributor === true;
 }
 
+function canView(auth, document) {
+  const userId = String(auth.userId);
+  if (String(document.ownerId) === userId) return true;
+  if (auth.role === 'admin') return true;
+  if (document.hidden) return false;
+  if (document.visibility === 'public') return true;
+  if (document.visibility !== 'shared') return false;
+  return (document.sharedWith || []).some((sharedId) => String(sharedId) === userId);
+}
+
+function requireAuth(auth) {
+  if (!auth || !auth.userId) {
+    throw new AppError(401, 'UNAUTHENTICATED', 'Authentication required.', [{ field: 'auth', message: 'Sign in first.' }]);
+  }
+}
+
+function requireMaterialId(id) {
+  if (typeof id !== 'string' || !/^[a-f\d]{24}$/i.test(id)) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'id', message: 'Material ID is invalid.' }]);
+  }
+}
+
 function createMaterialService({ repository, storage } = {}) {
   if (!repository || !storage) throw new Error('Material service requires a repository and storage adapter.');
 
@@ -71,7 +93,36 @@ function createMaterialService({ repository, storage } = {}) {
     }
   }
 
-  return { uploadMaterial };
+  async function getMaterial(auth, id) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const document = await repository.findById(id);
+    if (!document || !canView(auth, document)) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+
+    return document;
+  }
+
+  async function getMaterialFile(auth, id) {
+    const document = await getMaterial(auth, id);
+
+    let bytes;
+    try {
+      bytes = await storage.get(document.storageKey);
+    } catch {
+      throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material.');
+    }
+
+    if (!Buffer.isBuffer(bytes)) {
+      throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material.');
+    }
+
+    return { document, bytes };
+  }
+
+  return { uploadMaterial, getMaterial, getMaterialFile };
 }
 
 module.exports = { createMaterialService, MAX_FILE_SIZE_BYTES };

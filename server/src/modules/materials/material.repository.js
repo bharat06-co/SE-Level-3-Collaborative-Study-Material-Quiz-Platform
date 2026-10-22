@@ -4,7 +4,12 @@ function createMaterialRepository({ model = Material } = {}) {
   async function create(document) {
     return model.create(document);
   }
-  return { create };
+
+  async function findById(id) {
+    return model.findById(id);
+  }
+
+  return { create, findById };
 }
 
 module.exports = { createMaterialRepository };

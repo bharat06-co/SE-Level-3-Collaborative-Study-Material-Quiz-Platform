@@ -28,6 +28,9 @@ function testAuthMiddleware(req, res, next) {
 const contributorAuth = { userId: contributorId, role: 'student', contributor: true };
 const plainAuth = { userId: contributorId, role: 'student', contributor: false };
 const educatorAuth = { userId: new mongoose.Types.ObjectId().toString(), role: 'educator', contributor: false };
+const sharedStudentAuth = { userId: new mongoose.Types.ObjectId().toString(), role: 'student', contributor: false };
+const otherStudentAuth = { userId: new mongoose.Types.ObjectId().toString(), role: 'student', contributor: false };
+const adminAuth = { userId: new mongoose.Types.ObjectId().toString(), role: 'admin', contributor: true };
 
 function appWithCurrentAuth() {
   return createApp({ storageDir, authMiddleware: testAuthMiddleware });
@@ -45,6 +48,26 @@ function multipartRequest(app, attachments, fields = {}) {
 
 function uploadRequest(app, file, fields = {}) {
   return multipartRequest(app, [{ field: 'file', file }], fields);
+}
+
+async function uploadAs(auth, fields = validFields) {
+  currentAuth = auth;
+  const response = await uploadRequest(appWithCurrentAuth(), validFile, fields);
+  expect(response.status).toBe(201);
+  return response.body.id;
+}
+
+function binaryParser(res, callback) {
+  const chunks = [];
+  res.on('data', (chunk) => chunks.push(chunk));
+  res.on('end', () => callback(null, Buffer.concat(chunks)));
+}
+
+function download(app, id) {
+  return request(app)
+    .get(`/api/v1/materials/${id}/file`)
+    .buffer(true)
+    .parse(binaryParser);
 }
 
 async function storedFileCount() {
@@ -224,6 +247,135 @@ describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
     const response = await uploadRequest(appWithCurrentAuth(), validFile, validFields);
     expect(Object.keys(response.body.error).sort()).toEqual(['code', 'details', 'message', 'requestId']);
     expect(response.body.error.requestId).toBe(response.headers['x-request-id']);
+  });
+});
+
+describe('GET /api/v1/materials/:id and /file (FR-012, FR-013 integration)', () => {
+  test('TC-MAT-17: private material is visible only to its owner for detail and download', async () => {
+    const id = await uploadAs(contributorAuth);
+    const app = appWithCurrentAuth();
+
+    currentAuth = contributorAuth;
+    const detail = await request(app).get(`/api/v1/materials/${id}`);
+    expect(detail.status).toBe(200);
+    expect(detail.body).toMatchObject({
+      id,
+      title: 'ER Diagrams',
+      description: 'Entity relationship notes',
+      category: 'Notes',
+      topic: 'dbms',
+      ownerId: contributorId,
+      visibility: 'private',
+      mimeType: 'application/pdf',
+      sizeBytes: validFile.bytes.length,
+      fileUrl: `/api/v1/materials/${id}/file`,
+      sharedWith: [],
+      hidden: false,
+    });
+    expect(detail.body).not.toHaveProperty('storageKey');
+
+    const file = await download(app, id);
+    expect(file.status).toBe(200);
+    expect(file.headers['content-type']).toMatch(/^application\/pdf/);
+    expect(Number(file.headers['content-length'])).toBe(validFile.bytes.length);
+    expect(file.headers['content-disposition']).toBe(`attachment; filename="material-${id}.pdf"`);
+    expect(file.headers['cache-control']).toBe('private, no-store');
+    expect(file.body.equals(validFile.bytes)).toBe(true);
+
+    currentAuth = otherStudentAuth;
+    const deniedDetail = await request(app).get(`/api/v1/materials/${id}`);
+    expect(deniedDetail.status).toBe(404);
+    expect(deniedDetail.body.error.code).toBe('NOT_FOUND');
+    const deniedFile = await download(app, id);
+    expect(deniedFile.status).toBe(404);
+  });
+
+  test('TC-MAT-05: shared material is visible only to owner and listed users', async () => {
+    const id = await uploadAs(contributorAuth);
+    await Material.updateOne(
+      { _id: id },
+      { $set: { visibility: 'shared', sharedWith: [sharedStudentAuth.userId] } },
+    );
+    const app = appWithCurrentAuth();
+
+    currentAuth = sharedStudentAuth;
+    expect((await request(app).get(`/api/v1/materials/${id}`)).status).toBe(200);
+    expect((await download(app, id)).status).toBe(200);
+
+    currentAuth = otherStudentAuth;
+    expect((await request(app).get(`/api/v1/materials/${id}`)).status).toBe(404);
+    expect((await download(app, id)).status).toBe(404);
+  });
+
+  test('TC-MAT-05: public material is visible to any authenticated user', async () => {
+    const id = await uploadAs(contributorAuth);
+    await Material.updateOne({ _id: id }, { $set: { visibility: 'public' } });
+    const app = appWithCurrentAuth();
+
+    currentAuth = otherStudentAuth;
+    const detail = await request(app).get(`/api/v1/materials/${id}`);
+    expect(detail.status).toBe(200);
+    expect(detail.body.visibility).toBe('public');
+    expect(detail.body).not.toHaveProperty('sharedWith');
+    expect(detail.body).not.toHaveProperty('hidden');
+    const file = await download(app, id);
+    expect(file.status).toBe(200);
+    expect(file.body.equals(validFile.bytes)).toBe(true);
+  });
+
+  test('hidden material is visible to the owner and admin, but not other users', async () => {
+    const id = await uploadAs(contributorAuth);
+    await Material.updateOne({ _id: id }, { $set: { visibility: 'public', hidden: true } });
+    const app = appWithCurrentAuth();
+
+    currentAuth = otherStudentAuth;
+    expect((await request(app).get(`/api/v1/materials/${id}`)).status).toBe(404);
+    expect((await download(app, id)).status).toBe(404);
+
+    currentAuth = contributorAuth;
+    expect((await request(app).get(`/api/v1/materials/${id}`)).status).toBe(200);
+    expect((await download(app, id)).status).toBe(200);
+
+    currentAuth = adminAuth;
+    const adminDetail = await request(app).get(`/api/v1/materials/${id}`);
+    expect(adminDetail.status).toBe(200);
+    expect(adminDetail.body.hidden).toBe(true);
+    expect((await download(app, id)).status).toBe(200);
+  });
+
+  test('detail and download require auth and reject malformed or unknown IDs', async () => {
+    const id = await uploadAs(contributorAuth);
+    const app = appWithCurrentAuth();
+
+    currentAuth = undefined;
+    const unauthenticated = await request(app).get(`/api/v1/materials/${id}`);
+    expect(unauthenticated.status).toBe(401);
+    expect(unauthenticated.body.error.code).toBe('UNAUTHENTICATED');
+    expect((await download(app, id)).status).toBe(401);
+
+    currentAuth = contributorAuth;
+    const malformed = await request(app).get('/api/v1/materials/not-an-object-id');
+    expect(malformed.status).toBe(400);
+    expect(malformed.body.error.code).toBe('VALIDATION_ERROR');
+    expect(malformed.body.error.details).toContainEqual(expect.objectContaining({ field: 'id' }));
+    expect((await download(app, 'not-an-object-id')).status).toBe(400);
+
+    const unknownId = new mongoose.Types.ObjectId().toString();
+    expect((await request(app).get(`/api/v1/materials/${unknownId}`)).status).toBe(404);
+    expect((await download(app, unknownId)).status).toBe(404);
+  });
+
+  test('a missing stored file returns a generic 500 without leaking the storage path', async () => {
+    const id = await uploadAs(contributorAuth);
+    const document = await Material.findById(id).lean();
+    await fsp.rm(path.join(storageDir, document.storageKey));
+    const app = appWithCurrentAuth();
+
+    currentAuth = contributorAuth;
+    const response = await download(app, id);
+    expect(response.status).toBe(500);
+    expect(response.body.toString()).not.toContain(storageDir);
+    expect(response.body.toString()).toContain('INTERNAL_ERROR');
   });
 });
 
