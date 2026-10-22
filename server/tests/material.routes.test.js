@@ -378,12 +378,3 @@ describe('GET /api/v1/materials/:id and /file (FR-012, FR-013 integration)', () 
     expect(response.body.toString()).toContain('INTERNAL_ERROR');
   });
 });
-
-describe('Production mount (FR-010 wiring until the auth PR merges)', () => {
-  test('the mounted router rejects everything with 401 UNAUTHENTICATED, never a fake success', async () => {
-    const defaultApp = createApp({ storageDir });
-    const response = await uploadRequest(defaultApp, validFile, validFields);
-    expect(response.status).toBe(401);
-    expect(response.body.error.code).toBe('UNAUTHENTICATED');
-  });
-});

@@ -9,7 +9,7 @@ const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
 const authRouter = require('./modules/auth/auth.routes');
-const { authUnavailable } = require('./middleware/authStub');
+const { createAuthenticate } = require('./middleware/authenticate');
 const { createMaterialsRouter } = require('./modules/materials/material.routes');
 const { createMaterialRepository } = require('./modules/materials/material.repository');
 const { createMaterialService } = require('./modules/materials/material.service');
@@ -22,7 +22,7 @@ function createApp({
   logger = createLogger('silent'),
   registerRoutes = () => {},
   storageDir = 'data/uploads',
-  authMiddleware = authUnavailable,
+  authMiddleware = createAuthenticate(),
 } = {}) {
   const materialRepository = createMaterialRepository();
   const materialService = createMaterialService({

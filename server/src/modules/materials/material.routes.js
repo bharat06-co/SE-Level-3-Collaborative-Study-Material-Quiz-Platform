@@ -50,13 +50,13 @@ function materialView(document, auth) {
 
 function createMaterialsRouter({ service, authMiddleware } = {}) {
   if (!service) throw new Error('Materials router requires a configured service.');
-  if (!authMiddleware) throw new Error('Materials router requires an auth middleware; the shared auth PR must supply a real one.');
+  if (!authMiddleware) throw new Error('Materials router requires an auth middleware.');
 
   const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 } });
   const router = express.Router();
 
-  // The guard applies to materials routes only; other /api/v1 resources and the
-  // 404/error handlers stay untouched until the shared auth PR lands.
+  // The guard applies to materials routes only; public resources and the
+  // 404/error handlers remain outside this router.
   router.use('/materials', authMiddleware);
   router.post('/materials', (req, res, next) => {
     upload.single('file')(req, res, (error) => {
