@@ -19,6 +19,7 @@ const FIELDS = {
   description: 'Entity relationship notes',
   category: 'Notes',
   topic: 'dbms',
+  tags: 'er, dbms, ER',
   rightsConfirmed: 'true',
 };
 const FILE = {
@@ -48,6 +49,7 @@ function uploadRequest(token, overrides = {}) {
     .field('description', FIELDS.description)
     .field('category', FIELDS.category)
     .field('topic', FIELDS.topic)
+    .field('tags', FIELDS.tags)
     .field('rightsConfirmed', FIELDS.rightsConfirmed)
     .attach('file', FILE.bytes, {
       filename: FILE.name,
@@ -182,6 +184,7 @@ describe('Materials with the shared authentication middleware', () => {
       id,
       ownerId: owner._id.toString(),
       visibility: 'private',
+      tags: ['er', 'dbms'],
     });
     expect(detail.body).not.toHaveProperty('storageKey');
 
@@ -323,6 +326,7 @@ describe('Materials with the shared authentication middleware', () => {
       .field('description', FIELDS.description)
       .field('category', FIELDS.category)
       .field('topic', FIELDS.topic)
+      .field('tags', FIELDS.tags)
       .field('rightsConfirmed', FIELDS.rightsConfirmed)
       .attach('file', FILE.bytes, {
         filename: FILE.name,
