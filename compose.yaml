@@ -1,15 +1,33 @@
+
 services:
   mongo:
     image: mongo:7
     restart: unless-stopped
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - mongo-data:/data/db
     networks: [database]
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand('ping').ok ? 0 : 1)"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval '
+          const hello = db.hello();
+          if (hello.isWritablePrimary) quit(0);
+          if (!hello.setName) {
+            try {
+              rs.initiate({
+                _id: "rs0",
+                members: [{ _id: 0, host: "mongo:27017" }]
+              });
+            } catch (e) {}
+          }
+          quit(1);'
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+
   api:
     build:
       context: .
@@ -18,7 +36,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      MONGODB_URI: mongodb://mongo:27017/team1_study_dev
+      MONGODB_URI: mongodb://mongo:27017/team1_study_dev?replicaSet=rs0
       CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
       TRUST_PROXY_HOPS: 1
       LOG_LEVEL: info
@@ -28,6 +46,7 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+
   web:
     build:
       context: .
@@ -39,9 +58,11 @@ services:
     depends_on:
       api:
         condition: service_healthy
+
 volumes:
   mongo-data:
   uploads:
+
 networks:
   application:
   database:
