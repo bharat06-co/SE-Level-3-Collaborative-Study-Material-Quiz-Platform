@@ -7,6 +7,9 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const { createApp } = require('../src/app');
 const { Material } = require('../src/models/Material');
 const { createStorage } = require('../src/adapters/storage');
+const { createGenericZip, createOoxmlPackage } = require('./helpers/zipFixture');
+
+jest.setTimeout(120000);
 
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
 
@@ -30,10 +33,27 @@ function appWithCurrentAuth() {
   return createApp({ storageDir, authMiddleware: testAuthMiddleware });
 }
 
-function uploadRequest(app, file, fields = {}) {
+function multipartRequest(app, attachments, fields = {}) {
   let builder = request(app).post('/api/v1/materials').field('title', fields.title).field('description', fields.description).field('category', fields.category).field('topic', fields.topic);
+  if (fields.tags !== undefined) builder = builder.field('tags', fields.tags);
   if (fields.rightsConfirmed !== undefined) builder = builder.field('rightsConfirmed', fields.rightsConfirmed);
-  return builder.attach('file', file.bytes, { filename: file.name, contentType: file.contentType });
+  for (const attachment of attachments) {
+    builder = builder.attach(attachment.field, attachment.file.bytes, { filename: attachment.file.name, contentType: attachment.file.contentType });
+  }
+  return builder;
+}
+
+function uploadRequest(app, file, fields = {}) {
+  return multipartRequest(app, [{ field: 'file', file }], fields);
+}
+
+async function storedFileCount() {
+  try {
+    return (await fsp.readdir(storageDir)).length;
+  } catch (error) {
+    if (error.code === 'ENOENT') return 0;
+    throw error;
+  }
 }
 
 const validFile = { name: 'notes.pdf', contentType: 'application/pdf', bytes: Buffer.concat([Buffer.from('%PDF-1.7'), Buffer.alloc(2 * 1024 * 1024, 0x33, 'latin1')]) };
@@ -47,14 +67,15 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongod.stop();
-  await fsp.rm(storageDir, { recursive: true, force: true });
+  if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
+  if (mongod) await mongod.stop();
+  if (storageDir) await fsp.rm(storageDir, { recursive: true, force: true });
 });
 
 beforeEach(async () => {
   currentAuth = contributorAuth;
   await Material.deleteMany({});
+  await fsp.rm(storageDir, { recursive: true, force: true });
 });
 
 describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
@@ -140,6 +161,62 @@ describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
     expect(response.status).toBe(415);
     expect(response.body.error.code).toBe('UNSUPPORTED_FILE_TYPE');
     expect(await Material.countDocuments()).toBe(0);
+  });
+
+  test.each(['docx', 'pptx'])('TC-SEC-06: a valid %s OOXML package is accepted', async (kind) => {
+    const bytes = createOoxmlPackage(kind);
+    const response = await uploadRequest(appWithCurrentAuth(), { name: `notes.${kind}`, contentType: 'application/octet-stream', bytes }, validFields);
+    expect(response.status).toBe(201);
+    const document = await Material.findById(response.body.id).lean();
+    expect(document.mimeType).toContain(kind === 'docx' ? 'wordprocessingml.document' : 'presentationml.presentation');
+    expect((await storage.get(document.storageKey)).equals(bytes)).toBe(true);
+  });
+
+  test.each(['docx', 'pptx'])('TC-SEC-06: an arbitrary ZIP renamed .%s returns 415 and stores nothing', async (extension) => {
+    const response = await uploadRequest(appWithCurrentAuth(), { name: `payload.${extension}`, contentType: 'application/octet-stream', bytes: createGenericZip() }, validFields);
+    expect(response.status).toBe(415);
+    expect(response.body.error.code).toBe('UNSUPPORTED_FILE_TYPE');
+    expect(await Material.countDocuments()).toBe(0);
+    expect(await storedFileCount()).toBe(0);
+  });
+
+  test.each([
+    ['docx', 'pptx'],
+    ['pptx', 'docx'],
+  ])('TC-SEC-06: a %s package renamed .%s returns 415', async (actualKind, extension) => {
+    const response = await uploadRequest(appWithCurrentAuth(), { name: `renamed.${extension}`, contentType: 'application/octet-stream', bytes: createOoxmlPackage(actualKind) }, validFields);
+    expect(response.status).toBe(415);
+    expect(response.body.error.code).toBe('UNSUPPORTED_FILE_TYPE');
+    expect(await Material.countDocuments()).toBe(0);
+    expect(await storedFileCount()).toBe(0);
+  });
+
+  test('TC-SEC-06: a truncated DOCX package returns 415', async () => {
+    const bytes = createOoxmlPackage('docx');
+    const truncated = bytes.subarray(0, bytes.length - 12);
+    const response = await uploadRequest(appWithCurrentAuth(), { name: 'broken.docx', contentType: 'application/octet-stream', bytes: truncated }, validFields);
+    expect(response.status).toBe(415);
+    expect(response.body.error.code).toBe('UNSUPPORTED_FILE_TYPE');
+    expect(await Material.countDocuments()).toBe(0);
+  });
+
+  test('TC-SEC-06: a four-byte PNG prefix returns 415', async () => {
+    const response = await uploadRequest(appWithCurrentAuth(), { name: 'image.png', contentType: 'image/png', bytes: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]) }, validFields);
+    expect(response.status).toBe(415);
+    expect(response.body.error.code).toBe('UNSUPPORTED_FILE_TYPE');
+    expect(await Material.countDocuments()).toBe(0);
+  });
+
+  test.each([
+    [[{ field: 'document', file: validFile }]],
+    [[{ field: 'file', file: validFile }, { field: 'file', file: validFile }]],
+  ])('malformed multipart returns 400 VALIDATION_ERROR and stores nothing', async (attachments) => {
+    const response = await multipartRequest(appWithCurrentAuth(), attachments, validFields);
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expect(response.body.error.requestId).toBe(response.headers['x-request-id']);
+    expect(await Material.countDocuments()).toBe(0);
+    expect(await storedFileCount()).toBe(0);
   });
 
   test('responses use the central error envelope with a server-owned request id', async () => {

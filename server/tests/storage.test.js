@@ -24,9 +24,11 @@ describe('Storage adapter (C-STO)', () => {
     expect(() => keyToPath(storageDir, '../escape.pdf')).toThrow('Invalid storage key.');
     expect(() => keyToPath(storageDir, 'sub/dir/file.pdf')).toThrow('Invalid storage key.');
     expect(() => keyToPath(storageDir, '')).toThrow('Invalid storage key.');
+    expect(() => keyToPath(storageDir, '.')).toThrow('Invalid storage key.');
+    expect(() => keyToPath(storageDir, '..')).toThrow('Invalid storage key.');
     expect(() => keyToPath(storageDir, 42)).toThrow('Invalid storage key.');
-    const safe = keyToPath(storageDir, 'abc123.pdf');
-    expect(safe.startsWith(path.resolve(storageDir))).toBe(true);
+    const safe = keyToPath(storageDir, '507f1f77bcf86cd799439011.pdf');
+    expect(safe).toBe(path.resolve(storageDir, '507f1f77bcf86cd799439011.pdf'));
   });
 
   test('remove on missing key is idempotent', async () => {
