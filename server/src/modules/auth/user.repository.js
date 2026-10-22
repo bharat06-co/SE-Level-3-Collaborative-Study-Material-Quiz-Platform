@@ -16,6 +16,10 @@ async function findById(id, options = {}) {
     query = query.session(options.session);
   }
 
+  if (options.select) {
+    query = query.select(options.select);
+  }
+
   return query;
 }
 
