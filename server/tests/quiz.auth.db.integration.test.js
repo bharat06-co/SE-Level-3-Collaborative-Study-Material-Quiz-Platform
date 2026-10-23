@@ -131,11 +131,18 @@ describe('authenticated quiz flow with MongoDB', () => {
     const id = created.body.id;
 
     expect((await request(app).get(`${path}/${id}`).set('Authorization', other)).status).toBe(404);
-    expect((await request(app).put(`${path}/${id}`).set('Authorization', other)
-      .send({ title: 'Taken over' })).status).toBe(403);
-    expect((await request(app).post(`${path}/${id}/publish`).set('Authorization', other)).status).toBe(403);
-    expect((await request(app).post(`${path}/${id}/unpublish`).set('Authorization', other)).status).toBe(403);
-    expect((await request(app).delete(`${path}/${id}`).set('Authorization', other)).status).toBe(403);
+    const original = await Quiz.findById(id).lean();
+    for (const deniedRequest of [
+      () => request(app).put(`${path}/${id}`).set('Authorization', other).send({ title: 'Taken over' }),
+      () => request(app).post(`${path}/${id}/publish`).set('Authorization', other),
+      () => request(app).post(`${path}/${id}/unpublish`).set('Authorization', other),
+      () => request(app).delete(`${path}/${id}`).set('Authorization', other),
+    ]) {
+      const denied = await deniedRequest();
+      expect(denied.status).toBe(403);
+      expect(denied.body.error.code).toBe('FORBIDDEN');
+      expect(await Quiz.findById(id).lean()).toEqual(original);
+    }
     expect((await request(app).post(path).set('Authorization', admin).send(quiz)).status).toBe(403);
 
     const moderated = await request(app).put(`${path}/${id}`).set('Authorization', admin)
@@ -147,7 +154,27 @@ describe('authenticated quiz flow with MongoDB', () => {
     const published = await request(app).get(`${path}/${id}`).set('Authorization', other);
     expect(published.status).toBe(200);
     expect(JSON.stringify(published.body)).not.toMatch(/answerKey|correctAnswer/);
+    const publishedRecord = await Quiz.findById(id).lean();
+    for (const deniedRequest of [
+      () => request(app).put(`${path}/${id}`).set('Authorization', other)
+        .send({ title: 'Published takeover' }),
+      () => request(app).delete(`${path}/${id}`).set('Authorization', other),
+    ]) {
+      const denied = await deniedRequest();
+      expect(denied.status).toBe(403);
+      expect(denied.body.error.code).toBe('FORBIDDEN');
+      expect(await Quiz.findById(id).lean()).toEqual(publishedRecord);
+    }
     expect((await request(app).post(`${path}/${id}/unpublish`).set('Authorization', admin)).status).toBe(200);
     expect((await request(app).get(`${path}/${id}`).set('Authorization', other)).status).toBe(404);
+    expect((await request(app).delete(`${path}/${id}`).set('Authorization', admin)).status).toBe(204);
+    expect(await Quiz.findById(id)).toBeNull();
+
+    const ownerDraft = await request(app).post(path).set('Authorization', owner)
+      .send({ ...quiz, title: 'Owner deletes this quiz' });
+    expect(ownerDraft.status).toBe(201);
+    expect((await request(app).delete(`${path}/${ownerDraft.body.id}`)
+      .set('Authorization', owner)).status).toBe(204);
+    expect(await Quiz.findById(ownerDraft.body.id)).toBeNull();
   });
 });
