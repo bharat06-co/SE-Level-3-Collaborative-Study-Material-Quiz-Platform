@@ -317,11 +317,23 @@ describe('Materials with the shared authentication middleware', () => {
 
     const noToken = await request(app).get(`/api/v1/materials/${id}`);
     expect(noToken.status).toBe(401);
+    expect(noToken.body.error.code).toBe('UNAUTHENTICATED');
 
     const badToken = await request(app)
       .get(`/api/v1/materials/${id}`)
       .set('Authorization', 'Bearer not-a-real-token');
     expect(badToken.status).toBe(401);
+    expect(badToken.body.error.code).toBe('TOKEN_INVALID');
+
+    const noTokenDownload = await request(app).get(`/api/v1/materials/${id}/file`);
+    expect(noTokenDownload.status).toBe(401);
+    expect(noTokenDownload.body.error.code).toBe('UNAUTHENTICATED');
+
+    const badTokenDownload = await request(app)
+      .get(`/api/v1/materials/${id}/file`)
+      .set('Authorization', 'Bearer not-a-real-token');
+    expect(badTokenDownload.status).toBe(401);
+    expect(badTokenDownload.body.error.code).toBe('TOKEN_INVALID');
 
     const noTokenUpload = await request(app)
       .post('/api/v1/materials')
@@ -336,6 +348,23 @@ describe('Materials with the shared authentication middleware', () => {
         contentType: FILE.contentType,
       });
     expect(noTokenUpload.status).toBe(401);
+    expect(noTokenUpload.body.error.code).toBe('UNAUTHENTICATED');
+
+    const badTokenUpload = await request(app)
+      .post('/api/v1/materials')
+      .set('Authorization', 'Bearer not-a-real-token')
+      .field('title', FIELDS.title)
+      .field('description', FIELDS.description)
+      .field('category', FIELDS.category)
+      .field('topic', FIELDS.topic)
+      .field('tags', FIELDS.tags)
+      .field('rightsConfirmed', FIELDS.rightsConfirmed)
+      .attach('file', FILE.bytes, {
+        filename: FILE.name,
+        contentType: FILE.contentType,
+      });
+    expect(badTokenUpload.status).toBe(401);
+    expect(badTokenUpload.body.error.code).toBe('TOKEN_INVALID');
     expect(await Material.countDocuments()).toBe(1);
   });
 
@@ -367,17 +396,41 @@ describe('Materials with the shared authentication middleware', () => {
       contributor: true,
     });
     const id = new mongoose.Types.ObjectId().toString();
-    let builder = request(app).get(`/api/v1/materials/${id}`);
     const authorization = authorizationFor(user._id.toString());
 
+    let getBuilder = request(app).get(`/api/v1/materials/${id}`);
+    let fileBuilder = request(app).get(`/api/v1/materials/${id}/file`);
+    let postBuilder = request(app)
+      .post('/api/v1/materials')
+      .field('title', FIELDS.title)
+      .field('description', FIELDS.description)
+      .field('category', FIELDS.category)
+      .field('topic', FIELDS.topic)
+      .field('tags', FIELDS.tags)
+      .field('rightsConfirmed', FIELDS.rightsConfirmed)
+      .attach('file', FILE.bytes, {
+        filename: FILE.name,
+        contentType: FILE.contentType,
+      });
+
     if (authorization !== undefined) {
-      builder = builder.set('Authorization', authorization);
+      getBuilder = getBuilder.set('Authorization', authorization);
+      fileBuilder = fileBuilder.set('Authorization', authorization);
+      postBuilder = postBuilder.set('Authorization', authorization);
     }
 
-    const response = await builder;
+    const [getResponse, fileResponse, postResponse] = await Promise.all([
+      getBuilder,
+      fileBuilder,
+      postBuilder,
+    ]);
 
-    expect(response.status).toBe(401);
-    expect(response.body.error.code).toBe(expectedCode);
+    expect(getResponse.status).toBe(401);
+    expect(getResponse.body.error.code).toBe(expectedCode);
+    expect(fileResponse.status).toBe(401);
+    expect(fileResponse.body.error.code).toBe(expectedCode);
+    expect(postResponse.status).toBe(401);
+    expect(postResponse.body.error.code).toBe(expectedCode);
   });
 
   test('contract: upload without an access token is rejected with 401 UNAUTHENTICATED', async () => {
@@ -385,6 +438,51 @@ describe('Materials with the shared authentication middleware', () => {
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHENTICATED');
+    expect(await Material.countDocuments()).toBe(0);
+  });
+
+  test('multipart upload containing operator or prototype fields is rejected with 400 VALIDATION_ERROR', async () => {
+    const { token } = await createAndLogin({
+      name: 'Contributor Student',
+      email: 'contributor@example.com',
+      contributor: true,
+    });
+
+    const operatorResponse = await request(app)
+      .post('/api/v1/materials')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Valid title')
+      .field('description', 'Valid description')
+      .field('category', 'Notes')
+      .field('topic', 'dbms')
+      .field('tags', 'dbms, sql')
+      .field('rightsConfirmed', 'true')
+      .field('$where', 'malicious')
+      .attach('file', FILE.bytes, {
+        filename: FILE.name,
+        contentType: FILE.contentType,
+      });
+
+    expect(operatorResponse.status).toBe(400);
+    expect(operatorResponse.body.error.code).toBe('VALIDATION_ERROR');
+
+    const protoResponse = await request(app)
+      .post('/api/v1/materials')
+      .set('Authorization', `Bearer ${token}`)
+      .field('title', 'Valid title')
+      .field('description', 'Valid description')
+      .field('category', 'Notes')
+      .field('topic', 'dbms')
+      .field('tags', 'dbms, sql')
+      .field('rightsConfirmed', 'true')
+      .field('__proto__', 'polluted')
+      .attach('file', FILE.bytes, {
+        filename: FILE.name,
+        contentType: FILE.contentType,
+      });
+
+    expect(protoResponse.status).toBe(400);
+    expect(protoResponse.body.error.code).toBe('VALIDATION_ERROR');
     expect(await Material.countDocuments()).toBe(0);
   });
 

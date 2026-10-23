@@ -37,9 +37,10 @@ function appWithCurrentAuth() {
 }
 
 function multipartRequest(app, attachments, fields = {}) {
-  let builder = request(app).post('/api/v1/materials').field('title', fields.title).field('description', fields.description).field('category', fields.category).field('topic', fields.topic);
-  if (fields.tags !== undefined) builder = builder.field('tags', fields.tags);
-  if (fields.rightsConfirmed !== undefined) builder = builder.field('rightsConfirmed', fields.rightsConfirmed);
+  let builder = request(app).post('/api/v1/materials');
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined) builder = builder.field(key, value);
+  }
   for (const attachment of attachments) {
     builder = builder.attach(attachment.field, attachment.file.bytes, { filename: attachment.file.name, contentType: attachment.file.contentType });
   }
@@ -249,6 +250,19 @@ describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
     expect(Object.keys(response.body.error).sort()).toEqual(['code', 'details', 'message', 'requestId']);
     expect(response.body.error.requestId).toBe(response.headers['x-request-id']);
   });
+
+  test('multipart upload with unsafe keys is rejected after multipart parsing', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+    const response = await multipartRequest(app, [{ field: 'file', file: validFile }], {
+      ...validFields,
+      $badKey: 'injection',
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expect(await Material.countDocuments()).toBe(0);
+    expect(await storedFileCount()).toBe(0);
+  });
 });
 
 describe('GET /api/v1/materials/:id and /file (FR-012, FR-013 integration)', () => {
@@ -352,7 +366,11 @@ describe('GET /api/v1/materials/:id and /file (FR-012, FR-013 integration)', () 
     const unauthenticated = await request(app).get(`/api/v1/materials/${id}`);
     expect(unauthenticated.status).toBe(401);
     expect(unauthenticated.body.error.code).toBe('UNAUTHENTICATED');
-    expect((await download(app, id)).status).toBe(401);
+    const unauthDownload = await download(app, id);
+    expect(unauthDownload.status).toBe(401);
+    const unauthFile = await request(app).get(`/api/v1/materials/${id}/file`);
+    expect(unauthFile.status).toBe(401);
+    expect(unauthFile.body.error.code).toBe('UNAUTHENTICATED');
 
     currentAuth = contributorAuth;
     const malformed = await request(app).get('/api/v1/materials/not-an-object-id');

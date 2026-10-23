@@ -3,6 +3,7 @@ const express = require('express');
 const multer = require('multer');
 const { AppError } = require('../../utils/AppError');
 const { asyncHandler } = require('../../utils/asyncHandler');
+const { rejectUnsafeKeys } = require('../../middleware/rejectUnsafeKeys');
 const { MAX_FILE_SIZE_BYTES } = require('./fileValidation');
 
 function parserErrorToAppError(error) {
@@ -63,7 +64,7 @@ function createMaterialsRouter({ service, authMiddleware } = {}) {
       if (error) return next(parserErrorToAppError(error));
       return next();
     });
-  }, asyncHandler(async (req, res) => {
+  }, rejectUnsafeKeys, asyncHandler(async (req, res) => {
     const document = await service.uploadMaterial(req.auth, req.body, req.file);
     const view = {
       id: document._id.toString(),
