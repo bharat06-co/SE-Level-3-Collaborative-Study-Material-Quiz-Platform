@@ -1,3 +1,4 @@
+import PlainText from '../../components/PlainText';
 function answerText(question, response) {
   if (response === null || response === undefined) return 'Not answered';
   return question.type === 'mcq' ? question.options[response] : response ? 'True' : 'False';
@@ -18,10 +19,10 @@ export default function AttemptResults({ quiz, result, responses, onAgain }) {
           const row = rows.get(question.id);
           const label = row.unanswered ? 'Unanswered' : row.isCorrect ? 'Correct' : 'Incorrect';
           return <li key={question.id} className="attempt-feedback">
-            <h3>{index + 1}. {question.text}</h3>
+            <h3>{index + 1}. <PlainText value={question.text} /></h3>
             <p className={`attempt-mark attempt-mark-${label.toLowerCase()}`}>{label}</p>
-            <p>Your answer: <strong>{answerText(question, responses[question.id])}</strong></p>
-            <p>Correct answer: <strong>{answerText(question, row.correctAnswer)}</strong></p>
+            <p>Your answer: <strong><PlainText value={answerText(question, responses[question.id])} /></strong></p>
+            <p>Correct answer: <strong><PlainText value={answerText(question, row.correctAnswer)} /></strong></p>
           </li>;
         })}
       </ol>

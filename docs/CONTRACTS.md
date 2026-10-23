@@ -133,4 +133,11 @@ The SAD separately mentions `TOKEN_EXPIRED` for client refresh handling. This di
 
 This is a proposed client-handling clarification; unrelated client code and refresh behavior are not changed by this documentation update.
 
-
+## SEC-004 shared input and plain-text boundaries
+- Use `assertSafeInput` / `rejectUnsafeKeys` from `server/src/middleware/rejectUnsafeKeys.js`. Global middleware checks parsed JSON/query data. Route parameters still need their explicit typed schemas. Run the guard AGAIN after route-local parsers (e.g. Multer), because global middleware runs before multipart fields exist.
+- Reject operator keys beginning `$`, dotted keys, and reserved prototype keys at any depth with 400 VALIDATION_ERROR. Do not strip keys and continue a mutated operation. Raw strings containing `$`, dots or HTML are not operator objects.
+- Validate types, lengths, enums and IDs with feature schemas; build database filters/updates from named validated fields. Never spread `req.body` or `req.query` into MongoDB selectors/updates; never turn user strings into executable query code. The global guard is defence in depth, not a replacement for schemas/auth/ownership checks.
+- `validatePlainText` in `server/src/utils/plainText.js` validates plain strings (default trimmed 1–1000 UTF-16 code units, rejects null bytes). Store literal text, not HTML-encoded text. Do not use this helper to modify passwords or as an HTML/URL sanitizer.
+- Render stored comments with React text children, e.g. `<PlainText value={comment.text} />` from `client/src/components/PlainText.jsx`. No `dangerouslySetInnerHTML`, DOM `innerHTML`, HTML-parsed Markdown or unvalidated clickable URLs for comments. Encoding is contextual at output, not destructive string stripping on input.
+- Aryaroop owns FR-014 comment routes/storage/UI. Adopt these helpers there and add real authenticated comment-write/read/browser tests when that issue is implemented. The isolated security fixture does not implement FR-014 and is never mounted by production startup.
+- Read `docs/SEC004_IMPLEMENTATION.md` for verified coverage, limits and remaining integrated acceptance.
