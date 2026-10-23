@@ -483,14 +483,14 @@ delete otherOverrides.passwordHash;
         .set('Cookie', `rt=${refreshToken}`);
 
       expect(refreshResponse.status).toBe(401);
-      expect(refreshResponse.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+      expect(refreshResponse.body.error.code).toBe('TOKEN_INVALID');
     });
 
     test('rejects logout without a refresh token', async () => {
       const response = await request(app).post('/api/v1/auth/logout');
 
       expect(response.status).toBe(401);
-      expect(response.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+      expect(response.body.error.code).toBe('TOKEN_INVALID');
     });
 
     test('rejects logout with an unknown refresh token', async () => {
@@ -499,7 +499,7 @@ delete otherOverrides.passwordHash;
         .set('Cookie', 'rt=not-a-real-token');
 
       expect(response.status).toBe(401);
-      expect(response.body.error.code).toBe('INVALID_REFRESH_TOKEN');
+      expect(response.body.error.code).toBe('TOKEN_INVALID');
     });
   });
 });

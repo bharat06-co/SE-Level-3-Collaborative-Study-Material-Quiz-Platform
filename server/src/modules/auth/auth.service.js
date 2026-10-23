@@ -219,7 +219,7 @@ async function refreshUserSession(rawToken) {
   if (typeof rawToken !== 'string' || rawToken.length === 0) {
     throw new AppError(
       401,
-      'INVALID_REFRESH_TOKEN',
+      'TOKEN_INVALID',
       'Refresh token is invalid.',
     );
   }
@@ -242,7 +242,7 @@ async function refreshUserSession(rawToken) {
   if (!existing || existing.revokedAt || existing.expiresAt <= now) {
     throw new AppError(
       401,
-      'INVALID_REFRESH_TOKEN',
+      'TOKEN_INVALID',
       'Refresh token is invalid.',
     );
   }
@@ -261,7 +261,7 @@ async function refreshUserSession(rawToken) {
       if (!consumed) {
         throw new AppError(
           401,
-          'INVALID_REFRESH_TOKEN',
+          'TOKEN_INVALID',
           'Refresh token is invalid.',
         );
       }
@@ -271,7 +271,7 @@ async function refreshUserSession(rawToken) {
       if (!user) {
         throw new AppError(
           401,
-          'INVALID_REFRESH_TOKEN',
+          'TOKEN_INVALID',
           'Refresh token is invalid.',
         );
       }
@@ -304,7 +304,7 @@ async function logoutUser(rawToken) {
   if (typeof rawToken !== 'string' || rawToken.length === 0) {
     throw new AppError(
       401,
-      'INVALID_REFRESH_TOKEN',
+      'TOKEN_INVALID',
       'Refresh token is invalid.',
     );
   }
@@ -320,7 +320,7 @@ async function logoutUser(rawToken) {
   ) {
     throw new AppError(
       401,
-      'INVALID_REFRESH_TOKEN',
+      'TOKEN_INVALID',
       'Refresh token is invalid.',
     );
   }
@@ -330,7 +330,7 @@ async function logoutUser(rawToken) {
   if (!revoked) {
     throw new AppError(
       401,
-      'INVALID_REFRESH_TOKEN',
+      'TOKEN_INVALID',
       'Refresh token is invalid.',
     );
   }

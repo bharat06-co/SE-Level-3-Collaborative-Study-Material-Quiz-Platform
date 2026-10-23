@@ -12,7 +12,7 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
       if (typeof authorization !== 'string') {
         throw new AppError(
           401,
-          'UNAUTHORIZED',
+          'UNAUTHENTICATED',
           'Authentication is required.',
         );
       }
@@ -22,7 +22,7 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
       if (!match) {
         throw new AppError(
           401,
-          'UNAUTHORIZED',
+          'UNAUTHENTICATED',
           'Authentication is required.',
         );
       }
@@ -46,12 +46,12 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
       } catch {
         throw new AppError(
           401,
-          'UNAUTHORIZED',
+          'TOKEN_INVALID',
           'Authentication token is invalid or expired.',
         );
       }
 
-       if (
+      if (
         !payload ||
         typeof payload !== 'object' ||
         typeof payload.sub !== 'string' ||
@@ -61,7 +61,7 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
       ) {
         throw new AppError(
           401,
-          'UNAUTHORIZED',
+          'TOKEN_INVALID',
           'Authentication token is invalid or expired.',
         );
       }
@@ -75,7 +75,7 @@ function createAuthenticate({ findUserById = userRepository.findById } = {}) {
       ) {
         throw new AppError(
           401,
-          'UNAUTHORIZED',
+          'TOKEN_INVALID',
           'Authentication is no longer valid.',
         );
       }
