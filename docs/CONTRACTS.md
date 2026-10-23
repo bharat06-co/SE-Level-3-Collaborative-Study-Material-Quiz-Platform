@@ -86,3 +86,34 @@ Protected-route integration must use the agreed authentication context:
 `req.auth = { userId, role, contributor }`
 
 Protected requests must obtain current user privileges from the database so role or contributor changes can take effect. Do not create production test identities or introduce fake authentication middleware to bypass integration requirements.
+
+
+
+## Authentication Error-Code Contract
+
+The shared authentication middleware and refresh/logout endpoints use the following error mapping:
+
+| Scenario | HTTP status | Error code |
+|---|---:|---|
+| Missing Authorization header | 401 | `UNAUTHENTICATED` |
+| Malformed or unsupported Authorization header | 401 | `UNAUTHENTICATED` |
+| Malformed, invalid-signature, expired, or missing/invalid-expiry access token | 401 | `TOKEN_INVALID` |
+| Refresh token unknown, expired, revoked, or already consumed | 401 | `TOKEN_INVALID` |
+| Refresh token rejected during logout | 401 | `TOKEN_INVALID` |
+| Incorrect login credentials | 401 | `INVALID_CREDENTIALS` |
+| JWT-secret configuration missing on the server | 503 | `SERVICE_UNAVAILABLE` |
+| Authenticated user lacks permission | 403 | `FORBIDDEN` |
+
+For protected routes, the server must verify the access token and load the current user from the database on each request. The authenticated request context is `req.auth = { userId, role, contributor }`; role and contributor permissions must not be trusted from client-supplied token claims.
+
+Refresh-token rotation, revocation, cookie handling, and transaction behavior remain unchanged by this error-code contract.
+
+### SAD inconsistency: `TOKEN_EXPIRED`
+
+The SAD separately mentions `TOKEN_EXPIRED` for client refresh handling. This differs from the agreed API contract above, which uses `TOKEN_INVALID` for rejected tokens, including expired tokens.
+
+**Proposed client behavior:** treat `TOKEN_INVALID` from an access-token-protected request as a signal to attempt the existing refresh flow once, where appropriate. If refresh fails with `TOKEN_INVALID`, clear the session and require the user to sign in again. Do not introduce `TOKEN_EXPIRED` as a third server error code unless the team explicitly agrees to change the contract.
+
+This is a proposed client-handling clarification; unrelated client code and refresh behavior are not changed by this documentation update.
+
+

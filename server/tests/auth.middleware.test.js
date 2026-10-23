@@ -75,7 +75,7 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.auth).toEqual({
@@ -90,7 +90,9 @@ describe('FR-004 authentication middleware', () => {
     ['missing authorization', undefined],
     ['unsupported authorization scheme', 'Basic abc123'],
     ['malformed bearer header', 'Bearer'],
-  ])('rejects %s with 401', async (_description, authorization) => {
+    ['empty bearer token', 'Bearer '],
+    ['extra authorization fields', 'Bearer abc123 extra'],
+  ])('rejects %s with UNAUTHENTICATED', async (_description, authorization) => {
     let req = request(makeApp()).get('/protected');
 
     if (authorization !== undefined) {
@@ -100,26 +102,36 @@ describe('FR-004 authentication middleware', () => {
     const response = await req;
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('UNAUTHENTICATED');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
-  test('rejects an invalid token', async () => {
+  test.each([
+    ['malformed token', 'not-a-valid-token'],
+    ['invalid signature', jwt.sign(
+      { sub: USER_ID, exp: Math.floor(Date.now() / 1000) + 900 },
+      'wrong-secret',
+      { algorithm: 'HS256' },
+    )],
+  ])('rejects %s with TOKEN_INVALID', async (_description, token) => {
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer not-a-valid-token');
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
-  test('rejects an expired token', async () => {
+  test('rejects an expired token with TOKEN_INVALID', async () => {
     const token = makeToken({}, { expiresIn: -1 });
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
@@ -130,9 +142,10 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
@@ -144,9 +157,10 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
@@ -155,9 +169,10 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 
@@ -166,9 +181,25 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + makeToken());
+      .set('Authorization', `Bearer ${makeToken()}`);
 
     expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
+  });
+
+  test('rejects a user with an invalid identity', async () => {
+    userRepository.findById.mockResolvedValue({
+      _id: USER_ID,
+      role: 'unknown-role',
+      contributor: false,
+    });
+
+    const response = await request(makeApp())
+      .get('/protected')
+      .set('Authorization', `Bearer ${makeToken()}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
   });
 
   test('loads current permissions on every request', async () => {
@@ -189,20 +220,24 @@ describe('FR-004 authentication middleware', () => {
 
     const first = await request(app)
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
     const second = await request(app)
       .get('/protected')
-      .set('Authorization', 'Bearer ' + token);
+      .set('Authorization', `Bearer ${token}`);
 
+    expect(first.status).toBe(200);
     expect(first.body.auth.role).toBe('student');
     expect(first.body.auth.contributor).toBe(false);
+
+    expect(second.status).toBe(200);
     expect(second.body.auth.role).toBe('educator');
     expect(second.body.auth.contributor).toBe(true);
+
     expect(userRepository.findById).toHaveBeenCalledTimes(2);
   });
 
-  test('returns 503 when the JWT secret is missing', async () => {
+  test('returns 503 SERVICE_UNAVAILABLE when the JWT secret is missing', async () => {
     readEnv.mockReturnValue({
       JWT_ACCESS_SECRET: undefined,
       JWT_ACCESS_TTL: '15m',
@@ -210,9 +245,10 @@ describe('FR-004 authentication middleware', () => {
 
     const response = await request(makeApp())
       .get('/protected')
-      .set('Authorization', 'Bearer ' + makeToken());
+      .set('Authorization', `Bearer ${makeToken()}`);
 
     expect(response.status).toBe(503);
+    expect(response.body.error.code).toBe('SERVICE_UNAVAILABLE');
     expect(userRepository.findById).not.toHaveBeenCalled();
   });
 });
