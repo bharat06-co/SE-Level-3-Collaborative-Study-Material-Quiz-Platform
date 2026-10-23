@@ -5,14 +5,14 @@ import './attempts.css';
 function errorMessage(error, submitting = false) {
   const status = error.response?.status;
   const code = error.response?.data?.error?.code;
-  if (status === 401) return 'Sign in with your student account to attempt this quiz. Authentication must be connected by the team.';
+  if (status === 401) return 'Sign in with your student account to attempt this quiz. Your session may have expired.';
   if (status === 403) return 'Only students, including student contributors, can submit attempts.';
   if (status === 404) return 'This quiz is unavailable. It may be missing, unpublished, or not yet integrated.';
   if (status === 409 || code === 'RETAKE_NOT_ALLOWED') return 'You have already submitted this quiz and another attempt is not allowed.';
   if (status === 400) return 'The quiz or answers are invalid. Reload the quiz before trying again.';
   return submitting ? 'The submission could not be confirmed. It may already have been saved. Do not repeatedly resubmit; check with the team before retrying.' : 'The quiz could not be loaded. Please try again.';
 }
-function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = submitAttempt }) {
+function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = submitAttempt, token }) {
   const [quiz, setQuiz] = useState(null);
   const [responses, setResponses] = useState({});
   const [result, setResult] = useState(null);
@@ -28,12 +28,12 @@ function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = subm
     const current = ++generation.current;
     const controller = new AbortController();
     setLoading(true); setError(''); setQuiz(null); setResult(null); setResponses({}); setBlocked(false);
-    loadQuiz(quizId, { signal: controller.signal }).then(data => {
+    loadQuiz(quizId, { signal: controller.signal, ...(token ? { token } : {}) }).then(data => {
       if (current === generation.current) setQuiz(parseQuiz(data, quizId));
     }).catch(err => { if (current === generation.current) setError(errorMessage(err)); })
       .finally(() => { if (current === generation.current) setLoading(false); });
     return () => { generation.current += 1; controller.abort(); submissionController.current?.abort(); };
-  }, [quizId, loadQuiz, reload]);
+  }, [quizId, loadQuiz, reload, token]);
   async function handleSubmit(event) {
     event.preventDefault();
     if (!quiz || lock.current || blocked) return;
@@ -43,7 +43,7 @@ function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = subm
     const snapshot = { ...responses };
     const answers = quiz.questions.filter(q => snapshot[q.id] !== undefined && snapshot[q.id] !== null).map(q => ({ questionId: q.id, response: snapshot[q.id] }));
     try {
-      const saved = await sendAttempt(quizId, answers, { signal: controller.signal });
+      const saved = await sendAttempt(quizId, answers, { signal: controller.signal, ...(token ? { token } : {}) });
       if (current === generation.current) setResult(parseAttemptResult(saved, quiz));
     } catch (err) {
       if (current === generation.current) {
@@ -86,4 +86,4 @@ function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = subm
   </main>;
 }
 // A different quiz is a fresh session. Pending old results cannot cross identities.
-export default function AttemptPage(props) { return <AttemptSession key={props.quizId} {...props} />; }
+export default function AttemptPage(props) { return <AttemptSession key={`${props.quizId}:${props.token ?? ''}`} {...props} />; }

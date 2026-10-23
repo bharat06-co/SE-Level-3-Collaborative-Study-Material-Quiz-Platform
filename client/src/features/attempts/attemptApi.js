@@ -31,14 +31,17 @@ export function parseAttemptResult(data, quiz) {
   if (seen.size !== quiz.questions.length || result.maxScore !== quiz.questions.length || result.score !== result.results.filter(row => row.isCorrect).length || result.percentage !== Math.round(result.score / result.maxScore * 1000) / 10) throw new Error('Incomplete attempt response.');
   return result;
 }
-export async function loadAttemptQuiz(quizId, { signal } = {}) {
+function requestOptions(signal, token) {
+  return { signal, ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}) };
+}
+export async function loadAttemptQuiz(quizId, { signal, token } = {}) {
   objectId.parse(quizId);
-  const response = await http.get(`/quizzes/${quizId}`, { signal });
+  const response = await http.get(`/quizzes/${quizId}`, requestOptions(signal, token));
   return parseQuiz(response.data, quizId);
 }
-export async function submitAttempt(quizId, answers, { signal } = {}) {
+export async function submitAttempt(quizId, answers, { signal, token } = {}) {
   objectId.parse(quizId);
-  const response = await http.post(`/quizzes/${quizId}/attempts`, { answers }, { signal });
+  const response = await http.post(`/quizzes/${quizId}/attempts`, { answers }, requestOptions(signal, token));
   // No auto-retry: a lost response may follow a successful database write.
   return response.data;
 }

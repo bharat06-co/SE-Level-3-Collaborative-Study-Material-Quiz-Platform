@@ -16,6 +16,15 @@ test('posts only answers, uses signal, returns server data without automatic ret
  await submitAttempt(quizId,[]);http.post.mockRejectedValue(new Error('timeout'));await expect(submitAttempt(quizId,[])).rejects.toThrow('timeout');expect(http.post).toHaveBeenCalledTimes(3);
 });
 test('accepts a complete result only after submission',()=>{expect(parseAttemptResult(result(),quiz())).toEqual(result());});
+test('forwards the in-memory Bearer token to quiz reads and attempt submission', async () => {
+ http.get.mockResolvedValue({data:quiz()});http.post.mockResolvedValue({data:result()});
+ const signal=new AbortController().signal;
+ await loadAttemptQuiz(quizId,{signal,token:'private-test-token'});
+ await submitAttempt(quizId,[],{signal,token:'private-test-token'});
+ const options={signal,headers:{Authorization:'Bearer private-test-token'}};
+ expect(http.get).toHaveBeenCalledWith(`/quizzes/${quizId}`,options);
+ expect(http.post).toHaveBeenCalledWith(`/quizzes/${quizId}/attempts`,{answers:[]},options);
+});
 test.each([
  result({score:3}), result({maxScore:4}), result({percentage:67}), result({results:[]}),
  result({results:[...result().results.slice(0,2),result().results[0]]}),

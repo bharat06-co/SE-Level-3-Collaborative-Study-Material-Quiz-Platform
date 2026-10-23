@@ -72,25 +72,89 @@ npm run dev --workspace client
 ```
 Use Ctrl+C to stop. If setup fails, read `docs/TROUBLESHOOTING.md`; don't commit credentials or change shared contracts just to fix a local setting.
 
-## B. Docker Compose — built starter
-```sh
-docker compose up --build
-```
-Wait for MongoDB and API health checks, then open `http://localhost:8080`. Only the web port is published, bound to localhost. MongoDB has no published host port. This path builds static frontend assets; it is not hot-reloading development.
+## B. Docker Compose — local development and authentication
 
-After changes, rebuild:
+### Prerequisites
+
+Install and start Docker Desktop with Docker Compose v2. Run all commands from the repository root.
+
+### 1. Configure the JWT secret
+
+Create a root `.env` file before starting Docker Compose. Keep it private and never commit it.
+
+Generate a cryptographically random 64-character hexadecimal secret using Node.js:
+
 ```sh
-docker compose up --build
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
+
+Add the generated value to the root `.env` file:
+
+```dotenv
+JWT_ACCESS_SECRET=PASTE_YOUR_GENERATED_SECRET_HERE
+```
+
+Replace the placeholder with your generated secret. Never commit or share the actual value. The Compose configuration requires `JWT_ACCESS_SECRET` and passes it to the API.
+
+A root `.env.example` is provided as a template. It contains a placeholder, not a usable secret. If you copy it to `.env`, replace the placeholder with your generated secret before starting Docker.
+
+### 2. Validate and start Docker
+
+```sh
+docker compose config --quiet
+docker compose up -d --build
+docker compose ps
+```
+
+Wait for the MongoDB and API health checks to pass. MongoDB is configured as a single-node replica set named `rs0`, supporting database operations that require a replica set. Its port is not published to the host.
+
+Verify the replica-set state:
+
+```sh
+docker compose exec mongo mongosh --quiet --eval "db.hello()"
+```
+
+Confirm that the output includes `setName: 'rs0'` and `isWritablePrimary: true`.
+
+Check application health:
+
+```sh
+curl -i http://localhost:8080/api/v1/health
+```
+
+Expect HTTP 200 and a connected database status.
+
+### 3. Verify authentication end to end
+
+Use a dedicated local test account and verify the following:
+
+- Registration succeeds with HTTP 201.
+- Invalid login credentials are rejected with HTTP 401.
+- Valid login succeeds with HTTP 200 and sets the refresh-token cookie.
+- Refresh succeeds with HTTP 200 and rotates the refresh token.
+- Logout succeeds with HTTP 200 and revokes the active refresh token.
+- Reusing a revoked refresh token is rejected with HTTP 401.
+
+Keep access tokens, refresh tokens, cookie jars, response files containing credentials, and `.env` files private. Use dummy accounts and local development data only.
+
+### 4. Rebuild and stop Docker safely
+
+After changes, rebuild the application:
+
+```sh
+docker compose up -d --build
+```
+
 Stop containers without deleting data:
+
 ```sh
 docker compose down
 ```
-**Do not add `-v` unless you intend to permanently delete the named database/upload volumes.** No database credentials or real accounts are seeded by this scaffold. The default private-network unauthenticated development database is not a production security configuration.
 
-Docker files are provided but were NOT executed in the preparation environment because no Docker daemon/CLI was available. Validate `docker compose config` and the actual build/start on your laptop before claiming this path passes.
+This stops and removes containers while preserving named volumes. Do not use `docker compose down -v` unless you intentionally want to delete persistent volumes and their data.
 
-Local Docker deliberately uses HTTP. It does NOT satisfy SEC-005; production TLS/redirect/HSTS and deployment configuration remain Sprint 2 work. Do not expose this starter publicly as a secure production app.
+Local Docker uses HTTP and is for development only. It does not provide production TLS and does not satisfy SEC-005; production TLS/redirect/HSTS and deployment configuration remain Sprint 2 work. Do not expose this application publicly as a secure production app.
+
 
 ## Checks (from repository root)
 ```sh
@@ -150,4 +214,68 @@ The full dependency audit currently reports moderate findings in a test-only cov
 
 Student screen: `/quizzes/:quizId/attempt` (a real published quiz ID is required). Backend: `POST /api/v1/quizzes/:quizId/attempts`. Read `docs/FR030_031_032_IMPLEMENTATION.md` for the combined scope and evidence.
 
-The normal startup remains fail-closed for attempt submission until Anisha’s real verified authentication middleware is connected; no production test login was added. Ayush’s real quiz GET route must also be integrated. Auth/quiz integration is not implied by a green feature suite.
+Normal startup now uses the merged shared JWT middleware and quiz service through `createAuthenticatedFeatures()`. Open `/attempt` to sign in with a real student account and enter a published quiz ID, or use the direct attempt route. Access tokens stay in React memory and must be re-entered through login after reload. See `docs/FR030_AUTH_INTEGRATION_VERIFICATION.md` for current evidence and limitations.
+
+## C. Local development without Docker
+
+These instructions assume MongoDB Community Server and `mongosh` are installed locally.
+
+### 1. Start MongoDB as a replica set
+
+The application uses MongoDB transactions for refresh-token rotation. A standalone MongoDB server is not sufficient; configure the local server with replica-set name `rs0`.
+
+Stop the local MongoDB service before changing its startup options. Start `mongod` with the appropriate existing database storage path for your installation and these options:
+
+```bash
+mongod --dbpath "<your-existing-mongodb-data-directory>" --replSet rs0 --bind_ip 127.0.0.1 --port 27017
+```
+
+Do not use a new or empty data directory if you need to preserve existing local databases. Keep this terminal running.
+
+### 2. Initialize the replica set
+
+In a second terminal, run:
+
+```bash
+mongosh "mongodb://127.0.0.1:27017/admin"
+```
+
+At the `mongosh` prompt, initialize the replica set:
+
+```javascript
+rs.initiate({
+  _id: "rs0",
+  members: [{ _id: 0, host: "127.0.0.1:27017" }]
+})
+```
+
+Wait for the replica set to elect a primary, then verify:
+
+```javascript
+db.hello()
+```
+
+Confirm that `setName` is `rs0` and `isWritablePrimary` is `true`.
+
+If the replica set has already been initialized, do not initialize it again; inspect its existing configuration instead.
+
+### 3. Configure the backend
+
+Copy `server/.env.example` to `server/.env` if you do not already have a local environment file. Preserve any existing settings and configure:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/team1_study_dev?replicaSet=rs0
+```
+
+Set `JWT_ACCESS_SECRET` in your local environment to a securely generated random secret of at least 64 characters. Do not commit real secrets or share them in source control.
+
+### 4. Start the backend
+
+From the repository root, install dependencies if necessary, then start the server:
+
+```bash
+npm install
+npm run dev --workspace=./server
+```
+
+The API uses port `3000` by default. If startup fails, verify that MongoDB is running, the replica set has a primary, and `MONGODB_URI` matches the local replica-set configuration.
