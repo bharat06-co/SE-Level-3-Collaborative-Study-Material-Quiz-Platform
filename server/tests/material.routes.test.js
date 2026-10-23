@@ -80,7 +80,7 @@ async function storedFileCount() {
 }
 
 const validFile = { name: 'notes.pdf', contentType: 'application/pdf', bytes: Buffer.concat([Buffer.from('%PDF-1.7'), Buffer.alloc(2 * 1024 * 1024, 0x33, 'latin1')]) };
-const validFields = { title: 'ER Diagrams', description: 'Entity relationship notes', category: 'Notes', topic: 'dbms', rightsConfirmed: 'true' };
+const validFields = { title: 'ER Diagrams', description: 'Entity relationship notes', category: 'Notes', topic: 'dbms', tags: 'ER, dbms, ER', rightsConfirmed: 'true' };
 
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
@@ -102,7 +102,7 @@ beforeEach(async () => {
 });
 
 describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
-  test('TC-MAT-01: contributor uploads material; 201 private and persisted file', async () => {
+  test('TC-MAT-01: contributor uploads a tagged material; 201 private with normalised tags and persisted file', async () => {
     const response = await uploadRequest(appWithCurrentAuth(), validFile, validFields);
     expect(response.status).toBe(201);
     expect(response.body).toMatchObject({ title: 'ER Diagrams', visibility: 'private' });
@@ -112,6 +112,7 @@ describe('POST /api/v1/materials (FR-010, FR-011, SEC-006 integration)', () => {
     const document = await Material.findById(response.body.id).lean();
     expect(document).not.toBeNull();
     expect(document.ownerId.toString()).toBe(contributorId);
+    expect(document.tags).toEqual(['er', 'dbms']);
     expect(document.mimeType).toBe('application/pdf');
     expect(document.sizeBytes).toBe(validFile.bytes.length);
     expect(document.fileUrl).toBe(`/api/v1/materials/${response.body.id}/file`);

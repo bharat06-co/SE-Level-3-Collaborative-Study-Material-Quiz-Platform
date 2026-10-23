@@ -1,6 +1,8 @@
 const { Material } = require('../src/models/Material');
 const { createMaterialService } = require('../src/modules/materials/material.service');
 
+const TAG_MAX_LENGTH = 30;
+
 const PDF_CONTENT = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37]);
 const PDF_FILE = { originalname: 'notes.pdf', size: PDF_CONTENT.length, buffer: PDF_CONTENT };
 const validMetadata = {
@@ -8,6 +10,7 @@ const validMetadata = {
   description: 'Entity relationship notes',
   category: 'Notes',
   topic: 'dbms',
+  tags: 'ER, dbms, ER',
   rightsConfirmed: 'true',
 };
 const userId = '64ff31e5fe2f1f25a49f4b72';
@@ -55,8 +58,9 @@ describe('Material service (unit, mocked repository/storage)', () => {
     service = createMaterialService({ repository, storage });
   });
 
-  test('TC-MAT-01: contributor upload returns 201 private and persists a normalised document', async () => {
+  test('TC-MAT-01: contributor upload with duplicate and case-variant tags is normalised, lowercased and de-duplicated', async () => {
     const document = await service.uploadMaterial(contributorAuth, validMetadata, PDF_FILE);
+    expect(document.tags).toEqual(['er', 'dbms']);
     expect(document.title).toBe('ER Diagrams');
     expect(document.visibility).toBe('private');
     expect(document.ownerId).toBe(userId);
@@ -111,6 +115,20 @@ describe('Material service (unit, mocked repository/storage)', () => {
     await expectRejectedUpload(service, contributorAuth, { ...validMetadata, topic: '' }, PDF_FILE, { statusCode: 400, detailsField: 'topic' });
   });
 
+  test('TC-MAT-11: tag boundaries 0, 1, 10, 11 tags and 30, 31 chars (BVA)', async () => {
+    const tag30 = 'x'.repeat(TAG_MAX_LENGTH);
+    await expectRejectedUpload(service, contributorAuth, { ...validMetadata, tags: undefined }, PDF_FILE, { statusCode: 400, detailsField: 'tags' });
+    expect(repository.create).not.toHaveBeenCalled();
+
+    expect((await service.uploadMaterial(contributorAuth, { ...validMetadata, tags: tag30 }, PDF_FILE)).tags).toEqual([tag30]);
+
+    const tenTags = 't0,t1,t2,t3,t4,t5,t6,t7,t8,t9';
+    expect((await service.uploadMaterial(contributorAuth, { ...validMetadata, tags: tenTags }, PDF_FILE)).tags).toHaveLength(10);
+
+    await expectRejectedUpload(service, contributorAuth, { ...validMetadata, tags: `${tenTags},t10` }, PDF_FILE, { statusCode: 400, detailsField: 'tags' });
+    await expectRejectedUpload(service, contributorAuth, { ...validMetadata, tags: `${tag30}x` }, PDF_FILE, { statusCode: 400, detailsField: 'tags' });
+  });
+
   test('repository failure cleans up the stored file and returns 500, no half-written material', async () => {
     repository.create = jest.fn(async () => { throw new Error('database unavailable'); });
     await expect(service.uploadMaterial(contributorAuth, validMetadata, PDF_FILE))
@@ -127,6 +145,24 @@ describe('Material service (unit, mocked repository/storage)', () => {
     expect(visibilityPath.options.default).toBe('private');
     expect(Material.schema.path('hidden').options.default).toBe(false);
     expect(Material.collection.name).toBe('studymaterials');
+  });
+
+  test('model rejects direct writers that bypass tag normalisation', () => {
+    const base = {
+      title: 'ER Diagrams',
+      description: 'Entity relationship notes',
+      category: 'Notes',
+      topic: 'dbms',
+      fileUrl: '/api/v1/materials/64ff31e5fe2f1f25a49f4b72/file',
+      storageKey: '64ff31e5fe2f1f25a49f4b72.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: 8,
+      ownerId: userId,
+    };
+    expect(new Material({ ...base, tags: ['UPPER', 'UPPER'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: ['er', 'ER'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: [' er', 'dbms'] }).validateSync()).toBeDefined();
+    expect(new Material({ ...base, tags: ['er', 'dbms'] }).validateSync()).toBeUndefined();
   });
 
   test('service requires injected dependencies', () => {

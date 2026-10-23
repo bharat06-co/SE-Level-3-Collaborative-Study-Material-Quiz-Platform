@@ -6,7 +6,8 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "test": "jest --runInBand",
-    "test:coverage": "jest --runInBand --coverage"
+    "test:coverage": "jest --runInBand --coverage",
+    "migrate:material-text-index": "node scripts/migrate-material-text-index.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
