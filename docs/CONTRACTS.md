@@ -17,7 +17,7 @@ The original combined Part-1 PDF remains the source of truth. This document make
 - Visibility/report/retake/ownership rules remain those in the SRS; UI checks never replace server checks.
 
 ## What the starter implements
-Only `/api/v1/health` is a real route. Health returns 200 with `{status:"ok",checks:{process:"up",database:"connected"}}` when process and connection state are ready; it does not claim domain readiness. Disconnected DB returns 503 with `SERVICE_UNAVAILABLE` in the central error envelope. This diagnostic code/shape is an explicit working extension because the SAD does not fully define health payloads; the owner has authorised keeping it as a technical clarification; independent PR review remains required (see DEV-03).
+The foundation implements `/api/v1/health`; the FR-030 increment additionally mounts the guarded submission route (see below). Health returns 200 with `{status:"ok",checks:{process:"up",database:"connected"}}` when process and connection state are ready; it does not claim domain readiness. Disconnected DB returns 503 with `SERVICE_UNAVAILABLE` in the central error envelope. This diagnostic code/shape is an explicit working extension because the SAD does not fully define health payloads; the owner has authorised keeping it as a technical clarification; independent PR review remains required (see DEV-03).
 
 `createApp(options)` builds Express with no listening socket or DB connection. `index.js` owns startup/connection/shutdown. Tests can supply an isolated database-state function and register test-only routers; those test endpoints do not exist in the real server.
 
@@ -54,6 +54,23 @@ Domain schemas are intentionally not invented in this foundation. Read SAD §3.6
 ## Review before future changes
 Original SAD references `TOKEN_EXPIRED` but its error-table completeness needs clarification; don't invent client refresh behavior until auth PR agrees it. SEC-007/STP references material deletion while API catalogue completeness was flagged earlier; review the exact design and log the approved addition if needed. The foundation implements neither behavior and does not claim either discrepancy is resolved.
 
+## FR-030–FR-032 attempt integration boundary (this increment)
+
+- Real route: `POST /api/v1/quizzes/:quizId/attempts`. Layering: router → auth/role/schema middleware → controller → service/scorer → repository.
+- **Production startup supplies the shared `createAuthenticate()` middleware** to quiz and attempt routes through `createAuthenticatedFeatures()`. Bare `createApp()` calls remain fail-closed unless explicitly configured. The server never accepts identities from client JSON, fake tokens or custom identity headers. Test-only identity injection is not production authentication.
+- Wiring point: `createApp({ ..., attempts: { authenticate: actualVerifiedAuthMiddleware } })`; the middleware must populate trusted `req.auth = {userId, role, contributor}` with `userId` a stringified MongoDB ObjectId. Align the adapter once with Anisha's final context; do not duplicate JWT verification or add a dev bypass. Student (including contributor) allowed; educator/admin denied.
+- Repository reads only server-side `quizzes` scoring data, using `_id` + `status:'published'`, projection `_id,allowRetake,questions`. No competing Quiz schema is registered. Ayush must confirm stored question `_id`, `type`, `options`, `answerKey` and Boolean `allowRetake` match SAD. This private lookup is not a client quiz endpoint and does not make answer keys public.
+- Body follows SAD §4.3.4. Wrong types, unknown/duplicate question IDs are 400. Extra top-level client scores/identity/results are stripped and ignored. Null, omitted response or omitted question means unanswered; 0 and false remain valid answers.
+- Persist score/maxScore and the complete per-question historical outcome/correct-answer snapshot before returning 201. Response is `no-store`. The student attempt and immediate result screen is implemented at `/quizzes/:quizId/attempt`. History/dashboard remain separate Sprint 2 work.
+- Concurrent no-retake safety uses the proposed internal storage extension recorded as DEV-05: optional `retakeGuard` plus a partial unique index, alongside the required existing-attempt check. Multiple attempts remain allowed for `allowRetake:true`. Review the extension with the database owner before integration.
+- MongoDB is required; no in-memory fallback for application persistence. Index build/DB failures fail the request rather than produce a false 201. Tests inject mock repositories separately; the supplied real MongoDB script verifies storage and races in an isolated random test database.
+- Do not close #26 until real verified-auth/published-quiz integration and relevant acceptance evidence pass. FR-031 scorer and FR-032 UI have isolated test evidence; do not mark the full integrated flow Done until real authentication/quiz-route wiring is verified.
+
+- Optional repository adapter: `createAttemptRepository({ findQuizForScoring: createQuizService().getQuizForScoring })` can reuse Ayush’s server-only lookup. This is never imported by the client. Production now uses this private adapter; the direct collection lookup is retained for isolated repository use.
+- Frontend uses the existing shared Axios instance. The student entry page signs in through the real `/auth/login`, keeps access tokens only in React memory and passes Bearer headers explicitly. It does not persist tokens or accept server identity through URL/body fields. It requires re-login on 401; automatic token refresh remains shared-client follow-up work.
+- Public quiz GET is validated/projected to public fields. Answer keys are shown only from the acknowledged submission response. Results appear without a page reload; 0 and false are preserved, omitted/null answers remain blank.
+- The new AppRoutes is mounted inside the existing BrowserRouter in main.jsx. Coordinate later route additions in the same router rather than nesting another BrowserRouter.
+
 ## Registration Contract — FR-001
 
 ### Shared User model
@@ -86,3 +103,41 @@ Protected-route integration must use the agreed authentication context:
 `req.auth = { userId, role, contributor }`
 
 Protected requests must obtain current user privileges from the database so role or contributor changes can take effect. Do not create production test identities or introduce fake authentication middleware to bypass integration requirements.
+
+
+
+## Authentication Error-Code Contract
+
+The shared authentication middleware and refresh/logout endpoints use the following error mapping:
+
+| Scenario | HTTP status | Error code |
+|---|---:|---|
+| Missing Authorization header | 401 | `UNAUTHENTICATED` |
+| Malformed or unsupported Authorization header | 401 | `UNAUTHENTICATED` |
+| Malformed, invalid-signature, expired, or missing/invalid-expiry access token | 401 | `TOKEN_INVALID` |
+| Refresh token unknown, expired, revoked, or already consumed | 401 | `TOKEN_INVALID` |
+| Refresh token rejected during logout | 401 | `TOKEN_INVALID` |
+| Incorrect login credentials | 401 | `INVALID_CREDENTIALS` |
+| JWT-secret configuration missing on the server | 503 | `SERVICE_UNAVAILABLE` |
+| Authenticated user lacks permission | 403 | `FORBIDDEN` |
+
+For protected routes, the server must verify the access token and load the current user from the database on each request. The authenticated request context is `req.auth = { userId, role, contributor }`; role and contributor permissions must not be trusted from client-supplied token claims.
+
+Refresh-token rotation, revocation, cookie handling, and transaction behavior remain unchanged by this error-code contract.
+
+### SAD inconsistency: `TOKEN_EXPIRED`
+
+The SAD separately mentions `TOKEN_EXPIRED` for client refresh handling. This differs from the agreed API contract above, which uses `TOKEN_INVALID` for rejected tokens, including expired tokens.
+
+**Proposed client behavior:** treat `TOKEN_INVALID` from an access-token-protected request as a signal to attempt the existing refresh flow once, where appropriate. If refresh fails with `TOKEN_INVALID`, clear the session and require the user to sign in again. Do not introduce `TOKEN_EXPIRED` as a third server error code unless the team explicitly agrees to change the contract.
+
+This is a proposed client-handling clarification; unrelated client code and refresh behavior are not changed by this documentation update.
+
+## SEC-004 shared input and plain-text boundaries
+- Use `assertSafeInput` / `rejectUnsafeKeys` from `server/src/middleware/rejectUnsafeKeys.js`. Global middleware checks parsed JSON/query data. Route parameters still need their explicit typed schemas. Run the guard AGAIN after route-local parsers (e.g. Multer), because global middleware runs before multipart fields exist.
+- Reject operator keys beginning `$`, dotted keys, and reserved prototype keys at any depth with 400 VALIDATION_ERROR. Do not strip keys and continue a mutated operation. Raw strings containing `$`, dots or HTML are not operator objects.
+- Validate types, lengths, enums and IDs with feature schemas; build database filters/updates from named validated fields. Never spread `req.body` or `req.query` into MongoDB selectors/updates; never turn user strings into executable query code. The global guard is defence in depth, not a replacement for schemas/auth/ownership checks.
+- `validatePlainText` in `server/src/utils/plainText.js` validates plain strings (default trimmed 1–1000 UTF-16 code units, rejects null bytes). Store literal text, not HTML-encoded text. Do not use this helper to modify passwords or as an HTML/URL sanitizer.
+- Render stored comments with React text children, e.g. `<PlainText value={comment.text} />` from `client/src/components/PlainText.jsx`. No `dangerouslySetInnerHTML`, DOM `innerHTML`, HTML-parsed Markdown or unvalidated clickable URLs for comments. Encoding is contextual at output, not destructive string stripping on input.
+- Aryaroop owns FR-014 comment routes/storage/UI. Adopt these helpers there and add real authenticated comment-write/read/browser tests when that issue is implemented. The isolated security fixture does not implement FR-014 and is never mounted by production startup.
+- Read `docs/SEC004_IMPLEMENTATION.md` for verified coverage, limits and remaining integrated acceptance.

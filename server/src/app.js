@@ -14,6 +14,12 @@ const { createMaterialsRouter } = require('./modules/materials/material.routes')
 const { createMaterialRepository } = require('./modules/materials/material.repository');
 const { createMaterialService } = require('./modules/materials/material.service');
 const { createStorage } = require('./adapters/storage');
+const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
+const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
+
+function rejectUnconfiguredQuizAuthentication(req, res, next) {
+  next(new AppError(401, 'UNAUTHENTICATED', 'Authentication required.'));
+}
 
 function createApp({
   origins = ['http://localhost:5173', 'http://127.0.0.1:5173'],
@@ -23,6 +29,8 @@ function createApp({
   registerRoutes = () => {},
   storageDir = 'data/uploads',
   authMiddleware = createAuthenticate(),
+  quizAuthenticate = rejectUnconfiguredQuizAuthentication,
+  attempts = {},
 } = {}) {
   const materialRepository = createMaterialRepository();
   const materialService = createMaterialService({
@@ -99,6 +107,8 @@ function createApp({
   // Register feature routes before the 404 and error handlers.
   registerRoutes(app);
   app.use('/api/v1/auth', authRouter);
+  app.use('/api/v1', createAttemptRouter(attempts));
+  app.use('/api/v1/quizzes', createQuizRouter({ authenticate: quizAuthenticate }));
 
   app.use((req, res, next) =>
     next(new AppError(404, 'NOT_FOUND', 'Resource not found.')),

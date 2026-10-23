@@ -3,13 +3,21 @@ const { readEnv } = require('./config/env');
 const { createLogger } = require('./config/logger');
 const { connectDatabase, disconnectDatabase, databaseIsConnected } = require('./config/database');
 const { createApp } = require('./app');
+const { createAuthenticatedFeatures } = require('./config/features');
 
 async function start() {
   const config = readEnv();
   const logger = createLogger(config.LOG_LEVEL);
   // Fail startup if MongoDB is unavailable; never advertise false readiness.
   await connectDatabase(config.MONGODB_URI);
-  const app = createApp({ origins: config.origins, trustProxyHops: config.TRUST_PROXY_HOPS, databaseIsConnected, logger, storageDir: config.STORAGE_DIR });
+  const app = createApp({
+    origins: config.origins,
+    trustProxyHops: config.TRUST_PROXY_HOPS,
+    databaseIsConnected,
+    logger,
+    storageDir: config.STORAGE_DIR,
+    ...createAuthenticatedFeatures(),
+  });
   const server = app.listen(config.PORT, '0.0.0.0', () => logger.info({ port: config.PORT }, 'API started'));
   server.on('error', async () => { logger.error('API listen failed'); await disconnectDatabase(); process.exitCode = 1; });
   let stopping = false;
