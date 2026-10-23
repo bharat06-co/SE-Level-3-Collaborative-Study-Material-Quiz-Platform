@@ -15,6 +15,7 @@ async function start() {
     trustProxyHops: config.TRUST_PROXY_HOPS,
     databaseIsConnected,
     logger,
+    storageDir: config.STORAGE_DIR,
     ...createAuthenticatedFeatures(),
   });
   const server = app.listen(config.PORT, '0.0.0.0', () => logger.info({ port: config.PORT }, 'API started'));

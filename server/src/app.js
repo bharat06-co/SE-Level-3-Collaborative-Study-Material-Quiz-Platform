@@ -9,6 +9,11 @@ const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
 const authRouter = require('./modules/auth/auth.routes');
+const { createAuthenticate } = require('./middleware/authenticate');
+const { createMaterialsRouter } = require('./modules/materials/material.routes');
+const { createMaterialRepository } = require('./modules/materials/material.repository');
+const { createMaterialService } = require('./modules/materials/material.service');
+const { createStorage } = require('./adapters/storage');
 const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
 const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
 
@@ -22,9 +27,20 @@ function createApp({
   databaseIsConnected = () => false,
   logger = createLogger('silent'),
   registerRoutes = () => {},
+  storageDir = 'data/uploads',
+  authMiddleware = createAuthenticate(),
   quizAuthenticate = rejectUnconfiguredQuizAuthentication,
   attempts = {},
 } = {}) {
+  const materialRepository = createMaterialRepository();
+  const materialService = createMaterialService({
+    repository: materialRepository,
+    storage: createStorage({ storageDir }),
+  });
+  const materialsRouter = createMaterialsRouter({
+    service: materialService,
+    authMiddleware,
+  });
   const app = express();
 
   app.disable('x-powered-by');
@@ -86,6 +102,7 @@ function createApp({
       checks: { process: 'up', database: 'connected' },
     });
   });
+  app.use('/api/v1', materialsRouter);
 
   // Register feature routes before the 404 and error handlers.
   registerRoutes(app);

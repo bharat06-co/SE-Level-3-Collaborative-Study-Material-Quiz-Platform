@@ -40,6 +40,7 @@ services:
       TRUST_PROXY_HOPS: 1
       LOG_LEVEL: info
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in the root .env file}
+      STORAGE_DIR: /app/server/uploads
     volumes:
       - uploads:/app/server/uploads
     networks: [application, database]
