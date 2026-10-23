@@ -1,3 +1,4 @@
+
 const os = require('node:os');
 const path = require('node:path');
 const fsp = require('node:fs/promises');
@@ -124,14 +125,17 @@ beforeAll(async () => {
     `t1-material-auth-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   );
 
+  const { createAuthenticatedFeatures } = require('../src/config/features');
+  const features = createAuthenticatedFeatures();
   app = createApp({
     databaseIsConnected: () => mongoose.connection.readyState === 1,
     storageDir,
+    registerRoutes: features.registerRoutes,
   });
 });
 
 beforeEach(async () => {
-  await Promise.all([
+    await Promise.all([
     Material.deleteMany({}),
     RefreshToken.deleteMany({}),
     User.deleteMany({}),
@@ -213,6 +217,94 @@ describe('Materials with the shared authentication middleware', () => {
     expect(response.body.error.code).toBe('FORBIDDEN');
     expect(await Material.countDocuments()).toBe(0);
   });
+
+  test('admin grants and revokes contributor access for the same JWT', async () => {
+    const { user: student, token: studentToken } = await createAndLogin({
+      name: 'Lifecycle Student',
+      email: 'lifecycle@example.com',
+      contributor: false,
+    });
+
+    const { token: adminToken } = await createAndLogin({
+      name: 'Lifecycle Admin',
+      email: 'lifecycle-admin@example.com',
+      role: 'admin',
+    });
+
+           const countFiles = async (dir) => {
+      let entries;
+
+      try {
+        entries = await fsp.readdir(dir, { withFileTypes: true });
+      } catch (error) {
+        if (error.code === 'ENOENT') return 0;
+        throw error;
+      }
+
+      let count = 0;
+
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+
+        if (entry.isDirectory()) {
+          count += await countFiles(fullPath);
+        } else if (entry.isFile()) {
+          count++;
+        }
+      }
+
+      return count;
+    };
+    // 1. Student cannot upload before being granted access.
+    const initialMaterials = await Material.countDocuments();
+    const initialFiles = await countFiles(storageDir);
+
+    const deniedBefore = await uploadRequest(studentToken);
+
+    expect(deniedBefore.status).toBe(403);
+    expect(deniedBefore.body.error.code).toBe('FORBIDDEN');
+    expect(await Material.countDocuments()).toBe(initialMaterials);
+    expect(await countFiles(storageDir)).toBe(initialFiles);
+
+    // 2. Admin grants contributor access.
+    const grant = await request(app)
+      .patch(`/api/v1/admin/users/${student._id}/role`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ contributor: true });
+
+    expect(grant.status).toBe(200);
+    expect(grant.body.user.contributor).toBe(true);
+
+    // 3. The SAME student JWT can now upload.
+    const upload = await uploadRequest(studentToken);
+
+    expect(upload.status).toBe(201);
+    expect(await Material.countDocuments()).toBe(initialMaterials + 1);
+    expect(await countFiles(storageDir)).toBe(initialFiles + 1);
+
+    // 4. Admin revokes contributor access.
+    const revoke = await request(app)
+      .patch(`/api/v1/admin/users/${student._id}/role`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ contributor: false });
+
+    expect(revoke.status).toBe(200);
+    expect(revoke.body.user.contributor).toBe(false);
+
+    // 5. The SAME JWT must now be denied.
+    const materialsBeforeDeniedUpload = await Material.countDocuments();
+    const filesBeforeDeniedUpload = await countFiles(storageDir);
+
+    const deniedAfter = await uploadRequest(studentToken);
+
+    expect(deniedAfter.status).toBe(403);
+    expect(deniedAfter.body.error.code).toBe('FORBIDDEN');
+
+    // 6. Denied upload creates no database record or stored file.
+    expect(await Material.countDocuments()).toBe(materialsBeforeDeniedUpload);
+    expect(await countFiles(storageDir)).toBe(filesBeforeDeniedUpload);
+  });
+
 
   test('another signed-in user gets 404 for private detail and download', async () => {
     const { token: ownerToken } = await createAndLogin({
