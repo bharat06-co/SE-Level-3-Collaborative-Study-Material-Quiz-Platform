@@ -3,6 +3,7 @@
 .quiz-editor form, .quiz-editor fieldset { gap: 16px; }
 .quiz-editor input:not([type="checkbox"]), .quiz-editor select { min-height: 42px; padding: 8px; border: 1px solid #8799a6; border-radius: 6px; font: inherit; }
 .quiz-editor fieldset { margin: 16px 0; padding: 18px; border: 1px solid #cbd5df; border-radius: 8px; }
+.quiz-editor .quiz-editor-form-fields { margin: 0; padding: 0; border: 0; min-width: 0; }
 .quiz-editor-check { display: flex !important; align-items: center; }
 .quiz-editor [role="alert"] { color: #a12020; }
 .quiz-editor-actions { margin-top: 20px; }

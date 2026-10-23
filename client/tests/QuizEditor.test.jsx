@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import QuizEditor from '../src/features/quizzes/QuizEditor';
 
@@ -160,4 +160,28 @@ test('publication waits for unsaved edits', async () => {
   expect(await screen.findByText('Quiz saved.')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Publish' })).toBeEnabled();
   expect(setPublication).not.toHaveBeenCalled();
+});
+
+test('editing is disabled until an in-flight save completes', async () => {
+  const user = userEvent.setup();
+  let finishSave;
+  const save = jest.fn(() => new Promise((resolve) => { finishSave = resolve; }));
+  render(<QuizEditor initialQuiz={{ id: 'q1', title: 'Quiz one', topic: 'dbms', status: 'draft', questions: [{ id: 'x', text: 'Old question' }] }} save={save} />);
+
+  await user.clear(screen.getByLabelText('Title'));
+  await user.type(screen.getByLabelText('Title'), 'Quiz revised');
+  await user.click(screen.getByRole('button', { name: 'Save changes' }));
+  expect(save).toHaveBeenCalledWith('q1', { title: 'Quiz revised', topic: 'dbms', allowRetake: true });
+  expect(screen.getByRole('form', { name: 'Quiz editor' })).toHaveAttribute('aria-busy', 'true');
+  for (const label of ['Title', 'Topic', 'Allow retakes']) expect(screen.getByLabelText(label)).toBeDisabled();
+  for (const name of ['Replace questions', 'Save changes', 'Publish']) {
+    expect(screen.getByRole('button', { name })).toBeDisabled();
+  }
+  await user.type(screen.getByLabelText('Title'), ' lost edit');
+  expect(screen.getByLabelText('Title')).toHaveValue('Quiz revised');
+
+  await act(async () => { finishSave({ id: 'q1', status: 'draft' }); });
+  expect(screen.getByLabelText('Title')).toBeEnabled();
+  expect(screen.getByLabelText('Title')).toHaveValue('Quiz revised');
+  expect(screen.getByRole('button', { name: 'Publish' })).toBeEnabled();
 });

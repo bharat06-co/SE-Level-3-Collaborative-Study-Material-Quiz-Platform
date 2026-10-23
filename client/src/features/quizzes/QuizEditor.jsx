@@ -92,7 +92,8 @@ function QuizEditorForm({ initialQuiz, onSaved, onPublicationChange, save = save
       <h1 id="quiz-editor-title">{id ? 'Edit quiz' : 'Create quiz'}</h1>
       {id && <p>Quiz ID: <code>{id}</code></p>}
       <p>Current status: <strong>{status}</strong></p>
-      <form onSubmit={handleSave} noValidate>
+      <form onSubmit={handleSave} noValidate aria-label="Quiz editor" aria-busy={busy}>
+        <fieldset className="quiz-editor-form-fields" disabled={busy}>
         <label>Title
           <input value={title} onChange={(event) => { setTitle(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.title)} />
           {errors.title && <span role="alert">{errors.title}</span>}
@@ -158,7 +159,8 @@ function QuizEditorForm({ initialQuiz, onSaved, onPublicationChange, save = save
             <button type="button" onClick={() => { setQuestions((current) => [...current, newQuestion()]); setDirty(true); }}>Add question</button>
           </section>
         )}
-        <button type="submit" disabled={busy}>{id ? 'Save changes' : 'Save draft'}</button>
+        <button type="submit">{id ? 'Save changes' : 'Save draft'}</button>
+        </fieldset>
       </form>
       {id && <div className="quiz-editor-actions">
         {status === 'draft'
