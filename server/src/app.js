@@ -9,6 +9,7 @@ const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
 const authRouter = require('./modules/auth/auth.routes');
+const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
 const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
 
 function rejectUnconfiguredQuizAuthentication(req, res, next) {
@@ -22,6 +23,7 @@ function createApp({
   logger = createLogger('silent'),
   registerRoutes = () => {},
   quizAuthenticate = rejectUnconfiguredQuizAuthentication,
+  attempts = {},
 } = {}) {
   const app = express();
 
@@ -88,6 +90,7 @@ function createApp({
   // Register feature routes before the 404 and error handlers.
   registerRoutes(app);
   app.use('/api/v1/auth', authRouter);
+  app.use('/api/v1', createAttemptRouter(attempts));
   app.use('/api/v1/quizzes', createQuizRouter({ authenticate: quizAuthenticate }));
 
   app.use((req, res, next) =>

@@ -17,7 +17,7 @@ The original combined Part-1 PDF remains the source of truth. This document make
 - Visibility/report/retake/ownership rules remain those in the SRS; UI checks never replace server checks.
 
 ## What the starter implements
-Only `/api/v1/health` is a real route. Health returns 200 with `{status:"ok",checks:{process:"up",database:"connected"}}` when process and connection state are ready; it does not claim domain readiness. Disconnected DB returns 503 with `SERVICE_UNAVAILABLE` in the central error envelope. This diagnostic code/shape is an explicit working extension because the SAD does not fully define health payloads; the owner has authorised keeping it as a technical clarification; independent PR review remains required (see DEV-03).
+The foundation implements `/api/v1/health`; the FR-030 increment additionally mounts the guarded submission route (see below). Health returns 200 with `{status:"ok",checks:{process:"up",database:"connected"}}` when process and connection state are ready; it does not claim domain readiness. Disconnected DB returns 503 with `SERVICE_UNAVAILABLE` in the central error envelope. This diagnostic code/shape is an explicit working extension because the SAD does not fully define health payloads; the owner has authorised keeping it as a technical clarification; independent PR review remains required (see DEV-03).
 
 `createApp(options)` builds Express with no listening socket or DB connection. `index.js` owns startup/connection/shutdown. Tests can supply an isolated database-state function and register test-only routers; those test endpoints do not exist in the real server.
 
@@ -53,6 +53,23 @@ Domain schemas are intentionally not invented in this foundation. Read SAD §3.6
 
 ## Review before future changes
 Original SAD references `TOKEN_EXPIRED` but its error-table completeness needs clarification; don't invent client refresh behavior until auth PR agrees it. SEC-007/STP references material deletion while API catalogue completeness was flagged earlier; review the exact design and log the approved addition if needed. The foundation implements neither behavior and does not claim either discrepancy is resolved.
+
+## FR-030–FR-032 attempt integration boundary (this increment)
+
+- Real route: `POST /api/v1/quizzes/:quizId/attempts`. Layering: router → auth/role/schema middleware → controller → service/scorer → repository.
+- **Production startup supplies the shared `createAuthenticate()` middleware** to quiz and attempt routes through `createAuthenticatedFeatures()`. Bare `createApp()` calls remain fail-closed unless explicitly configured. The server never accepts identities from client JSON, fake tokens or custom identity headers. Test-only identity injection is not production authentication.
+- Wiring point: `createApp({ ..., attempts: { authenticate: actualVerifiedAuthMiddleware } })`; the middleware must populate trusted `req.auth = {userId, role, contributor}` with `userId` a stringified MongoDB ObjectId. Align the adapter once with Anisha's final context; do not duplicate JWT verification or add a dev bypass. Student (including contributor) allowed; educator/admin denied.
+- Repository reads only server-side `quizzes` scoring data, using `_id` + `status:'published'`, projection `_id,allowRetake,questions`. No competing Quiz schema is registered. Ayush must confirm stored question `_id`, `type`, `options`, `answerKey` and Boolean `allowRetake` match SAD. This private lookup is not a client quiz endpoint and does not make answer keys public.
+- Body follows SAD §4.3.4. Wrong types, unknown/duplicate question IDs are 400. Extra top-level client scores/identity/results are stripped and ignored. Null, omitted response or omitted question means unanswered; 0 and false remain valid answers.
+- Persist score/maxScore and the complete per-question historical outcome/correct-answer snapshot before returning 201. Response is `no-store`. The student attempt and immediate result screen is implemented at `/quizzes/:quizId/attempt`. History/dashboard remain separate Sprint 2 work.
+- Concurrent no-retake safety uses the proposed internal storage extension recorded as DEV-05: optional `retakeGuard` plus a partial unique index, alongside the required existing-attempt check. Multiple attempts remain allowed for `allowRetake:true`. Review the extension with the database owner before integration.
+- MongoDB is required; no in-memory fallback for application persistence. Index build/DB failures fail the request rather than produce a false 201. Tests inject mock repositories separately; the supplied real MongoDB script verifies storage and races in an isolated random test database.
+- Do not close #26 until real verified-auth/published-quiz integration and relevant acceptance evidence pass. FR-031 scorer and FR-032 UI have isolated test evidence; do not mark the full integrated flow Done until real authentication/quiz-route wiring is verified.
+
+- Optional repository adapter: `createAttemptRepository({ findQuizForScoring: createQuizService().getQuizForScoring })` can reuse Ayush’s server-only lookup. This is never imported by the client. Production now uses this private adapter; the direct collection lookup is retained for isolated repository use.
+- Frontend uses the existing shared Axios instance. The student entry page signs in through the real `/auth/login`, keeps access tokens only in React memory and passes Bearer headers explicitly. It does not persist tokens or accept server identity through URL/body fields. It requires re-login on 401; automatic token refresh remains shared-client follow-up work.
+- Public quiz GET is validated/projected to public fields. Answer keys are shown only from the acknowledged submission response. Results appear without a page reload; 0 and false are preserved, omitted/null answers remain blank.
+- The new AppRoutes is mounted inside the existing BrowserRouter in main.jsx. Coordinate later route additions in the same router rather than nesting another BrowserRouter.
 
 ## Registration Contract — FR-001
 
