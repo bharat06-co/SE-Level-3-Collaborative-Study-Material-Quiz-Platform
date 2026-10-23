@@ -10,7 +10,9 @@ Shared MERN foundation for UE24CS341A. **This is a starter, not a completed feat
 - Push/PR GitHub Actions workflow and coverage artifacts.
 - Docker Compose scaffold for nginx, API and MongoDB 7, with persistent named volumes and no published database port.
 
-**Not implemented:** user accounts/authentication, any domain models or feature endpoints/screens, seed users, file/mail adapters, rate limits, deployment TLS, SonarQube integration, load/availability/security acceptance suites, or the final product. The baseline key guard is NOT full SEC-004 compliance. No issue should be closed just because this scaffold was merged.
+**Attempt submission increment:** guarded `POST /api/v1/quizzes/:quizId/attempts`, validation, scoring, persistence and concurrent no-retake protection are implemented. Real bearer-token authentication is not wired yet, so the default runtime returns 401 for submission. See `docs/FR030_031_032_IMPLEMENTATION.md`.
+
+**Not implemented:** user accounts/authentication, other domain models/endpoints, feature screens, seed users, file/mail adapters, rate limits, deployment TLS, SonarQube integration, load/availability/security acceptance suites, or the final product. The baseline key guard is NOT full SEC-004 compliance. No issue should be closed just because this scaffold was merged.
 
 ## Prerequisites
 Choose ONE running method below. For coding, use the local development method; Docker is a convenient alternative to check the built starter.
@@ -209,6 +211,13 @@ The full dependency audit currently reports moderate findings in a test-only cov
 - Backlog: https://github.com/users/bharat06-co/projects/1/views/1
 - Sprint 1: 17–23 Oct 2026. Sprint 2: 24–30 Oct 2026.
 - See `docs/DEVIATIONS.md` for recorded working clarifications; submitted PDFs/history remain untouched.
+
+## Bharat’s FR-030, FR-031 and FR-032 increment
+
+Student screen: `/quizzes/:quizId/attempt` (a real published quiz ID is required). Backend: `POST /api/v1/quizzes/:quizId/attempts`. Read `docs/FR030_031_032_IMPLEMENTATION.md` for the combined scope and evidence.
+
+Normal startup now uses the merged shared JWT middleware and quiz service through `createAuthenticatedFeatures()`. Open `/attempt` to sign in with a real student account and enter a published quiz ID, or use the direct attempt route. Access tokens stay in React memory and must be re-entered through login after reload. See `docs/FR030_AUTH_INTEGRATION_VERIFICATION.md` for current evidence and limitations.
+
 ## C. Local development without Docker
 
 These instructions assume MongoDB Community Server and `mongosh` are installed locally.

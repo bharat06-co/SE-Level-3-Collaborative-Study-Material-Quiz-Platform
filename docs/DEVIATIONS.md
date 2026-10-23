@@ -43,3 +43,22 @@ SRS v1.2 prints 28 but enumerates 27 (6 accounts, 9 material, 7 quiz/leaderboard
 - No change to submitted PDFs, FR IDs, business APIs or feature ownership.
 - Verification: see the regenerated `docs/FOUNDATION_TEST_REPORT.md` for actual Node 24 clean-install, lint/tests/build and integration results. Docker and remote GitHub Actions still require execution on their actual environments.
 - Status: OWNER-AUTHORISED change, subject to independent foundation PR review; no faculty approval is implied.
+
+
+## DEV-05 — Proposed attempt race guard and historical feedback fields
+- Status: IMPLEMENTED IN FR-030 BRANCH, pending owner/database-lead review; no peer/faculty approval is claimed.
+- SAD §4.1.1 specifies a service check and a simultaneous-submission test for BR-2. A check followed by an insert alone races across requests/processes; a simple unique quiz/student index would incorrectly forbid all allowed retakes.
+- Preserve the service check. Add optional internal `retakeGuard = quizId + ':' + studentId` only on an insert performed with `allowRetake:false`, protected by partial unique index `attempt_no_retake_guard` (filter: guard is a string). Map collisions on that specific key to 409 RETAKE_NOT_ALLOWED. Allowed retakes have no guard and remain unrestricted.
+- Indexes are ensured before inserting. Existing non-retake history created by this or earlier implementations still prevents later attempts through the service check. Other writers must use the same repository/rule; direct database writes are not protected against bypassing application policy.
+- `answers` additionally stores `correctAnswer` and `unanswered` with response/isCorrect. This preserves the actual submission feedback when quiz answer keys change (D-3) without introducing quiz versioning or altering the required public response.
+- No new collection or transaction/replica-set requirement. Real MongoDB race tests passed for independent Express/repository instances sharing the database.
+- The quiz's status/retake policy is read as a submission snapshot. Concurrent author edits/unpublish operations are not serialized with submission; cross-operation atomicity is not claimed. Coordinate any stronger policy with Ayush.
+- No submitted PDF changed and no claim this extension was original SRS wording.
+
+
+## DEV-06 — SEC-004 defensive traversal and plain-text working policy
+- Proposed implementation clarification, pending owner/integration review; not original SRS numeric limits or faculty approval.
+- Bound shared parsed-input traversal to depth 64 and 20,000 visited values. Iterative traversal rejects excessive complexity with 400 rather than recursive stack exhaustion. Reject reserved `__proto__`, `prototype`, and `constructor` keys as well as MongoDB operator/dotted keys. String values are preserved.
+- Plain-text comments preserve markup literally in storage and use context-safe React text nodes on output. Do not HTML-encode stored strings or add a production test-comment endpoint.
+- Plain-text helper trims outside whitespace, checks JavaScript UTF-16 length (default 1–1000 for comments), and rejects null bytes. Apply feature-specific bounds for other fields; do not apply trimming to passwords.
+- This shared implementation is not evidence that unmerged feature modules or the future FR-014 comment page already satisfy end-to-end SEC-004 acceptance.

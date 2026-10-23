@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from './App';
-import QuizAuthoringPage from './features/quizzes/QuizAuthoringPage';
-ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><Routes><Route path="/" element={<App />} /><Route path="/quizzes" element={<QuizAuthoringPage />} /></Routes></BrowserRouter></React.StrictMode>);
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './AppRoutes';
+ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AppRoutes /></BrowserRouter></React.StrictMode>);

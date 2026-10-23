@@ -3,7 +3,7 @@ const { readEnv } = require('./config/env');
 const { createLogger } = require('./config/logger');
 const { connectDatabase, disconnectDatabase, databaseIsConnected } = require('./config/database');
 const { createApp } = require('./app');
-const { createAuthenticate } = require('./middleware/authenticate');
+const { createAuthenticatedFeatures } = require('./config/features');
 
 async function start() {
   const config = readEnv();
@@ -15,7 +15,7 @@ async function start() {
     trustProxyHops: config.TRUST_PROXY_HOPS,
     databaseIsConnected,
     logger,
-    quizAuthenticate: createAuthenticate(),
+    ...createAuthenticatedFeatures(),
   });
   const server = app.listen(config.PORT, '0.0.0.0', () => logger.info({ port: config.PORT }, 'API started'));
   server.on('error', async () => { logger.error('API listen failed'); await disconnectDatabase(); process.exitCode = 1; });
