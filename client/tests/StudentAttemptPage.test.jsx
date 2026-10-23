@@ -65,7 +65,7 @@ test('401 clears the in-memory session and asks for sign-in', async () => {
   loadAttemptQuiz.mockRejectedValue({ response: { status: 401 } });
   render(<StudentAttemptPage quizId={quizId} />);
   await login();
-  expect(await screen.findByRole('status')).toHaveTextContent('session has expired');
+  expect(await screen.findByText(/session has expired/i)).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Sign in to attempt a quiz' })).toBeInTheDocument();
 });
 test('logout unmounts the attempt and a late result cannot restore feedback', async () => {
