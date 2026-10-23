@@ -95,6 +95,24 @@ function createMaterialsRouter({ service, authMiddleware } = {}) {
     return res.json(materialView(document, req.auth));
   }));
 
+  router.get('/materials', asyncHandler(async (req, res) => {
+    const result = await service.searchMaterials(req.auth, req.query);
+    return res.json({
+      items: result.items.map((document) => materialView(document, req.auth)),
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+    });
+  }));
+
+  const handleUpdateVisibility = asyncHandler(async (req, res) => {
+    const document = await service.updateVisibility(req.auth, req.params.id, req.body);
+    return res.json(materialView(document, req.auth));
+  });
+
+  router.patch('/materials/:id/visibility', handleUpdateVisibility);
+  router.patch('/materials/:id', handleUpdateVisibility);
+
   return router;
 }
 

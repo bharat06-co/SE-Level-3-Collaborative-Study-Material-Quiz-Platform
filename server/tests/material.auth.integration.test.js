@@ -400,6 +400,10 @@ describe('Materials with the shared authentication middleware', () => {
 
     let getBuilder = request(app).get(`/api/v1/materials/${id}`);
     let fileBuilder = request(app).get(`/api/v1/materials/${id}/file`);
+    let listBuilder = request(app).get('/api/v1/materials');
+    let patchBuilder = request(app)
+      .patch(`/api/v1/materials/${id}`)
+      .send({ visibility: 'public' });
     let postBuilder = request(app)
       .post('/api/v1/materials')
       .field('title', FIELDS.title)
@@ -416,12 +420,16 @@ describe('Materials with the shared authentication middleware', () => {
     if (authorization !== undefined) {
       getBuilder = getBuilder.set('Authorization', authorization);
       fileBuilder = fileBuilder.set('Authorization', authorization);
+      listBuilder = listBuilder.set('Authorization', authorization);
+      patchBuilder = patchBuilder.set('Authorization', authorization);
       postBuilder = postBuilder.set('Authorization', authorization);
     }
 
-    const [getResponse, fileResponse, postResponse] = await Promise.all([
+    const [getResponse, fileResponse, listResponse, patchResponse, postResponse] = await Promise.all([
       getBuilder,
       fileBuilder,
+      listBuilder,
+      patchBuilder,
       postBuilder,
     ]);
 
@@ -429,6 +437,10 @@ describe('Materials with the shared authentication middleware', () => {
     expect(getResponse.body.error.code).toBe(expectedCode);
     expect(fileResponse.status).toBe(401);
     expect(fileResponse.body.error.code).toBe(expectedCode);
+    expect(listResponse.status).toBe(401);
+    expect(listResponse.body.error.code).toBe(expectedCode);
+    expect(patchResponse.status).toBe(401);
+    expect(patchResponse.body.error.code).toBe(expectedCode);
     expect(postResponse.status).toBe(401);
     expect(postResponse.body.error.code).toBe(expectedCode);
   });
@@ -503,5 +515,76 @@ describe('Materials with the shared authentication middleware', () => {
       .get(`/api/v1/materials/${new mongoose.Types.ObjectId()}`)
       .set('Authorization', `Bearer ${token}`);
     expect(unknown.status).toBe(404);
+  });
+
+  test('end-to-end: owner uploads private material, updates to shared, then to public', async () => {
+    const { token: ownerToken } = await createAndLogin({
+      name: 'Owner Student',
+      email: 'owner1@example.com',
+      contributor: true,
+    });
+    const { token: student2Token, user: student2 } = await createAndLogin({
+      name: 'Second Student',
+      email: 'student2@example.com',
+    });
+    const { token: student3Token } = await createAndLogin({
+      name: 'Third Student',
+      email: 'student3@example.com',
+    });
+
+    // 1. Owner uploads material -> initially private
+    const uploadRes = await uploadRequest(ownerToken, { expectStatus: 201 });
+    const materialId = uploadRes.body.id;
+
+    // 2. Student 2 and Student 3 search -> 0 results
+    const s2SearchInitial = await request(app)
+      .get('/api/v1/materials')
+      .set('Authorization', `Bearer ${student2Token}`);
+    expect(s2SearchInitial.status).toBe(200);
+    expect(s2SearchInitial.body.items).toHaveLength(0);
+
+    const s3SearchInitial = await request(app)
+      .get('/api/v1/materials')
+      .set('Authorization', `Bearer ${student3Token}`);
+    expect(s3SearchInitial.body.items).toHaveLength(0);
+
+    // 3. Owner updates visibility to shared with student2
+    const patchRes = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .set('Authorization', `Bearer ${ownerToken}`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [student2._id.toString()],
+      });
+    expect(patchRes.status).toBe(200);
+    expect(patchRes.body.visibility).toBe('shared');
+
+    // 4. Student 2 searches -> sees the material
+    const s2SearchShared = await request(app)
+      .get('/api/v1/materials')
+      .set('Authorization', `Bearer ${student2Token}`);
+    expect(s2SearchShared.body.items).toHaveLength(1);
+    expect(s2SearchShared.body.items[0].id).toBe(materialId);
+
+    // Student 3 still does not see it
+    const s3SearchShared = await request(app)
+      .get('/api/v1/materials')
+      .set('Authorization', `Bearer ${student3Token}`);
+    expect(s3SearchShared.body.items).toHaveLength(0);
+
+    // 5. Owner updates visibility to public
+    const patchPublicRes = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .set('Authorization', `Bearer ${ownerToken}`)
+      .send({ visibility: 'public' });
+    expect(patchPublicRes.status).toBe(200);
+    expect(patchPublicRes.body.visibility).toBe('public');
+
+    // 6. Now student 3 also searches and sees it
+    const s3SearchPublic = await request(app)
+      .get('/api/v1/materials')
+      .set('Authorization', `Bearer ${student3Token}`);
+    expect(s3SearchPublic.body.items).toHaveLength(1);
+    expect(s3SearchPublic.body.items[0].id).toBe(materialId);
   });
 });

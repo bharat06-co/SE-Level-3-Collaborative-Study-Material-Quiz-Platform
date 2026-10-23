@@ -53,7 +53,12 @@ describe('Material service (unit, mocked repository/storage)', () => {
   let service;
 
   beforeEach(() => {
-    repository = { create: jest.fn(async (doc) => ({ ...doc })), findById: jest.fn() };
+    repository = {
+      create: jest.fn(async (doc) => ({ ...doc })),
+      findById: jest.fn(),
+      list: jest.fn(async () => ({ items: [], page: 1, limit: 20, total: 0 })),
+      update: jest.fn(async (id, data) => ({ _id: id, ...data })),
+    };
     storage = { put: jest.fn(async () => ({ key: '' })), get: jest.fn(), remove: jest.fn(async () => ({})) };
     service = createMaterialService({ repository, storage });
   });
@@ -239,5 +244,115 @@ describe('Material service (unit, mocked repository/storage)', () => {
 
     storage.get.mockResolvedValueOnce('not a buffer');
     await expect(service.getMaterialFile(contributorAuth, materialId)).rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
+  });
+
+  describe('searchMaterials', () => {
+    test('requires authentication', async () => {
+      await expect(service.searchMaterials(undefined, {})).rejects.toMatchObject({ statusCode: 401, code: 'UNAUTHENTICATED' });
+    });
+
+    test('builds visibility-safe filter for non-admin user', async () => {
+      await service.searchMaterials(contributorAuth, { q: 'sql', category: 'Notes', tag: 'dbms', topic: 'rdbms' });
+
+      expect(repository.list).toHaveBeenCalledWith(
+        expect.objectContaining({
+          $or: expect.arrayContaining([
+            { visibility: 'public', hidden: false },
+            { ownerId: expect.anything() },
+            { visibility: 'shared', hidden: false, sharedWith: expect.anything() },
+          ]),
+          $text: { $search: 'sql' },
+          tags: 'dbms',
+          category: expect.any(RegExp),
+          topic: expect.any(RegExp),
+        }),
+        1,
+        20,
+        expect.any(Object),
+      );
+    });
+
+    test('admin searches without $or visibility constraint', async () => {
+      await service.searchMaterials(adminAuth, { q: 'all' });
+      expect(repository.list).toHaveBeenCalledWith(
+        expect.not.objectContaining({ $or: expect.anything() }),
+        1,
+        20,
+        expect.any(Object),
+      );
+    });
+
+    test('rejects invalid limit or page', async () => {
+      await expect(service.searchMaterials(contributorAuth, { limit: 100 })).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+      await expect(service.searchMaterials(contributorAuth, { page: 0 })).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+    });
+  });
+
+  describe('updateVisibility', () => {
+    test('requires authentication and valid material ID', async () => {
+      await expect(service.updateVisibility(undefined, materialId, { visibility: 'public' })).rejects.toMatchObject({
+        statusCode: 401,
+        code: 'UNAUTHENTICATED',
+      });
+      await expect(service.updateVisibility(contributorAuth, 'bad-id', { visibility: 'public' })).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+    });
+
+    test('rejects non-owner modification with 403 FORBIDDEN', async () => {
+      repository.findById.mockResolvedValue(materialDocument({ ownerId: '64ff31e5fe2f1f25a49f4b99' }));
+      await expect(service.updateVisibility(contributorAuth, materialId, { visibility: 'public' })).rejects.toMatchObject({
+        statusCode: 403,
+        code: 'FORBIDDEN',
+      });
+    });
+
+    test('owner can update to shared with sharedWith user array', async () => {
+      repository.findById.mockResolvedValue(materialDocument());
+      await service.updateVisibility(contributorAuth, materialId, {
+        visibility: 'shared',
+        sharedWith: [sharedUserId],
+      });
+
+      expect(repository.update).toHaveBeenCalledWith(
+        materialId,
+        expect.objectContaining({
+          visibility: 'shared',
+          sharedWith: expect.arrayContaining([expect.anything()]),
+        }),
+      );
+    });
+
+    test('updating to public or private clears sharedWith', async () => {
+      repository.findById.mockResolvedValue(materialDocument({ visibility: 'shared', sharedWith: [sharedUserId] }));
+      await service.updateVisibility(contributorAuth, materialId, { visibility: 'public' });
+      expect(repository.update).toHaveBeenCalledWith(materialId, { visibility: 'public', sharedWith: [] });
+
+      await service.updateVisibility(contributorAuth, materialId, { visibility: 'private' });
+      expect(repository.update).toHaveBeenCalledWith(materialId, { visibility: 'private', sharedWith: [] });
+    });
+
+    test('admin can update visibility on another user material', async () => {
+      repository.findById.mockResolvedValue(materialDocument({ ownerId: '64ff31e5fe2f1f25a49f4b99' }));
+      await service.updateVisibility(adminAuth, materialId, { visibility: 'public' });
+      expect(repository.update).toHaveBeenCalled();
+    });
+
+    test('rejects shared visibility with empty sharedWith array', async () => {
+      repository.findById.mockResolvedValue(materialDocument());
+      await expect(
+        service.updateVisibility(contributorAuth, materialId, { visibility: 'shared', sharedWith: [] }),
+      ).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+    });
   });
 });
