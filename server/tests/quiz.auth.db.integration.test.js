@@ -129,6 +129,10 @@ describe('authenticated quiz flow with MongoDB', () => {
     const created = await request(app).post(path).set('Authorization', owner).send(quiz);
     expect(created.status).toBe(201);
     const id = created.body.id;
+    const ownerEdited = await request(app).put(`${path}/${id}`).set('Authorization', owner)
+      .send({ title: 'Owner edited quiz' });
+    expect(ownerEdited.status).toBe(200);
+    expect(ownerEdited.body.title).toBe('Owner edited quiz');
 
     expect((await request(app).get(`${path}/${id}`).set('Authorization', other)).status).toBe(404);
     const original = await Quiz.findById(id).lean();
