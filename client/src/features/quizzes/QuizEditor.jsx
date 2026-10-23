@@ -94,72 +94,72 @@ function QuizEditorForm({ initialQuiz, onSaved, onPublicationChange, save = save
       <p>Current status: <strong>{status}</strong></p>
       <form onSubmit={handleSave} noValidate aria-label="Quiz editor" aria-busy={busy}>
         <fieldset className="quiz-editor-form-fields" disabled={busy}>
-        <label>Title
-          <input value={title} onChange={(event) => { setTitle(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.title)} />
-          {errors.title && <span role="alert">{errors.title}</span>}
-        </label>
-        <label>Topic
-          <input value={topic} onChange={(event) => { setTopic(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.topic)} />
-          {errors.topic && <span role="alert">{errors.topic}</span>}
-        </label>
-        <label className="quiz-editor-check"><input type="checkbox" checked={allowRetake} onChange={(event) => { setAllowRetake(event.target.checked); setDirty(true); }} />Allow retakes</label>
-        {initialQuiz && !replaceQuestions && (
-          <section>
-            <h2>Questions</h2>
-            <p>Existing answer keys are hidden in quiz responses. Replace all questions to enter new keys.</p>
-            <ol>{initialQuiz.questions?.map((q) => <li key={q.id}>{q.text}</li>)}</ol>
-            <button type="button" onClick={() => { setReplaceQuestions(true); setDirty(true); }}>Replace questions</button>
-          </section>
-        )}
-        {replaceQuestions && (
-          <section aria-labelledby="questions-title">
-            <h2 id="questions-title">Questions</h2>
-            {questions.map((q, index) => (
-              <fieldset key={index}>
-                <legend>Question {index + 1}</legend>
-                <label>Question text
-                  <input value={q.text} onChange={(event) => changeQuestion(index, { text: event.target.value })} aria-invalid={Boolean(errors[`question-${index}`])} />
-                  {errors[`question-${index}`] && <span role="alert">{errors[`question-${index}`]}</span>}
-                </label>
-                <label>Type
-                  <select value={q.type} onChange={(event) => changeType(index, event.target.value)}>
-                    <option value="mcq">Multiple choice</option><option value="true_false">True or false</option>
-                  </select>
-                </label>
-                {q.type === 'mcq' ? (
-                  <div>
-                    {q.options.map((option, optionIndex) => (
-                      <label key={optionIndex}>Option {optionIndex + 1}
-                        <input value={option} onChange={(event) => changeQuestion(index, { options: q.options.map((value, i) => i === optionIndex ? event.target.value : value) })} />
+          <label>Title
+            <input value={title} onChange={(event) => { setTitle(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.title)} />
+            {errors.title && <span role="alert">{errors.title}</span>}
+          </label>
+          <label>Topic
+            <input value={topic} onChange={(event) => { setTopic(event.target.value); setDirty(true); }} aria-invalid={Boolean(errors.topic)} />
+            {errors.topic && <span role="alert">{errors.topic}</span>}
+          </label>
+          <label className="quiz-editor-check"><input type="checkbox" checked={allowRetake} onChange={(event) => { setAllowRetake(event.target.checked); setDirty(true); }} />Allow retakes</label>
+          {initialQuiz && !replaceQuestions && (
+            <section>
+              <h2>Questions</h2>
+              <p>Existing answer keys are hidden in quiz responses. Replace all questions to enter new keys.</p>
+              <ol>{initialQuiz.questions?.map((q) => <li key={q.id}>{q.text}</li>)}</ol>
+              <button type="button" onClick={() => { setReplaceQuestions(true); setDirty(true); }}>Replace questions</button>
+            </section>
+          )}
+          {replaceQuestions && (
+            <section aria-labelledby="questions-title">
+              <h2 id="questions-title">Questions</h2>
+              {questions.map((q, index) => (
+                <fieldset key={index}>
+                  <legend>Question {index + 1}</legend>
+                  <label>Question text
+                    <input value={q.text} onChange={(event) => changeQuestion(index, { text: event.target.value })} aria-invalid={Boolean(errors[`question-${index}`])} />
+                    {errors[`question-${index}`] && <span role="alert">{errors[`question-${index}`]}</span>}
+                  </label>
+                  <label>Type
+                    <select value={q.type} onChange={(event) => changeType(index, event.target.value)}>
+                      <option value="mcq">Multiple choice</option><option value="true_false">True or false</option>
+                    </select>
+                  </label>
+                  {q.type === 'mcq' ? (
+                    <div>
+                      {q.options.map((option, optionIndex) => (
+                        <label key={optionIndex}>Option {optionIndex + 1}
+                          <input value={option} onChange={(event) => changeQuestion(index, { options: q.options.map((value, i) => i === optionIndex ? event.target.value : value) })} />
+                        </label>
+                      ))}
+                      {errors[`options-${index}`] && <span role="alert">{errors[`options-${index}`]}</span>}
+                      <button type="button" disabled={q.options.length >= 6} onClick={() => changeQuestion(index, { options: [...q.options, ''] })}>Add option</button>
+                      <button type="button" disabled={q.options.length <= 2} onClick={() => changeQuestion(index, { options: q.options.slice(0, -1), answerKey: q.answerKey === q.options.length - 1 ? null : q.answerKey })}>Remove last option</button>
+                      <label>Correct option
+                        <select value={q.answerKey ?? ''} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : Number(event.target.value) })}>
+                          <option value="">Choose an option</option>
+                          {q.options.map((_, optionIndex) => <option key={optionIndex} value={optionIndex}>Option {optionIndex + 1}</option>)}
+                        </select>
+                        {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
                       </label>
-                    ))}
-                    {errors[`options-${index}`] && <span role="alert">{errors[`options-${index}`]}</span>}
-                    <button type="button" disabled={q.options.length >= 6} onClick={() => changeQuestion(index, { options: [...q.options, ''] })}>Add option</button>
-                    <button type="button" disabled={q.options.length <= 2} onClick={() => changeQuestion(index, { options: q.options.slice(0, -1), answerKey: q.answerKey === q.options.length - 1 ? null : q.answerKey })}>Remove last option</button>
-                    <label>Correct option
-                      <select value={q.answerKey ?? ''} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : Number(event.target.value) })}>
-                        <option value="">Choose an option</option>
-                        {q.options.map((_, optionIndex) => <option key={optionIndex} value={optionIndex}>Option {optionIndex + 1}</option>)}
+                    </div>
+                  ) : (
+                    <label>Correct answer
+                      <select value={q.answerKey === null ? '' : String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : event.target.value === 'true' })}>
+                        <option value="">Choose an answer</option>
+                        <option value="false">False</option><option value="true">True</option>
                       </select>
                       {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
                     </label>
-                  </div>
-                ) : (
-                  <label>Correct answer
-                    <select value={q.answerKey === null ? '' : String(q.answerKey)} onChange={(event) => changeQuestion(index, { answerKey: event.target.value === '' ? null : event.target.value === 'true' })}>
-                      <option value="">Choose an answer</option>
-                      <option value="false">False</option><option value="true">True</option>
-                    </select>
-                    {errors[`answer-${index}`] && <span role="alert">{errors[`answer-${index}`]}</span>}
-                  </label>
-                )}
-                <button type="button" onClick={() => { setQuestions((current) => current.filter((_, i) => i !== index)); setDirty(true); }}>Remove question {index + 1}</button>
-              </fieldset>
-            ))}
-            <button type="button" onClick={() => { setQuestions((current) => [...current, newQuestion()]); setDirty(true); }}>Add question</button>
-          </section>
-        )}
-        <button type="submit">{id ? 'Save changes' : 'Save draft'}</button>
+                  )}
+                  <button type="button" onClick={() => { setQuestions((current) => current.filter((_, i) => i !== index)); setDirty(true); }}>Remove question {index + 1}</button>
+                </fieldset>
+              ))}
+              <button type="button" onClick={() => { setQuestions((current) => [...current, newQuestion()]); setDirty(true); }}>Add question</button>
+            </section>
+          )}
+          <button type="submit">{id ? 'Save changes' : 'Save draft'}</button>
         </fieldset>
       </form>
       {id && <div className="quiz-editor-actions">
