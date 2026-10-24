@@ -12,6 +12,41 @@ const metadataSchema = z.object({
   rightsConfirmed: z.literal('true'),
 });
 
+const optionalSearchText = (max) =>
+  z.string()
+    .trim()
+    .max(max)
+    .optional()
+    .transform((val) => (val && val.length > 0 ? val : undefined));
+
+const searchQuerySchema = z.object({
+  q: optionalSearchText(200),
+  tag: optionalSearchText(30),
+  category: optionalSearchText(100),
+  topic: optionalSearchText(100),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+}).strict();
+
+const updateVisibilitySchema = z.object({
+  visibility: z.enum(['private', 'shared', 'public']).optional(),
+  sharedWith: z.array(z.string().regex(/^[a-f\d]{24}$/i, 'Invalid user ID in sharedWith')).optional(),
+}).strict().refine((data) => data.visibility !== undefined || data.sharedWith !== undefined, {
+  message: 'At least one of visibility or sharedWith must be provided.',
+}).refine((data) => {
+  if (data.visibility === 'shared') {
+    return Array.isArray(data.sharedWith) && data.sharedWith.length > 0;
+  }
+  return true;
+}, {
+  message: 'sharedWith must contain at least one user ID when visibility is shared.',
+  path: ['sharedWith'],
+});
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function normalizeTags(tagsInput) {
   if (typeof tagsInput !== 'string' || tagsInput.trim().length === 0) {
     throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: 'Provide 1-10 tags.' }]);
@@ -146,7 +181,91 @@ function createMaterialService({ repository, storage } = {}) {
     return { document, bytes };
   }
 
-  return { uploadMaterial, getMaterial, getMaterialFile };
+  async function searchMaterials(auth, queryInput) {
+    requireAuth(auth);
+
+    const parsed = searchQuerySchema.safeParse(queryInput || {});
+    if (!parsed.success) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(parsed.error));
+    }
+    const { q, tag, category, topic, page, limit } = parsed.data;
+
+    const filter = {};
+
+    if (auth.role !== 'admin') {
+      const userObjectId = new mongoose.Types.ObjectId(auth.userId);
+      filter.$or = [
+        { visibility: 'public', hidden: false },
+        { ownerId: userObjectId },
+        { visibility: 'shared', hidden: false, sharedWith: userObjectId },
+      ];
+    }
+
+    if (q) {
+      filter.$text = { $search: q };
+    }
+    if (tag) {
+      filter.tags = tag.toLowerCase();
+    }
+    if (category) {
+      filter.category = new RegExp(`^${escapeRegex(category)}$`, 'i');
+    }
+    if (topic) {
+      filter.topic = new RegExp(`^${escapeRegex(topic)}$`, 'i');
+    }
+
+    const sort = q ? { score: { $meta: 'textScore' }, createdAt: -1 } : { createdAt: -1 };
+    return repository.list(filter, page, limit, sort);
+  }
+
+  async function updateVisibility(auth, id, updateInput) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const parsed = updateVisibilitySchema.safeParse(updateInput);
+    if (!parsed.success) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(parsed.error));
+    }
+
+    const document = await repository.findById(id);
+    if (!document) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+
+    if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
+      throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can modify material visibility.');
+    }
+
+    const { visibility, sharedWith } = parsed.data;
+    const updateData = {};
+
+    if (visibility) {
+      updateData.visibility = visibility;
+    }
+
+    const targetVisibility = visibility || document.visibility;
+
+    if (targetVisibility === 'private' || targetVisibility === 'public') {
+      updateData.sharedWith = [];
+    } else if (targetVisibility === 'shared') {
+      const ownerId = String(document.ownerId).toLowerCase();
+      const candidates = sharedWith !== undefined
+        ? sharedWith
+        : (document.sharedWith || []).map(String);
+      const unique = [...new Set(candidates.map((userId) => String(userId).toLowerCase()))]
+        .filter((userId) => userId !== ownerId);
+      if (unique.length === 0) {
+        throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
+          { field: 'sharedWith', message: 'At least one other user must be shared with.' },
+        ]);
+      }
+      updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
+    }
+
+    return repository.update(id, updateData);
+  }
+
+  return { uploadMaterial, getMaterial, getMaterialFile, searchMaterials, updateVisibility };
 }
 
 module.exports = { createMaterialService, MAX_FILE_SIZE_BYTES };

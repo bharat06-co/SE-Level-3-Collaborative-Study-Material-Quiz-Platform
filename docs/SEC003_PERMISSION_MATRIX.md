@@ -26,19 +26,23 @@ S = plain student; C = student contributor; E = educator; A = admin.
 | Quiz delete | DELETE /api/v1/quizzes/:id | Authorised C/E owner or A:204; persisted record absent | Other author/plain S:403, snapshot unchanged | quiz.delete |
 | Submit attempt | POST /api/v1/quizzes/:quizId/attempts | S/C:201; stored studentId verified | E/A:403, no write | attempt.submit |
 | Upload material | POST /api/v1/materials | C/E:201; private owner + exact stored file bytes checked | S/A:403, no record/file write | material.upload |
+| Material search/list | GET /api/v1/materials | S/C/E/A:200; only visible items returned | Private/unlisted-shared/hidden items absent; no storageKey leak | material.list |
 | Material detail | GET /api/v1/materials/:id | Owner/A; public; explicitly shared recipient:200 | Private/unlisted-shared/hidden outsider:404 | material detail/download |
 | Material download | GET /api/v1/materials/:id/file | Same access rules:200; exact file bytes checked | Inaccessible:404, no stored changes | material detail/download |
+| Material visibility update | PATCH /api/v1/materials/:id | Owner/A:200; persisted visibility/sharedWith checked | Non-owner:403; DB/files unchanged | material.visibility |
+| Material visibility alias | PATCH /api/v1/materials/:id/visibility | Same rules:200; persisted visibility/sharedWith checked | Non-owner:403; DB/files unchanged | material.visibility.alias |
 
-There are 13 distinct current-main method/path operations; query/state variants expand the matrix. Every distinct operation is also checked with both missing and invalid tokens. Expected failures are 401 UNAUTHENTICATED and 401 TOKEN_INVALID respectively, with complete domain/user records and file hashes unchanged.
+There are 16 distinct method/path operations in this PR extension; query/state variants expand the matrix. Every distinct operation is also checked with both missing and invalid tokens. Expected failures are 401 UNAUTHENTICATED and 401 TOKEN_INVALID respectively, with complete domain/user records and file hashes unchanged.
 
 ## Database-fresh permissions
 The additional lifecycle test verifies with the same JWT: denied plain-student upload; admin grant; allowed upload and quiz create; admin revoke; denied upload and quiz edit with existing records/files unchanged. Demoting an admin in the DB also makes their existing JWT lose admin list/update access immediately.
 
-## Independent execution on current main + this suite
+## Independent execution on PR #70 + this suite
 `npm run check`: PASS.
-- Backend: 395 tests, 19 suites passed (109 new matrix tests; baseline 286).
+- Backend: 463 tests, 19 suites passed (142 new matrix tests; baseline 321).
 - Frontend: 74 tests, 10 suites passed.
 - ESLint with zero warnings and production build passed.
+- Server coverage: 94.79% statements / 87.94% branches / 97.51% functions / 97.39% lines.
 
 ## Existing evidence reused
 - admin.test.js: input validation, sanitised responses and role/contributor updates.
@@ -55,5 +59,5 @@ Current-main implemented endpoint coverage is ready for reviewer acceptance once
 
 Material metadata edit/delete operations remain outside this implemented matrix and tracked by #47 (with metadata feature #19 and the unresolved delete API contract). Their absence does not become “verified” merely because this suite passes. No whole-system/staging/security-certification claim is made.
 
-## Unmerged material branch
-Material branch `53c4117749238e5a9ee63a7e84bc778109e80a59` adds search and PATCH visibility endpoints plus #68 lifecycle evidence. Those changes are not in main. A separate local integrated extension verifies these operations; do not confuse this test-only main PR with merging Bose's feature changes. See the accompanying final report for actual extended results and transfer instructions.
+## PR #70 material extension
+PR #70 adds material search/list and the two visibility-update routes on top of the current-main matrix. This suite now verifies those endpoints across all five actors, including visibility-safe search results, owner/admin updates, non-owner 403 denials, missing/invalid token 401 responses and unchanged database/file snapshots after rejected calls. It does not merge Sprint 2 metadata editing or revision history; those remain future endpoint coverage.

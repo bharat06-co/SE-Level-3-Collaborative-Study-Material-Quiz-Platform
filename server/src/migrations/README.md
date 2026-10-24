@@ -48,6 +48,8 @@ to normal practice, and run it before deploying the API build that expects tags
 to be searchable. Document data is not modified.
 
 The automated tests use a temporary real MongoDB: they create the #59 index,
-insert material records, run this migration, verify the records survive and the
-new index contains `tags`, then rerun the migration to prove idempotence. Fresh
-database creation is covered separately.
+insert material records whose tags are not present in title/description, verify
+tag-only `$text` search does not match before migration, run this migration,
+verify the records survive and tag-only search now matches, then rerun the
+migration to prove idempotence and that tag search still works. Fresh database
+creation is covered separately.

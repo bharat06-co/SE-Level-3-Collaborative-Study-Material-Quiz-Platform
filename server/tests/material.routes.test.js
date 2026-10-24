@@ -397,3 +397,335 @@ describe('GET /api/v1/materials/:id and /file (FR-012, FR-013 integration)', () 
     expect(response.body.toString()).toContain('INTERNAL_ERROR');
   });
 });
+
+describe('GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10)', () => {
+  let material1Id;
+  let material2Id;
+
+  beforeEach(async () => {
+    material1Id = await uploadAs(contributorAuth, {
+      ...validFields,
+      title: 'Database Normalisation Notes',
+      category: 'Computer Science',
+      topic: 'dbms',
+      tags: 'normalisation, bcnf, 3nf',
+    });
+
+    material2Id = await uploadAs(educatorAuth, {
+      ...validFields,
+      title: 'Operating Systems Scheduling',
+      category: 'Systems',
+      topic: 'os',
+      tags: 'scheduling, cpu, processes',
+    });
+
+    // Make material2 public so others can discover it
+    await Material.updateOne({ _id: material2Id }, { $set: { visibility: 'public' } });
+  });
+
+  test('filters materials by category case-insensitively', async () => {
+    currentAuth = educatorAuth;
+    const app = appWithCurrentAuth();
+
+    const res = await request(app).get('/api/v1/materials?category=systems');
+    expect(res.status).toBe(200);
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0].id).toBe(material2Id);
+    expect(res.body.total).toBe(1);
+  });
+
+  test('filters materials by topic', async () => {
+    currentAuth = educatorAuth;
+    const app = appWithCurrentAuth();
+
+    const res = await request(app).get('/api/v1/materials?topic=os');
+    expect(res.status).toBe(200);
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0].topic).toBe('os');
+  });
+
+  test('filters materials by tag', async () => {
+    currentAuth = educatorAuth;
+    const app = appWithCurrentAuth();
+
+    const res = await request(app).get('/api/v1/materials?tag=cpu');
+    expect(res.status).toBe(200);
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0].tags).toContain('cpu');
+  });
+
+  test('full-text search matches keyword in title or tags', async () => {
+    currentAuth = educatorAuth;
+    const app = appWithCurrentAuth();
+
+    const res = await request(app).get('/api/v1/materials?q=scheduling');
+    expect(res.status).toBe(200);
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0].title).toContain('Operating Systems Scheduling');
+  });
+
+  test('visibility-safe scoping: private material is only returned for owner and admin', async () => {
+    const otherApp = appWithCurrentAuth();
+
+    // otherStudent only sees the public material, not contributor's private material
+    currentAuth = otherStudentAuth;
+    const otherRes = await request(otherApp).get('/api/v1/materials');
+    expect(otherRes.status).toBe(200);
+    const otherIds = otherRes.body.items.map((m) => m.id);
+    expect(otherIds).toContain(material2Id);
+    expect(otherIds).not.toContain(material1Id);
+
+    // contributor sees their own private material as well as public
+    currentAuth = contributorAuth;
+    const ownerRes = await request(otherApp).get('/api/v1/materials');
+    expect(ownerRes.status).toBe(200);
+    const ownerIds = ownerRes.body.items.map((m) => m.id);
+    expect(ownerIds).toContain(material1Id);
+    expect(ownerIds).toContain(material2Id);
+
+    // admin sees all materials
+    currentAuth = adminAuth;
+    const adminRes = await request(otherApp).get('/api/v1/materials');
+    expect(adminRes.status).toBe(200);
+    const adminIds = adminRes.body.items.map((m) => m.id);
+    expect(adminIds).toContain(material1Id);
+    expect(adminIds).toContain(material2Id);
+  });
+
+  test('shared material appears only for listed users', async () => {
+    await Material.updateOne(
+      { _id: material1Id },
+      { $set: { visibility: 'shared', sharedWith: [sharedStudentAuth.userId] } },
+    );
+
+    const app = appWithCurrentAuth();
+
+    // shared student sees the shared material
+    currentAuth = sharedStudentAuth;
+    const sharedRes = await request(app).get('/api/v1/materials');
+    expect(sharedRes.status).toBe(200);
+    expect(sharedRes.body.items.map((m) => m.id)).toContain(material1Id);
+
+    // other student does not see the shared material
+    currentAuth = otherStudentAuth;
+    const otherRes = await request(app).get('/api/v1/materials');
+    expect(otherRes.status).toBe(200);
+    expect(otherRes.body.items.map((m) => m.id)).not.toContain(material1Id);
+  });
+
+  test('pagination parameters are respected', async () => {
+    currentAuth = adminAuth;
+    const app = appWithCurrentAuth();
+
+    const paged = await request(app).get('/api/v1/materials?page=1&limit=1');
+    expect(paged.status).toBe(200);
+    expect(paged.body.items).toHaveLength(1);
+    expect(paged.body.page).toBe(1);
+    expect(paged.body.limit).toBe(1);
+    expect(paged.body.total).toBe(2);
+  });
+
+  test('invalid pagination parameters return 400 VALIDATION_ERROR', async () => {
+    currentAuth = adminAuth;
+    const app = appWithCurrentAuth();
+
+    const badLimit = await request(app).get('/api/v1/materials?limit=100');
+    expect(badLimit.status).toBe(400);
+    expect(badLimit.body.error.code).toBe('VALIDATION_ERROR');
+
+    const badPage = await request(app).get('/api/v1/materials?page=-5');
+    expect(badPage.status).toBe(400);
+    expect(badPage.body.error.code).toBe('VALIDATION_ERROR');
+  });
+});
+
+describe('PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12)', () => {
+  let materialId;
+
+  beforeEach(async () => {
+    materialId = await uploadAs(contributorAuth);
+  });
+
+  test('owner can update visibility to shared with valid sharedWith user IDs', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [sharedStudentAuth.userId],
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('shared');
+    expect(response.body.sharedWith).toContain(sharedStudentAuth.userId);
+
+    const updated = await Material.findById(materialId);
+    expect(updated.visibility).toBe('shared');
+    expect(updated.sharedWith.map(String)).toContain(sharedStudentAuth.userId);
+  });
+
+  test('rejects shared visibility when only the owner ID is supplied in uppercase', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [contributorId.toUpperCase()],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    const stored = await Material.findById(materialId);
+    expect(stored.visibility).toBe('private');
+    expect(stored.sharedWith).toHaveLength(0);
+  });
+
+  test('normalizes uppercase sharedWith IDs and excludes the owner', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}/visibility`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [contributorId.toUpperCase(), sharedStudentAuth.userId.toUpperCase()],
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('shared');
+    expect(response.body.sharedWith).toEqual([sharedStudentAuth.userId]);
+
+    const stored = await Material.findById(materialId);
+    expect(stored.sharedWith.map(String)).toEqual([sharedStudentAuth.userId]);
+  });
+
+  test('owner can update visibility to public, clearing sharedWith', async () => {
+    await Material.updateOne(
+      { _id: materialId },
+      { $set: { visibility: 'shared', sharedWith: [sharedStudentAuth.userId] } },
+    );
+
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('public');
+    expect(response.body.sharedWith).toEqual([]);
+
+    const updated = await Material.findById(materialId);
+    expect(updated.visibility).toBe('public');
+    expect(updated.sharedWith).toEqual([]);
+  });
+
+  test('owner can update visibility to private, clearing sharedWith', async () => {
+    await Material.updateOne(
+      { _id: materialId },
+      { $set: { visibility: 'public' } },
+    );
+
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'private' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('private');
+    expect(response.body.sharedWith).toEqual([]);
+  });
+
+  test('/visibility endpoint alias works equivalently', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}/visibility`)
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('public');
+  });
+
+  test('non-owner cannot modify visibility and receives 403 FORBIDDEN', async () => {
+    currentAuth = otherStudentAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(403);
+    expect(response.body.error.code).toBe('FORBIDDEN');
+  });
+
+  test('admin can modify visibility of any material', async () => {
+    currentAuth = adminAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('public');
+  });
+
+  test('setting visibility to shared without sharedWith returns 400 VALIDATION_ERROR', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'shared', sharedWith: [] });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  test('invalid visibility value returns 400 VALIDATION_ERROR', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({ visibility: 'unsupported' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  test('unknown material returns 404 NOT_FOUND', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const unknownId = new mongoose.Types.ObjectId().toString();
+    const response = await request(app)
+      .patch(`/api/v1/materials/${unknownId}`)
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(404);
+    expect(response.body.error.code).toBe('NOT_FOUND');
+  });
+
+  test('malformed material ID returns 400 VALIDATION_ERROR', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch('/api/v1/materials/invalid-id')
+      .send({ visibility: 'public' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+});

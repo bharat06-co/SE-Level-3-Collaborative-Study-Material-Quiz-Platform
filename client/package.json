@@ -11,13 +11,13 @@
     "test:coverage": "jest --runInBand --coverage"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
     "axios": "^1.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.0.0",
     "react-router-dom": "^7.18.4",
-    "zod": "^3.24.0",
-    "@hookform/resolvers": "^3.10.0"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
