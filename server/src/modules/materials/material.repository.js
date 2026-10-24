@@ -13,7 +13,7 @@ function createMaterialRepository({ model = Material } = {}) {
     const [items, total] = await Promise.all([
       model
         .find(filter)
-        .sort(sort)
+        .sort({ ...sort, _id: -1 })
         .skip((page - 1) * limit)
         .limit(limit),
       model.countDocuments(filter),
@@ -21,15 +21,15 @@ function createMaterialRepository({ model = Material } = {}) {
     return { items, page, limit, total };
   }
 
-  async function update(id, updateData) {
-    return model.findByIdAndUpdate(
-      id,
-      { $set: updateData },
+  async function updateIfVersion(id, version, updateData) {
+    return model.findOneAndUpdate(
+      { _id: id, __v: version },
+      { $set: updateData, $inc: { __v: 1 } },
       { new: true, runValidators: true },
     );
   }
 
-  return { create, findById, list, update };
+  return { create, findById, list, updateIfVersion };
 }
 
 module.exports = { createMaterialRepository };

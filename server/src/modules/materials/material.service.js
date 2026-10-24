@@ -227,42 +227,42 @@ function createMaterialService({ repository, storage } = {}) {
       throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(parsed.error));
     }
 
-    const document = await repository.findById(id);
-    if (!document) {
-      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
-    }
-
-    if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
-      throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can modify material visibility.');
-    }
-
     const { visibility, sharedWith } = parsed.data;
-    const updateData = {};
 
-    if (visibility) {
-      updateData.visibility = visibility;
-    }
-
-    const targetVisibility = visibility || document.visibility;
-
-    if (targetVisibility === 'private' || targetVisibility === 'public') {
-      updateData.sharedWith = [];
-    } else if (targetVisibility === 'shared') {
-      const ownerId = String(document.ownerId).toLowerCase();
-      const candidates = sharedWith !== undefined
-        ? sharedWith
-        : (document.sharedWith || []).map(String);
-      const unique = [...new Set(candidates.map((userId) => String(userId).toLowerCase()))]
-        .filter((userId) => userId !== ownerId);
-      if (unique.length === 0) {
-        throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
-          { field: 'sharedWith', message: 'At least one other user must be shared with.' },
-        ]);
+    // Recheck permissions and both sharing fields after a competing write.
+    // The version predicate makes this safe across independent API processes.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const document = await repository.findById(id);
+      if (!document) {
+        throw new AppError(404, 'NOT_FOUND', 'Material not found.');
       }
-      updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
-    }
 
-    return repository.update(id, updateData);
+      if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
+        throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can modify material visibility.');
+      }
+
+      const targetVisibility = visibility || document.visibility;
+      const updateData = { visibility: targetVisibility, sharedWith: [] };
+
+      if (targetVisibility === 'shared') {
+        const ownerId = String(document.ownerId).toLowerCase();
+        const candidates = sharedWith !== undefined
+          ? sharedWith
+          : (document.sharedWith || []).map(String);
+        const unique = [...new Set(candidates.map((userId) => String(userId).toLowerCase()))]
+          .filter((userId) => userId !== ownerId);
+        if (unique.length === 0) {
+          throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
+            { field: 'sharedWith', message: 'At least one other user must be shared with.' },
+          ]);
+        }
+        updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
+      }
+
+      const updated = await repository.updateIfVersion(id, document.__v, updateData);
+      if (updated) return updated;
+    }
+    throw new AppError(409, 'MATERIAL_CONFLICT', 'Material changed during this request. Please retry.');
   }
 
   return { uploadMaterial, getMaterial, getMaterialFile, searchMaterials, updateVisibility };
