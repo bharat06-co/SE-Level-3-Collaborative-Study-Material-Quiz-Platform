@@ -30,6 +30,7 @@ function materialDocument(overrides = {}) {
     visibility: 'private',
     sharedWith: [],
     hidden: false,
+    __v: 0,
     storageKey: `${materialId}.pdf`,
     ...overrides,
   };
@@ -57,7 +58,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
       create: jest.fn(async (doc) => ({ ...doc })),
       findById: jest.fn(),
       list: jest.fn(async () => ({ items: [], page: 1, limit: 20, total: 0 })),
-      update: jest.fn(async (id, data) => ({ _id: id, ...data })),
+      updateIfVersion: jest.fn(async (id, version, data) => ({ _id: id, __v: version + 1, ...data })),
     };
     storage = { put: jest.fn(async () => ({ key: '' })), get: jest.fn(), remove: jest.fn(async () => ({})) };
     service = createMaterialService({ repository, storage });
@@ -321,8 +322,9 @@ describe('Material service (unit, mocked repository/storage)', () => {
         sharedWith: [sharedUserId],
       });
 
-      expect(repository.update).toHaveBeenCalledWith(
+      expect(repository.updateIfVersion).toHaveBeenCalledWith(
         materialId,
+        0,
         expect.objectContaining({
           visibility: 'shared',
           sharedWith: expect.arrayContaining([expect.anything()]),
@@ -339,7 +341,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
         statusCode: 400,
         code: 'VALIDATION_ERROR',
       });
-      expect(repository.update).not.toHaveBeenCalled();
+      expect(repository.updateIfVersion).not.toHaveBeenCalled();
     });
 
     test('rejects shared visibility when existing sharedWith contains only the owner in another case', async () => {
@@ -353,7 +355,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
         statusCode: 400,
         code: 'VALIDATION_ERROR',
       });
-      expect(repository.update).not.toHaveBeenCalled();
+      expect(repository.updateIfVersion).not.toHaveBeenCalled();
     });
 
     test('normalizes and deduplicates sharedWith, excluding the owner in any case', async () => {
@@ -363,7 +365,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
         sharedWith: [userId.toUpperCase(), sharedUserId.toUpperCase(), sharedUserId],
       });
 
-      const updateData = repository.update.mock.calls[0][1];
+      const updateData = repository.updateIfVersion.mock.calls[0][2];
       expect(updateData.visibility).toBe('shared');
       expect(updateData.sharedWith).toHaveLength(1);
       expect(String(updateData.sharedWith[0])).toBe(sharedUserId);
@@ -372,16 +374,67 @@ describe('Material service (unit, mocked repository/storage)', () => {
     test('updating to public or private clears sharedWith', async () => {
       repository.findById.mockResolvedValue(materialDocument({ visibility: 'shared', sharedWith: [sharedUserId] }));
       await service.updateVisibility(contributorAuth, materialId, { visibility: 'public' });
-      expect(repository.update).toHaveBeenCalledWith(materialId, { visibility: 'public', sharedWith: [] });
+      expect(repository.updateIfVersion).toHaveBeenCalledWith(materialId, 0, { visibility: 'public', sharedWith: [] });
 
       await service.updateVisibility(contributorAuth, materialId, { visibility: 'private' });
-      expect(repository.update).toHaveBeenCalledWith(materialId, { visibility: 'private', sharedWith: [] });
+      expect(repository.updateIfVersion).toHaveBeenCalledWith(materialId, 0, { visibility: 'private', sharedWith: [] });
     });
 
     test('admin can update visibility on another user material', async () => {
       repository.findById.mockResolvedValue(materialDocument({ ownerId: '64ff31e5fe2f1f25a49f4b99' }));
       await service.updateVisibility(adminAuth, materialId, { visibility: 'public' });
-      expect(repository.update).toHaveBeenCalled();
+      expect(repository.updateIfVersion).toHaveBeenCalled();
+    });
+
+    test.each([
+      ['shared', 'private'], ['private', 'shared'],
+    ])('recomputes a recipient-only update after a stale %s snapshot becomes %s', async (initial, current) => {
+      repository.findById
+        .mockResolvedValueOnce(materialDocument({ visibility: initial, sharedWith: [sharedUserId] }))
+        .mockResolvedValueOnce(materialDocument({ visibility: current, sharedWith: [sharedUserId], __v: 1 }));
+      repository.updateIfVersion.mockResolvedValueOnce(null);
+
+      const result = await service.updateVisibility(contributorAuth, materialId, { sharedWith: [outsiderUserId] });
+
+      expect(repository.updateIfVersion).toHaveBeenCalledTimes(2);
+      expect(repository.updateIfVersion.mock.calls.map((call) => call[1])).toEqual([0, 1]);
+      expect(result.visibility).toBe(current);
+      expect(result.sharedWith.map(String)).toEqual(current === 'shared' ? [outsiderUserId] : []);
+    });
+
+    test('revalidates empty recipients against the current shared state after a stale write', async () => {
+      repository.findById
+        .mockResolvedValueOnce(materialDocument())
+        .mockResolvedValueOnce(materialDocument({ visibility: 'shared', sharedWith: [sharedUserId], __v: 1 }));
+      repository.updateIfVersion.mockResolvedValueOnce(null);
+
+      await expect(service.updateVisibility(contributorAuth, materialId, { sharedWith: [] }))
+        .rejects.toMatchObject({ statusCode: 400, code: 'VALIDATION_ERROR' });
+      expect(repository.updateIfVersion).toHaveBeenCalledTimes(1);
+    });
+
+    test.each([
+      [null, 404, 'NOT_FOUND'],
+      [materialDocument({ ownerId: outsiderUserId, __v: 1 }), 403, 'FORBIDDEN'],
+    ])('rechecks existence and ownership after a stale write (%s)', async (current, statusCode, code) => {
+      repository.findById.mockResolvedValueOnce(materialDocument()).mockResolvedValueOnce(current);
+      repository.updateIfVersion.mockResolvedValueOnce(null);
+
+      await expect(service.updateVisibility(contributorAuth, materialId, { visibility: 'public' }))
+        .rejects.toMatchObject({ statusCode, code });
+      expect(repository.updateIfVersion).toHaveBeenCalledTimes(1);
+    });
+
+    test('returns a bounded conflict instead of acknowledging repeated stale updates', async () => {
+      repository.findById.mockResolvedValue(materialDocument());
+      repository.updateIfVersion.mockResolvedValue(null);
+
+      await expect(service.updateVisibility(contributorAuth, materialId, { visibility: 'public' }))
+        .rejects.toMatchObject({ statusCode: 409, code: 'MATERIAL_CONFLICT' });
+      expect(repository.findById).toHaveBeenCalledTimes(3);
+      expect(repository.updateIfVersion).toHaveBeenCalledTimes(3);
+      expect(storage.put).not.toHaveBeenCalled();
+      expect(storage.remove).not.toHaveBeenCalled();
     });
 
     test('rejects shared visibility with empty sharedWith array', async () => {
