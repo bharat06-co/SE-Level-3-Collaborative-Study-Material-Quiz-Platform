@@ -132,8 +132,11 @@ describe('SEC-003 implemented-endpoint permission matrix', () => {
     ['quiz.unpublish', () => ['post', `/api/v1/quizzes/${published.id}/unpublish`]],
     ['attempt.submit', () => ['post', `/api/v1/quizzes/${published.id}/attempts`, { answers: [] }]],
     ['material.upload', () => ['upload']],
+    ['material.list', () => ['get', '/api/v1/materials']],
     ['material.read', () => ['get', `/api/v1/materials/${material.id}`]],
     ['material.download', () => ['get', `/api/v1/materials/${material.id}/file`]],
+    ['material.visibility', () => ['patch', `/api/v1/materials/${material.id}`, { visibility: 'public' }]],
+    ['material.visibility.alias', () => ['patch', `/api/v1/materials/${material.id}/visibility`, { visibility: 'public' }]],
   ];
   test.each(protectedOperations)('%s: missing and invalid authentication are 401, without stored changes', async (_name, operation) => {
     for (const invalid of [false, true]) {
@@ -248,6 +251,38 @@ describe('SEC-003 implemented-endpoint permission matrix', () => {
         else expect(response.body.id).toBe(material.id);
       }
     }
+  });
+
+  test.each(visibilityCases)('material.list visibility=%s actor=%s', async (visibility, actor) => {
+    await Material.findByIdAndUpdate(material._id, {
+      visibility: visibility === 'hidden' ? 'public' : visibility,
+      hidden: visibility === 'hidden', sharedWith: [users.student._id],
+    });
+    const response = await authorized(request(app).get('/api/v1/materials'), actor);
+    expect(response.status).toBe(200);
+    const ids = response.body.items.map(item => item.id);
+    const allowed = ['educator', 'admin'].includes(actor) || visibility === 'public'
+      || (visibility === 'shared' && actor === 'student');
+    if (allowed) expect(ids).toContain(material.id);
+    else expect(ids).not.toContain(material.id);
+    expect(JSON.stringify(response.body)).not.toMatch(/storageKey/);
+  });
+
+  const visibilityEndpoints = [['general', ''], ['alias', '/visibility']];
+  const visibilityUpdateCases = visibilityEndpoints.flatMap(([name, suffix]) =>
+    actors.map(actor => [name, actor, suffix]));
+  test.each(visibilityUpdateCases)('material.visibility.%s: %s', async (name, actor, suffix) => {
+    const build = () => authorized(
+      request(app).patch(`/api/v1/materials/${material.id}${suffix}`),
+      actor,
+    ).send({ visibility: 'shared', sharedWith: [users.student._id] });
+    if (!['educator', 'admin'].includes(actor)) return deny(build);
+    const response = await build();
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('shared');
+    const stored = await Material.findById(material._id);
+    expect(stored.visibility).toBe('shared');
+    expect(stored.sharedWith.map(String)).toEqual([users.student.id]);
   });
 
   test('same JWT: admin grant/revoke controls upload and quiz authoring; demoted admin loses access', async () => {

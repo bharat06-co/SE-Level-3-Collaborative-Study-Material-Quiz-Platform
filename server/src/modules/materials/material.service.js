@@ -248,19 +248,18 @@ function createMaterialService({ repository, storage } = {}) {
     if (targetVisibility === 'private' || targetVisibility === 'public') {
       updateData.sharedWith = [];
     } else if (targetVisibility === 'shared') {
-      if (sharedWith !== undefined) {
-        const unique = [...new Set(sharedWith)].filter((userId) => userId !== String(document.ownerId));
-        if (unique.length === 0) {
-          throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
-            { field: 'sharedWith', message: 'At least one other user must be shared with.' },
-          ]);
-        }
-        updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
-      } else if (!document.sharedWith || document.sharedWith.length === 0) {
+      const ownerId = String(document.ownerId).toLowerCase();
+      const candidates = sharedWith !== undefined
+        ? sharedWith
+        : (document.sharedWith || []).map(String);
+      const unique = [...new Set(candidates.map((userId) => String(userId).toLowerCase()))]
+        .filter((userId) => userId !== ownerId);
+      if (unique.length === 0) {
         throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
-          { field: 'sharedWith', message: 'sharedWith must contain at least one user ID when visibility is shared.' },
+          { field: 'sharedWith', message: 'At least one other user must be shared with.' },
         ]);
       }
+      updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
     }
 
     return repository.update(id, updateData);

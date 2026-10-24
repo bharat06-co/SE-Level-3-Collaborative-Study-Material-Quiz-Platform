@@ -566,6 +566,44 @@ describe('PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #1
     expect(updated.sharedWith.map(String)).toContain(sharedStudentAuth.userId);
   });
 
+  test('rejects shared visibility when only the owner ID is supplied in uppercase', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [contributorId.toUpperCase()],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+
+    const stored = await Material.findById(materialId);
+    expect(stored.visibility).toBe('private');
+    expect(stored.sharedWith).toHaveLength(0);
+  });
+
+  test('normalizes uppercase sharedWith IDs and excludes the owner', async () => {
+    currentAuth = contributorAuth;
+    const app = appWithCurrentAuth();
+
+    const response = await request(app)
+      .patch(`/api/v1/materials/${materialId}/visibility`)
+      .send({
+        visibility: 'shared',
+        sharedWith: [contributorId.toUpperCase(), sharedStudentAuth.userId.toUpperCase()],
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.visibility).toBe('shared');
+    expect(response.body.sharedWith).toEqual([sharedStudentAuth.userId]);
+
+    const stored = await Material.findById(materialId);
+    expect(stored.sharedWith.map(String)).toEqual([sharedStudentAuth.userId]);
+  });
+
   test('owner can update visibility to public, clearing sharedWith', async () => {
     await Material.updateOne(
       { _id: materialId },

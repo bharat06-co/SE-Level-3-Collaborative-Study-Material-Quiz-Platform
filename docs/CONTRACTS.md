@@ -35,6 +35,13 @@ Use one request context such as `req.auth = { userId, role, contributor }` after
 
 Domain schemas are intentionally not invented in this foundation. Read SAD §3.6.1 for exact collections/fields/indexes. Agree shared definitions before independently generating incompatible schemas. Models must not be duplicated across modules under different collection names.
 
+## Material visibility and PATCH contract (FR-013, FR-018)
+- `PATCH /api/v1/materials/:id` is the SAD catalogue endpoint for owner/admin material changes. The Sprint 1 increment accepts only `visibility` and `sharedWith`; unknown fields are rejected.
+- FR-018 will extend the same endpoint to metadata/file updates and FR-015 revision creation. Do not add a second metadata route.
+- `PATCH /api/v1/materials/:id/visibility` remains a dedicated visibility-only alias with the same authorization and validation rules.
+- Both routes require verified `req.auth`; only the owner or an administrator may modify visibility. Private/shared/public access remains server-enforced as described in FR-013.
+- `sharedWith` IDs are validated as 24-hex IDs, normalized to lowercase for owner exclusion and deduplication, and must contain at least one non-owner recipient when visibility is `shared`.
+
 ## Dependency-first work
 1. Merge reviewed starter and agree shared middleware/model boundaries.
 2. Implement auth guards and core models/interfaces early; mock only in isolated tests until real dependencies merge.

@@ -50,6 +50,9 @@ test('upgrades the #59 text index in place, preserves records and reruns safely'
     ]);
     await collection.createIndex(OLD_TEXT_KEY, { name: OLD_INDEX_NAME });
 
+    const beforeMigration = await collection.find({ $text: { $search: 'dbms' } }).toArray();
+    expect(beforeMigration).toHaveLength(0);
+
     await expect(collection.createIndex(NEW_TEXT_KEY, { name: NEW_INDEX_NAME }))
       .rejects.toMatchObject({ code: 85, codeName: 'IndexOptionsConflict' });
 
@@ -66,10 +69,15 @@ test('upgrades the #59 text index in place, preserves records and reruns safely'
     expect(await collection.findOne({ _id: firstId })).toMatchObject({ title: 'ER Diagrams', tags: ['dbms'] });
     expect(await collection.findOne({ _id: secondId })).toMatchObject({ title: 'Normal Forms', tags: ['dbms', 'normalisation'] });
 
+    const afterMigration = await collection.find({ $text: { $search: 'dbms' } }).toArray();
+    expect(afterMigration.map((document) => String(document._id)).sort()).toEqual([String(firstId), String(secondId)].sort());
+
     const rerun = await migrateMaterialTextIndex({ connection });
     expect(rerun).toMatchObject({ status: 'already-migrated', index: NEW_INDEX_NAME, dropped: null, created: null });
     expect(await textIndexFields(collection, NEW_INDEX_NAME)).toEqual(NEW_TEXT_FIELDS);
     expect(await collection.countDocuments()).toBe(2);
+    const afterRerun = await collection.find({ $text: { $search: 'dbms' } }).toArray();
+    expect(afterRerun.map((document) => String(document._id)).sort()).toEqual([String(firstId), String(secondId)].sort());
   } finally {
     await connection.close();
   }

@@ -330,6 +330,45 @@ describe('Material service (unit, mocked repository/storage)', () => {
       );
     });
 
+    test('rejects shared visibility when only the owner ID is supplied, including uppercase', async () => {
+      repository.findById.mockResolvedValue(materialDocument());
+      await expect(service.updateVisibility(contributorAuth, materialId, {
+        visibility: 'shared',
+        sharedWith: [userId.toUpperCase()],
+      })).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    test('rejects shared visibility when existing sharedWith contains only the owner in another case', async () => {
+      repository.findById.mockResolvedValue(materialDocument({
+        visibility: 'private',
+        sharedWith: [userId.toUpperCase()],
+      }));
+      await expect(service.updateVisibility(contributorAuth, materialId, {
+        visibility: 'shared',
+      })).rejects.toMatchObject({
+        statusCode: 400,
+        code: 'VALIDATION_ERROR',
+      });
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    test('normalizes and deduplicates sharedWith, excluding the owner in any case', async () => {
+      repository.findById.mockResolvedValue(materialDocument());
+      await service.updateVisibility(contributorAuth, materialId, {
+        visibility: 'shared',
+        sharedWith: [userId.toUpperCase(), sharedUserId.toUpperCase(), sharedUserId],
+      });
+
+      const updateData = repository.update.mock.calls[0][1];
+      expect(updateData.visibility).toBe('shared');
+      expect(updateData.sharedWith).toHaveLength(1);
+      expect(String(updateData.sharedWith[0])).toBe(sharedUserId);
+    });
+
     test('updating to public or private clears sharedWith', async () => {
       repository.findById.mockResolvedValue(materialDocument({ visibility: 'shared', sharedWith: [sharedUserId] }));
       await service.updateVisibility(contributorAuth, materialId, { visibility: 'public' });
