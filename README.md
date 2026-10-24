@@ -53,8 +53,9 @@ Set `server/.env`:
 - `CORS_ORIGINS`: exact frontend origins; defaults cover localhost/127.0.0.1 at 5173.
 - `TRUST_PROXY_HOPS=0` for directly running the API locally. Never blindly set this to `true` on an internet-facing server.
 - `LOG_LEVEL=info`.
+- `JWT_ACCESS_SECRET`: a private random secret of at least 64 characters, required for login and protected quiz routes.
 
-The client calls relative `/api/v1`. Vite proxies it to `DEV_API_TARGET` (default `http://127.0.0.1:3000`). There are no auth tokens to configure yet. Never put secrets in `VITE_*` variables: browser bundles are public.
+The client calls relative `/api/v1`. Vite proxies it to `DEV_API_TARGET` (default `http://127.0.0.1:3000`). The Sprint 1 quiz page obtains an access token from login and sends it as a Bearer token; it keeps the token only in memory, so a reload requires sign-in again. Never put secrets in `VITE_*` variables: browser bundles are public.
 
 ### 3. Start MongoDB
 Use your OS's MongoDB service/startup process or an agreed private development endpoint. Exact service commands vary by OS/install. If MongoDB is unavailable, the API intentionally fails startup instead of pretending to be ready. No MongoDB installation is created by `npm ci`.
@@ -64,6 +65,7 @@ Use your OS's MongoDB service/startup process or an agreed private development e
 npm run dev
 ```
 Open `http://localhost:5173`. You should see **API and MongoDB are connected.** The API is at `http://127.0.0.1:3000/api/v1/health`.
+Open `/quizzes` to sign in as an educator or approved contributor and create, edit, publish or unpublish quizzes. The server checks current role and contributor status on each request.
 
 To run separately in two terminals:
 ```sh

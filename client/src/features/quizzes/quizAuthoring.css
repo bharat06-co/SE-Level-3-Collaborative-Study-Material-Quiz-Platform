@@ -1,0 +1,13 @@
+.quiz-authoring-page { width: min(920px, 100%); margin: 0 auto; padding: 32px 24px 80px; }
+.quiz-authoring-page a { color: #155e75; }
+.quiz-login, .quiz-chooser { margin: 24px 0; padding: 24px; background: white; border: 1px solid #cbd5df; border-radius: 12px; }
+.quiz-login, .quiz-login label, .quiz-open-id label { display: grid; gap: 8px; }
+.quiz-login { max-width: 440px; }
+.quiz-login input, .quiz-open-id input { min-height: 42px; padding: 8px; border: 1px solid #8799a6; border-radius: 6px; font: inherit; }
+.quiz-session, .quiz-chooser-heading, .quiz-pagination, .quiz-open-id { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.quiz-session { justify-content: space-between; }
+.quiz-chooser-heading h2 { margin-right: auto; }
+.quiz-chooser ul { padding-left: 20px; }
+.quiz-chooser li { margin: 8px 0; }
+.quiz-open-id { margin-top: 24px; }
+.quiz-open-id label { flex: 1 1 240px; }
