@@ -8,7 +8,30 @@ function createAttemptRepository({ connection = mongoose.connection, findQuizFor
     if (!indexPromise) indexPromise = model.createIndexes().catch((error) => { indexPromise = undefined; throw error; });
     await indexPromise;
   }
+  async function getQuizMetadata(ids) {
+    const unique = [...new Set(ids.map(String))];
+    if (!unique.length) return new Map();
+    const quizzes = await connection.collection('quizzes').find(
+      { _id: { $in: unique.map((id) => new mongoose.Types.ObjectId(id)) } },
+      { projection: { title: 1, topic: 1 } },
+    ).toArray();
+    return new Map(quizzes.map((quiz) => [String(quiz._id), { title: quiz.title, topic: quiz.topic }]));
+  }
   return {
+    getQuizMetadata,
+    async listStudentAttempts(studentId) {
+      const rows = await model.find({ studentId: new mongoose.Types.ObjectId(studentId) })
+        .select('_id quizId score maxScore submittedAt')
+        .sort({ submittedAt: -1, _id: -1 }).lean();
+      const quizzes = await getQuizMetadata(rows.map((row) => row.quizId));
+      return rows.map((row) => {
+        const quiz = quizzes.get(String(row.quizId));
+        return { ...row, quizTitle: quiz?.title ?? 'Deleted quiz', topic: quiz?.topic ?? 'Unknown topic' };
+      });
+    },
+    async findAttemptById(id) {
+      return model.findById(id).lean();
+    },
     async findPublishedQuiz(quizId) {
       if (findQuizForScoring) return findQuizForScoring(quizId);
       // Read the SAD quizzes collection; do NOT register a competing Quiz schema.

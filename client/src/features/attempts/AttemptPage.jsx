@@ -12,7 +12,7 @@ function errorMessage(error, submitting = false) {
   if (status === 400) return 'The quiz or answers are invalid. Reload the quiz before trying again.';
   return submitting ? 'The submission could not be confirmed. It may already have been saved. Do not repeatedly resubmit; check with the team before retrying.' : 'The quiz could not be loaded. Please try again.';
 }
-function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = submitAttempt, token }) {
+function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = submitAttempt, token, onSaved }) {
   const [quiz, setQuiz] = useState(null);
   const [responses, setResponses] = useState({});
   const [result, setResult] = useState(null);
@@ -44,7 +44,10 @@ function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = subm
     const answers = quiz.questions.filter(q => snapshot[q.id] !== undefined && snapshot[q.id] !== null).map(q => ({ questionId: q.id, response: snapshot[q.id] }));
     try {
       const saved = await sendAttempt(quizId, answers, { signal: controller.signal, ...(token ? { token } : {}) });
-      if (current === generation.current) setResult(parseAttemptResult(saved, quiz));
+      if (current === generation.current) {
+        setResult(parseAttemptResult(saved, quiz));
+        onSaved?.();
+      }
     } catch (err) {
       if (current === generation.current) {
         setError(errorMessage(err, true));

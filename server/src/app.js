@@ -15,6 +15,7 @@ const { createMaterialRepository } = require('./modules/materials/material.repos
 const { createMaterialService } = require('./modules/materials/material.service');
 const { createStorage } = require('./adapters/storage');
 const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
+const { createAnalyticsRouter } = require('./modules/analytics/analytics.routes');
 const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
 
 function rejectUnconfiguredQuizAuthentication(req, res, next) {
@@ -108,6 +109,7 @@ function createApp({
   registerRoutes(app);
   app.use('/api/v1/auth', authRouter);
   app.use('/api/v1', createAttemptRouter(attempts));
+  app.use('/api/v1', createAnalyticsRouter(attempts));
   app.use('/api/v1/quizzes', createQuizRouter({ authenticate: quizAuthenticate }));
 
   app.use((req, res, next) =>

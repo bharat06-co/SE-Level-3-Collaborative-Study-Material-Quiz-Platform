@@ -21,3 +21,10 @@
 .attempt-error { padding: 16px; border-left: 4px solid #a22b33; background: #fff0f0; }
 .attempt-shell :focus-visible { outline: 3px solid #317f98; outline-offset: 3px; }
 @media(max-width: 480px) { .attempt-shell { padding: 24px 16px 48px; } .attempt-question, .attempt-feedback { padding: 16px; } }
+
+.attempt-insights { border-top: 1px solid #d5dfe6; padding-top: 18px; }
+.attempt-insights-nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+.attempt-insights-nav button[aria-pressed="true"] { background: #184f68; color: white; }
+.attempt-history-list { display: grid; gap: 12px; padding-left: 24px; }
+.attempt-history-list li button { margin-left: 12px; }
+.attempt-topic-progress { display: grid; gap: 10px; }

@@ -45,3 +45,33 @@ export async function submitAttempt(quizId, answers, { signal, token } = {}) {
   // No auto-retry: a lost response may follow a successful database write.
   return response.data;
 }
+
+// FR-033 and FR-034: the authenticated student is determined by the server token.
+const historyEntrySchema = z.object({
+  id: objectId, quizId: objectId, quizTitle: z.string(), topic: z.string(),
+  score: z.number().nonnegative(), maxScore: z.number().positive(), submittedAt: z.string().datetime(),
+});
+const ownAttemptSchema = historyEntrySchema.extend({ answers: z.array(z.object({
+  questionId: id, response: z.unknown(), isCorrect: z.boolean(),
+  unanswered: z.boolean(), correctAnswer: z.union([z.number().int().nonnegative(), z.boolean()]),
+})) });
+const progressSchema = z.object({
+  topics: z.array(z.object({ topic: z.string(), quizzesAttempted: z.number().int().nonnegative(), averageBestPct: z.number().min(0).max(100) })),
+  timeline: z.array(z.object({
+    attemptId: objectId, quizId: objectId, quizTitle: z.string(), topic: z.string(),
+    score: z.number().nonnegative(), maxScore: z.number().positive(), percentage: z.number().min(0).max(100), submittedAt: z.string().datetime(),
+  })),
+});
+export async function fetchAttemptHistory({ token, signal } = {}) {
+  const response = await http.get('/attempts/me', requestOptions(signal, token));
+  return z.object({ items: z.array(historyEntrySchema) }).parse(response.data);
+}
+export async function fetchOwnAttempt(id, { token, signal } = {}) {
+  objectId.parse(id);
+  const response = await http.get(`/attempts/${id}`, requestOptions(signal, token));
+  return ownAttemptSchema.parse(response.data);
+}
+export async function fetchStudentProgress({ token, signal } = {}) {
+  const response = await http.get('/analytics/me/progress', requestOptions(signal, token));
+  return progressSchema.parse(response.data);
+}
