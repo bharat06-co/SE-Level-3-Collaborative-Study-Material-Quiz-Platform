@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { http } from '../../api/http';
 import AttemptPage from './AttemptPage';
+import StudentInsights from './StudentInsights';
 import { loadAttemptQuiz, submitAttempt } from './attemptApi';
 import './attempts.css';
 
@@ -13,6 +14,7 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
   const [quizId, setQuizId] = useState(routeQuizId || '');
   const [openedId, setOpenedId] = useState(routeQuizId || '');
   const [busy, setBusy] = useState(false);
+  const [dataRevision, setDataRevision] = useState(0);
   const [notice, setNotice] = useState('');
   const activeToken = useRef(null);
   const token = auth?.token;
@@ -81,6 +83,12 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
     </form>
   </main>;
 
+  const expireSession = () => {
+    activeToken.current = null;
+    setAuth(null);
+    setNotice('Your session has expired. Sign in again.');
+  };
+
   return <>
     <section className="attempt-shell" aria-label="Student session">
       <p>Signed in as {auth.user.name}</p>
@@ -97,6 +105,9 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
       </form>
       {notice && <p role="status">{notice}</p>}
     </section>
-    {openedId && <AttemptPage key={`${token}:${openedId}`} quizId={openedId} token={token} loadQuiz={loadQuiz} sendAttempt={sendAttempt} />}
+    <section className="attempt-shell">
+      <StudentInsights token={token} refreshKey={dataRevision} onUnauthorized={expireSession} />
+    </section>
+    {openedId && <AttemptPage key={`${token}:${openedId}`} quizId={openedId} token={token} loadQuiz={loadQuiz} sendAttempt={sendAttempt} onSaved={() => setDataRevision(value => value + 1)} />}
   </>;
 }
