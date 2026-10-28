@@ -262,6 +262,35 @@ describe('Admin report review (FR-017)', () => {
     expect(visible.status).toBe(200);
   });
 
+  test('dismiss does not restore material when another report was upheld', async () => {
+    const { admin, id } = await setupAdminQueue();
+    const queue = await request(app)
+      .get('/api/v1/admin/reports?status=open')
+      .set('Authorization', `Bearer ${admin.token}`);
+    const [upheld, dismissed, remaining] = queue.body.items;
+
+    await request(app)
+      .patch(`/api/v1/admin/reports/${upheld.id}`)
+      .set('Authorization', `Bearer ${admin.token}`)
+      .send({ decision: 'uphold' })
+      .expect(200);
+    expect((await Material.findById(id)).hidden).toBe(true);
+
+    await request(app)
+      .patch(`/api/v1/admin/reports/${dismissed.id}`)
+      .set('Authorization', `Bearer ${admin.token}`)
+      .send({ decision: 'dismiss' })
+      .expect(200);
+    expect((await Material.findById(id)).hidden).toBe(true);
+
+    await request(app)
+      .patch(`/api/v1/admin/reports/${remaining.id}`)
+      .set('Authorization', `Bearer ${admin.token}`)
+      .send({ decision: 'dismiss' })
+      .expect(200);
+    expect((await Material.findById(id)).hidden).toBe(true);
+  });
+
   test('uphold keeps material hidden', async () => {
     const { admin, id } = await setupAdminQueue();
     const queue = await request(app)

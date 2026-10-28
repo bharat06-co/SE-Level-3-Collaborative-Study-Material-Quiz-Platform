@@ -26,10 +26,10 @@ function createReportRepository({ model = MaterialReport } = {}) {
       .lean();
   }
 
-  async function countOtherOpen(materialId, excludeId) {
+  async function countOtherBlocking(materialId, excludeId) {
     return model.countDocuments({
       materialId,
-      status: 'open',
+      status: { $in: ['open', 'actioned'] },
       _id: { $ne: excludeId },
     });
   }
@@ -52,7 +52,7 @@ function createReportRepository({ model = MaterialReport } = {}) {
     findOpenByReporter,
     countByReporterSince,
     listByStatus,
-    countOtherOpen,
+    countOtherBlocking,
     decide,
     remove,
   };

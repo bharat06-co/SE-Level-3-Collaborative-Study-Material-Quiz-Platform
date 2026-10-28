@@ -7,7 +7,7 @@ function setup(overrides = {}) {
     findOpenByReporter: jest.fn().mockResolvedValue(null),
     countByReporterSince: jest.fn().mockResolvedValue(0),
     listByStatus: jest.fn(),
-    countOtherOpen: jest.fn(),
+    countOtherBlocking: jest.fn(),
     decide: jest.fn(),
     remove: jest.fn().mockResolvedValue({}),
     ...overrides.reportRepository,

@@ -175,8 +175,10 @@ function createReportService({ reportRepository, materialRepository, materialSer
 
     const materialId = report.materialId?._id || report.materialId;
     if (status === 'dismissed') {
-      const otherOpen = await reportRepository.countOtherOpen(materialId, report._id);
-      if (otherOpen === 0) {
+      // An upheld report is a persistent moderation decision. Dismissing a
+      // later report must not make previously actioned material visible again.
+      const otherBlocking = await reportRepository.countOtherBlocking(materialId, report._id);
+      if (otherBlocking === 0) {
         await setHidden(materialId, false);
       }
     } else {
