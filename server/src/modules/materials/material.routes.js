@@ -24,6 +24,21 @@ function parserErrorToAppError(error) {
   return new AppError(400, 'VALIDATION_ERROR', 'Malformed multipart request.', [{ field: 'request', message: 'The multipart request could not be parsed.' }]);
 }
 
+function revisionView(revision) {
+  return {
+    id: revision._id.toString(),
+    versionNo: revision.versionNo,
+    editorId: revision.editorId.toString(),
+    title: revision.title,
+    description: revision.description,
+    category: revision.category,
+    topic: revision.topic,
+    tags: revision.tags || [],
+    fileUrl: revision.fileUrl,
+    createdAt: revision.createdAt,
+  };
+}
+
 function materialView(document, auth) {
   const view = {
     id: document._id.toString(),
@@ -37,6 +52,8 @@ function materialView(document, auth) {
     sizeBytes: document.sizeBytes,
     ownerId: document.ownerId.toString(),
     visibility: document.visibility,
+    ratingAvg: document.ratingAvg || 0,
+    ratingCount: (document.ratings || []).length,
     createdAt: document.createdAt,
     updatedAt: document.updatedAt,
   };
@@ -49,12 +66,19 @@ function materialView(document, auth) {
   return view;
 }
 
-function createMaterialsRouter({ service, authMiddleware } = {}) {
+function createMaterialsRouter({ service, commentService, authMiddleware } = {}) {
   if (!service) throw new Error('Materials router requires a configured service.');
   if (!authMiddleware) throw new Error('Materials router requires an auth middleware.');
 
   const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 } });
   const router = express.Router();
+  const parseOptionalFile = (req, res, next) => {
+    if (!req.is('multipart/form-data')) return next();
+    return upload.single('file')(req, res, (error) => {
+      if (error) return next(parserErrorToAppError(error));
+      return next();
+    });
+  };
 
   // The guard applies to materials routes only; public resources and the
   // 404/error handlers remain outside this router.
@@ -90,6 +114,32 @@ function createMaterialsRouter({ service, authMiddleware } = {}) {
     return res.send(bytes);
   }));
 
+  router.get('/materials/:id/revisions', asyncHandler(async (req, res) => {
+    const revisions = await service.getRevisions(req.auth, req.params.id);
+    return res.json({ items: revisions.map(revisionView) });
+  }));
+
+  router.put('/materials/:id/rating', asyncHandler(async (req, res) => {
+    const document = await service.rateMaterial(req.auth, req.params.id, req.body);
+    return res.json({
+      id: document._id.toString(),
+      ratingAvg: document.ratingAvg || 0,
+      ratingCount: (document.ratings || []).length,
+    });
+  }));
+
+  if (commentService) {
+    router.get('/materials/:id/comments', asyncHandler(async (req, res) => {
+      const result = await commentService.listComments(req.auth, req.params.id, req.query);
+      return res.json(result);
+    }));
+
+    router.post('/materials/:id/comments', asyncHandler(async (req, res) => {
+      const comment = await commentService.addComment(req.auth, req.params.id, req.body);
+      return res.status(201).json(comment);
+    }));
+  }
+
   router.get('/materials/:id', asyncHandler(async (req, res) => {
     const document = await service.getMaterial(req.auth, req.params.id);
     return res.json(materialView(document, req.auth));
@@ -110,8 +160,13 @@ function createMaterialsRouter({ service, authMiddleware } = {}) {
     return res.json(materialView(document, req.auth));
   });
 
+  const handleUpdateMaterial = asyncHandler(async (req, res) => {
+    const document = await service.updateMaterial(req.auth, req.params.id, req.body, req.file);
+    return res.json(materialView(document, req.auth));
+  });
+
   router.patch('/materials/:id/visibility', handleUpdateVisibility);
-  router.patch('/materials/:id', handleUpdateVisibility);
+  router.patch('/materials/:id', parseOptionalFile, rejectUnsafeKeys, handleUpdateMaterial);
 
   return router;
 }
