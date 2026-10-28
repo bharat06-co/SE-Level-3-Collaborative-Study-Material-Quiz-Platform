@@ -32,16 +32,36 @@ Pass = both numbered issue criteria met. This validates persistence across an **
 
 ## NFR-001 — actual checks
 
-`k6` creates 100 authenticated student accounts during setup, then maintains **100 constant concurrent virtual users for 10 minutes**: 50 repeatedly fetch the complete production HTML and its referenced JS/CSS bundles, while 50 post valid scored quiz attempts with real bearer tokens and MongoDB writes. The two HTTP scenarios run simultaneously, not as alternating stages. Each 201 creates a real new attempt; `allowRetake=true` is intentional.
+The **current** `nfr001-stp.js` script implements STP v1.0 **TC-PERF-01** with 100 concurrent users for 10 minutes and seeded mixed traffic. A guarded `nfr001-seed.cjs` creates 40 public **metadata-only** study-material records in the disposable MongoDB. `k6` registers and authenticates 100 test students and maintains four simultaneous 25-VU scenarios:
 
-Pass criteria:
+- `page_clients`: full production HTML and JS/CSS asset HTTP fetches, plus authenticated attempt-history data request.
+- `browse_clients`: real authenticated material-list and material-detail HTTP requests.
+- `search_clients`: authenticated MongoDB full-text material search over the seeded records.
+- `scoring_clients`: valid quiz answers, server scoring and acknowledged MongoDB attempt inserts.
 
-- `page_load_ms` p95 ≤ 3000 ms, measuring full HTTP response time for HTML and its JS/CSS assets. Failed asset loads count as a slow page load. `page_success` ≥ 95%.
-- `http_req_duration{kind:submission}` p95 ≤ 2000 ms and HTTP 201 submission-success rate ≥ 99%.
-- A real **10-minute** duration and 100 VUs, with k6 summary and run environment saved.
+The workload checks all four operations, includes a 0% HTTP 5xx threshold, and requires 100% functional checks (including HTTP 201 with correct scores). The page p95 and attempt-submit p95 thresholds remain those in NFR-001:
+
+- `page_load_ms` p95 ≤ 3000 ms; `page_success` ≥ 95%.
+- `http_req_duration{kind:submission}` p95 ≤ 2000 ms.
+- Both reliability metrics also require 100% successful operations for this stricter STP/NFR-002 combined run; `http_req_failed` must be 0%.
+
+**The previous Actions run 40633812394 was a successful 50/50 page/submission baseline; it did not include browse/search and is NOT proof of the STP mixed-traffic requirement.** The updated workflow measures the mixed workload on a GitHub-hosted runner. The same suite must also be run on the STP §6 Linux VM (**2 vCPU, 4 GB RAM**) for a reference-environment claim; use `bash scripts/nfr/run-stp.sh` on that isolated staging/demo host (requires Docker Compose, Bash, OpenSSL, and a free 127.0.0.1:18080 bind). Never attach these tests to the shared development database. This run is destructive **only to its self-created unique Compose project and its test volumes**; use a host where the load itself cannot interfere with other teams' services.
+
+**Runtime deviation:** STP §6 lists Node.js 20, while the current production Dockerfile uses Node.js 24. Record this difference and obtain evaluator approval or update the documented test baseline before claiming literal STP-environment parity.
 
 **Measurement limitation:** HTTP-level HTML+asset fetching cannot measure browser execution, paint or client-side route rendering. If the evaluator defines “page load” as rendered browser load, perform that separate browser measurement before accepting NFR-001. Results are specific to the CI runner's hardware and deployment; compare the environment with STP §6 before marking the issue complete. No performance compliance is claimed in advance.
 
 ## Evidence and closure
 
-Artifacts: `environment.txt`, `nfr007-before.log`, `nfr007-after.log`, `nfr001-k6.log`, `nfr001-summary.json` under the workflow's uploaded artifact or local `nfr-results/` folder. Attach artifact link, commit SHA, Docker/MongoDB and k6 environment details, measured page p95 and scoring p95 to both issues. **Only then** check off and close #39 and #32 if the documented environment is acceptable. The durability result also supports #29 (FR-033), while the separate student-browser verification remains required before closing #29/#30.
+Artifacts: `environment.txt`, `nfr007-before.log`, `nfr007-after.log`, `nfr001-seed.log`, `nfr001-stp-k6.log`, `nfr001-summary.json` under the workflow's uploaded artifact or local `nfr-results/` folder. Attach artifact link, commit SHA, Docker/MongoDB and k6 environment details, measured page p95 and scoring p95 to both issues. **Only then** check off and close #39 and #32 if the documented environment is acceptable. The durability result also supports #29 (FR-033), while the separate student-browser verification remains required before closing #29/#30.
+
+## Reference-environment STP acceptance checklist for #32
+
+1. Confirm the host matches the STP §6 2-vCPU/4-GB Linux VM, record actual `nproc`, `free -m`, Docker versions, git SHA and full-stack configuration from `${stamp}-environment.txt`.
+2. Confirm seeded materials count 40 and full-text search initialization succeeded; retain `${stamp}-seed.log`.
+3. Confirm k6 `vus_max: 100`, four distinct 25-VU scenarios, 10m configured duration, and no interrupted or unsuccessful checks.
+4. Record `page_load_ms p(95)`, `http_req_duration{kind:submission} p(95)`, page/submit/browse/search success and zero 5xx; retain log and JSON summary.
+5. Note that this is **HTTP-level** page-load latency, not browser-render timing; browser measurements require a separate controlled browser harness if that is the evaluator's interpretation.
+6. Attach evidence link to #32. Do not close it solely because a GitHub-hosted run passes if the stipulated staging hardware/environment was not verified.
+
+**Safety:** the seeded metadata-only materials have deliberately nonexistent example file objects. File downloads are not exercised in TC-PERF-01; this is explicitly a browse/search/attempt acceptance workload, not an upload/download throughput test.
