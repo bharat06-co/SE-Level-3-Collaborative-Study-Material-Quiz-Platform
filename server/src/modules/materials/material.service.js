@@ -43,19 +43,46 @@ const updateVisibilitySchema = z.object({
   path: ['sharedWith'],
 });
 
+const updateMaterialSchema = z.object({
+  title: z.string().trim().min(3).max(120).optional(),
+  description: z.string().trim().min(1).max(2000).optional(),
+  category: z.string().trim().min(1).max(100).optional(),
+  topic: z.string().trim().min(1).max(100).optional(),
+  tags: z.array(z.string().min(1).max(TAG_MAX_LENGTH)).min(1).max(MAX_TAGS).optional(),
+  visibility: z.enum(['private', 'shared', 'public']).optional(),
+  sharedWith: z.array(z.string().regex(/^[a-f\d]{24}$/i, 'Invalid user ID in sharedWith')).optional(),
+}).strict().refine((data) => {
+  if (data.visibility === 'shared') {
+    return Array.isArray(data.sharedWith) && data.sharedWith.length > 0;
+  }
+  return true;
+}, {
+  message: 'sharedWith must contain at least one user ID when visibility is shared.',
+  path: ['sharedWith'],
+});
+
+const METADATA_FIELDS = ['title', 'description', 'category', 'topic', 'tags'];
+
+const ratingSchema = z.object({
+  value: z.number().int().min(1).max(5),
+}).strict();
+
 function escapeRegex(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function normalizeTags(tagsInput) {
-  if (typeof tagsInput !== 'string' || tagsInput.trim().length === 0) {
+  let parsed;
+  if (typeof tagsInput === 'string') {
+    parsed = tagsInput.split(',');
+  } else if (Array.isArray(tagsInput)) {
+    parsed = tagsInput;
+  } else {
     throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: 'Provide 1-10 tags.' }]);
   }
-  const parsed = tagsInput
-    .split(',')
-    .map((tag) => tag.trim().toLowerCase())
-    .filter(Boolean);
-  const tags = [...new Set(parsed)];
+  const tags = [...new Set(parsed
+    .map((tag) => (typeof tag === 'string' ? tag.trim().toLowerCase() : ''))
+    .filter(Boolean))];
   if (tags.length < 1) {
     throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'tags', message: 'Provide 1-10 tags.' }]);
   }
@@ -81,11 +108,11 @@ function authorised(auth) {
   return auth.role === 'student' && auth.contributor === true;
 }
 
-function canView(auth, document) {
+function canView(auth, document, { ignoreHidden = false } = {}) {
   const userId = String(auth.userId);
   if (String(document.ownerId) === userId) return true;
   if (auth.role === 'admin') return true;
-  if (document.hidden) return false;
+  if (document.hidden && !ignoreHidden) return false;
   if (document.visibility === 'public') return true;
   if (document.visibility !== 'shared') return false;
   return (document.sharedWith || []).some((sharedId) => String(sharedId) === userId);
@@ -103,7 +130,7 @@ function requireMaterialId(id) {
   }
 }
 
-function createMaterialService({ repository, storage } = {}) {
+function createMaterialService({ repository, storage, revisionRepository } = {}) {
   if (!repository || !storage) throw new Error('Material service requires a repository and storage adapter.');
 
   async function uploadMaterial(auth, metadataInput, file) {
@@ -265,7 +292,192 @@ function createMaterialService({ repository, storage } = {}) {
     throw new AppError(409, 'MATERIAL_CONFLICT', 'Material changed during this request. Please retry.');
   }
 
-  return { uploadMaterial, getMaterial, getMaterialFile, searchMaterials, updateVisibility };
+  async function updateMaterial(auth, id, updateInput, file) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const raw = { ...(updateInput || {}) };
+    if (raw.tags !== undefined) {
+      raw.tags = normalizeTags(raw.tags);
+    }
+
+    const parsed = updateMaterialSchema.safeParse(raw);
+    if (!parsed.success) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(parsed.error));
+    }
+
+    const data = parsed.data;
+    const hasFile = Boolean(file);
+    if (hasFile && (!file.buffer || !file.originalname)) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [{ field: 'file', message: 'A file is required.' }]);
+    }
+    const hasAnyChange = hasFile || METADATA_FIELDS.some((field) => data[field] !== undefined)
+      || data.visibility !== undefined || data.sharedWith !== undefined;
+    if (!hasAnyChange) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
+        { field: 'request', message: 'Provide at least one field or file to update.' },
+      ]);
+    }
+    const hasMetadataChange = hasFile || METADATA_FIELDS.some((field) => data[field] !== undefined);
+    if (hasMetadataChange && !revisionRepository) {
+      throw new AppError(500, 'INTERNAL_ERROR', 'Revision storage is not configured.');
+    }
+
+    let fileInfo = null;
+    let newStorageKey = null;
+    if (hasFile) {
+      fileInfo = validateFile({ originalName: file.originalname, size: file.size, bytes: file.buffer });
+      newStorageKey = `${id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${fileInfo.extension}`;
+      await storage.put(newStorageKey, file.buffer);
+    }
+
+    let committed = false;
+    try {
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const document = await repository.findById(id);
+        if (!document) {
+          throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+        }
+
+        if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
+          throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can edit material.');
+        }
+
+        const updateData = {};
+
+        for (const field of METADATA_FIELDS) {
+          if (data[field] !== undefined) updateData[field] = data[field];
+        }
+
+        if (data.visibility !== undefined || data.sharedWith !== undefined) {
+          const targetVisibility = data.visibility || document.visibility;
+          updateData.visibility = targetVisibility;
+          if (targetVisibility === 'shared') {
+            const ownerId = String(document.ownerId).toLowerCase();
+            const candidates = data.sharedWith !== undefined
+              ? data.sharedWith
+              : (document.sharedWith || []).map(String);
+            const unique = [...new Set(candidates.map((userId) => String(userId).toLowerCase()))]
+              .filter((userId) => userId !== ownerId);
+            if (unique.length === 0) {
+              throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', [
+                { field: 'sharedWith', message: 'At least one other user must be shared with.' },
+              ]);
+            }
+            updateData.sharedWith = unique.map((uid) => new mongoose.Types.ObjectId(uid));
+          } else {
+            updateData.sharedWith = [];
+          }
+        }
+
+        if (hasFile) {
+          updateData.storageKey = newStorageKey;
+          updateData.mimeType = fileInfo.mimeType;
+          updateData.sizeBytes = file.size;
+        }
+
+        let revision = null;
+        if (hasMetadataChange) {
+          let versionNo;
+          try {
+            versionNo = await revisionRepository.nextVersion(id);
+            revision = await revisionRepository.create({
+              materialId: id,
+              versionNo,
+              editorId: auth.userId,
+              title: document.title,
+              description: document.description || '',
+              category: document.category,
+              topic: document.topic,
+              tags: document.tags || [],
+              fileUrl: document.fileUrl,
+            });
+          } catch (error) {
+            if (error?.code === 11000) continue;
+            throw error;
+          }
+        }
+
+        const updated = await repository.updateIfVersion(id, document.__v, updateData);
+        if (updated) {
+          committed = true;
+          return updated;
+        }
+
+        if (revision) {
+          await revisionRepository.remove(revision._id).catch(() => {});
+        }
+      }
+    } finally {
+      if (newStorageKey && !committed) {
+        await storage.remove(newStorageKey).catch(() => {});
+      }
+    }
+
+    throw new AppError(409, 'MATERIAL_CONFLICT', 'Material changed during this request. Please retry.');
+  }
+
+  async function getRevisions(auth, id) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const document = await repository.findById(id);
+    if (!document) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+    if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
+      throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can view revisions.');
+    }
+    if (!revisionRepository) {
+      throw new AppError(500, 'INTERNAL_ERROR', 'Revision storage is not configured.');
+    }
+
+    return revisionRepository.listByMaterial(id);
+  }
+
+  async function getMaterialForReporting(auth, id) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const document = await repository.findById(id);
+    if (!document || !canView(auth, document, { ignoreHidden: true })) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+    return document;
+  }
+
+  async function rateMaterial(auth, id, input) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    const parsed = ratingSchema.safeParse(input);
+    if (!parsed.success) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Validation failed.', validationDetails(parsed.error));
+    }
+
+    const document = await repository.findById(id);
+    if (!document || !canView(auth, document)) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+
+    const updated = await repository.rate(id, auth.userId, parsed.data.value);
+    if (!updated) {
+      throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+    }
+    return updated;
+  }
+
+  return {
+    uploadMaterial,
+    getMaterial,
+    getMaterialFile,
+    searchMaterials,
+    updateVisibility,
+    updateMaterial,
+    getRevisions,
+    rateMaterial,
+    getMaterialForReporting,
+  };
 }
 
 module.exports = { createMaterialService, MAX_FILE_SIZE_BYTES };

@@ -3,6 +3,24 @@ const mongoose = require('mongoose');
 const MAX_TAGS = 10;
 const TAG_MAX_LENGTH = 30;
 
+const ratingSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  value: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+    validate: {
+      validator: Number.isInteger,
+      message: 'Ratings must be integers from 1 to 5.',
+    },
+  },
+}, { _id: false });
+
 const materialSchema = new mongoose.Schema(
   {
     title: {
@@ -80,6 +98,16 @@ const materialSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
       required: true,
+    },
+    ratings: {
+      type: [ratingSchema],
+      default: [],
+    },
+    ratingAvg: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
     },
   },
   {
