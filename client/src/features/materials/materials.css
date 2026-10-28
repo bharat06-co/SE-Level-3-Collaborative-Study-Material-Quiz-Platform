@@ -1,0 +1,32 @@
+.materials-page { width: min(980px, 100%); margin: 0 auto; padding: 32px 24px 80px; }
+.materials-page a { color: #155e75; }
+.materials-page h1 { margin-bottom: 4px; }
+.materials-session { display: flex; gap: 16px; align-items: center; justify-content: space-between; border-bottom: 1px solid #d7dee3; padding-bottom: 12px; }
+.materials-session p { margin: 0; }
+.material-signin, .material-form, .material-filters, .material-comment-form, .material-report-form {
+  display: grid; gap: 12px; margin: 20px 0; padding: 18px; border: 1px solid #d7dee3; border-radius: 10px; background: #f8fafb;
+}
+.material-signin h2, .material-form h2 { margin: 0; }
+.material-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.material-filters { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.material-filters-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+.materials-page label { display: grid; gap: 4px; font-weight: 600; }
+.materials-page input, .materials-page select, .materials-page textarea { font: inherit; padding: 7px 9px; border: 1px solid #9aa8b2; border-radius: 6px; background: #fff; }
+.materials-page [aria-invalid="true"] { border-color: #b42318; }
+.materials-page [role="alert"] { color: #b42318; font-weight: 500; }
+.material-check { display: flex !important; gap: 8px; align-items: center; font-weight: 500 !important; }
+.material-form-actions, .report-actions, .material-pagination { display: flex; gap: 8px; align-items: center; }
+.material-list, .material-comments, .material-revisions, .report-queue { list-style: none; padding: 0; display: grid; gap: 14px; }
+.material-list li, .material-comments li, .material-revisions li, .report-queue li { border: 1px solid #d7dee3; border-radius: 10px; padding: 14px 16px; background: #fff; }
+.material-list h3 { margin: 0 0 6px; }
+.material-meta { color: #455765; font-size: 0.92rem; }
+.material-detail { border: 1px solid #d7dee3; border-radius: 10px; padding: 18px; background: #fff; }
+.material-detail dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.material-detail dt { font-weight: 600; }
+.material-detail dd { margin: 2px 0 0; }
+.material-detail > button { margin-right: 8px; }
+.material-inline-form { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+.material-comment-form { margin-top: 0; }
+@media (max-width: 720px) {
+  .material-filters, .material-form-row, .material-detail dl { grid-template-columns: 1fr; }
+}

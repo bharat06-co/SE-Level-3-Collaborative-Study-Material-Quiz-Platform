@@ -35,3 +35,27 @@ test('author signs in and sends the access token to quiz creation', async () => 
   expect(saveQuiz).toHaveBeenCalledWith(null, { title: 'DBMS basics', topic: 'dbms', allowRetake: true, questions: [] }, 'test-access-token');
   post.mockRestore();
 });
+
+test('sign-in and quiz-ID forms show inline validation before requests', async () => {
+  const user = userEvent.setup();
+  const post = jest.spyOn(http, 'post').mockResolvedValue({
+    data: { accessToken: 'test-access-token', user: { id: 'author-1', name: 'Author', role: 'educator', contributor: false } },
+  });
+  listDraftQuizzes.mockResolvedValue({ items: [], page: 1, total: 0, limit: 20 });
+
+  render(<MemoryRouter><QuizAuthoringPage /></MemoryRouter>);
+  await user.click(screen.getByRole('button', { name: 'Sign in to author quizzes' }));
+  expect(screen.getByText('Email is required.')).toBeInTheDocument();
+  expect(screen.getByText('Password is required.')).toBeInTheDocument();
+  expect(post).not.toHaveBeenCalled();
+
+  await user.type(screen.getByLabelText('Email'), 'author@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in to author quizzes' }));
+  expect(await screen.findByRole('heading', { name: 'Create quiz' })).toBeInTheDocument();
+
+  await user.type(screen.getByLabelText('Open a published quiz by ID'), 'not-an-id');
+  await user.click(screen.getByRole('button', { name: 'Open' }));
+  expect(screen.getByText('Quiz ID must be 24 hexadecimal characters.')).toBeInTheDocument();
+  post.mockRestore();
+});

@@ -48,11 +48,19 @@ test('student can open a published quiz by ID from the entry route', async () =>
   expect(loadAttemptQuiz).not.toHaveBeenCalled();
   await user.type(screen.getByLabelText('Published quiz ID'), 'invalid');
   await user.click(screen.getByRole('button', { name: 'Open quiz' }));
-  expect(screen.getByRole('status')).toHaveTextContent('24-character');
+  expect(screen.getByRole('alert')).toHaveTextContent('24 hexadecimal characters');
   await user.clear(screen.getByLabelText('Published quiz ID'));
   await user.type(screen.getByLabelText('Published quiz ID'), quizId);
   await user.click(screen.getByRole('button', { name: 'Open quiz' }));
   await screen.findByText('Database basics');
+});
+test('empty sign-in fields show inline validation and do not call the API', async () => {
+  const user = userEvent.setup();
+  render(<StudentAttemptPage quizId={quizId} />);
+  await user.click(screen.getByRole('button', { name: 'Sign in', exact: true }));
+  expect(screen.getByText('Email is required.')).toBeInTheDocument();
+  expect(screen.getByText('Password is required.')).toBeInTheDocument();
+  expect(http.post).not.toHaveBeenCalled();
 });
 test('educator login cannot enter the attempt screen', async () => {
   http.post.mockResolvedValue({ data: { accessToken: 'educator-token', user: { role: 'educator' } } });
