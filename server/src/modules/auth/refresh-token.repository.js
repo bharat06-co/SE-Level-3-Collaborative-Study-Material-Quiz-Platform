@@ -1,4 +1,3 @@
-
 const RefreshToken = require('../../models/RefreshToken');
 
 async function create(tokenData, options = {}) {
@@ -14,6 +13,14 @@ async function revokeById(id, revokedAt = new Date()) {
     { _id: id, revokedAt: null },
     { $set: { revokedAt } },
     { new: true },
+  );
+}
+
+async function revokeAllByUserId(userId, revokedAt = new Date(), options = {}) {
+  return RefreshToken.updateMany(
+    { userId, revokedAt: null },
+    { $set: { revokedAt } },
+    options.session ? { session: options.session } : {},
   );
 }
 
@@ -33,5 +40,6 @@ module.exports = {
   create,
   findByTokenHash,
   revokeById,
+  revokeAllByUserId,
   consumeActiveToken,
 };

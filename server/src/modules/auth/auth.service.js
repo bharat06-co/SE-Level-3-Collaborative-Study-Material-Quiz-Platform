@@ -1,20 +1,36 @@
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('node:crypto');
 const mongoose = require('mongoose');
 const { readEnv } = require('../../config/env');
 const { AppError } = require('../../utils/AppError');
+const User = require('../../models/User');
 const userRepository = require('./user.repository');
 const refreshTokenRepository = require('./refresh-token.repository');
+const passwordResetRepository = require('./password-reset.repository');
+const { sendPasswordResetEmail } = require('./password-reset.email');
 
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const PASSWORD_RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
+
+const PASSWORD_RESET_RESPONSE = {
+  message:
+    'If an account exists with that email, password reset instructions will be sent.',
+};
 
 function createOpaqueRefreshToken() {
   return crypto.randomBytes(32).toString('base64url');
 }
 
 function hashRefreshToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+function createOpaquePasswordResetToken() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+
+function hashPasswordResetToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
@@ -158,6 +174,122 @@ async function createRefreshToken(userId, session = null) {
   );
 
   return token;
+}
+
+async function requestPasswordReset(input) {
+  const email =
+    typeof input?.email === 'string'
+      ? input.email.trim().toLowerCase()
+      : '';
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ...PASSWORD_RESET_RESPONSE };
+  }
+
+  const user = await userRepository.findByEmail(email);
+
+  if (!user) {
+    return { ...PASSWORD_RESET_RESPONSE };
+  }
+
+  const config = readEnv();
+
+  if (!config.PASSWORD_RESET_URL) {
+    return { ...PASSWORD_RESET_RESPONSE };
+  }
+
+  const rawToken = createOpaquePasswordResetToken();
+  const tokenHash = hashPasswordResetToken(rawToken);
+  const now = new Date();
+
+  await passwordResetRepository.create({
+    userId: user._id,
+    tokenHash,
+    expiresAt: new Date(now.getTime() + PASSWORD_RESET_TOKEN_TTL_MS),
+    usedAt: null,
+  });
+
+  try {
+    const resetUrl = new URL(config.PASSWORD_RESET_URL);
+    resetUrl.searchParams.set('token', rawToken);
+
+    await sendPasswordResetEmail(user.email, resetUrl.toString());
+  } catch {
+    // Invalidate the token if email delivery fails.
+    await passwordResetRepository
+      .consumeActiveToken(tokenHash, new Date())
+      .catch(() => {});
+  }
+
+  return { ...PASSWORD_RESET_RESPONSE };
+}
+
+async function resetPassword(input) {
+  const rawToken = input?.token;
+  const password = input?.password;
+
+  if (typeof rawToken !== 'string' || rawToken.length === 0) {
+    throw new AppError(
+      400,
+      'TOKEN_INVALID',
+      'Password reset link is invalid or has expired.',
+    );
+  }
+
+  validateRegistration({
+    name: 'Reset User',
+    email: 'reset@example.com',
+    password,
+  });
+
+  const passwordHash = await bcrypt.hash(password, 12);
+  const tokenHash = hashPasswordResetToken(rawToken);
+  const now = new Date();
+  const session = await mongoose.startSession();
+
+  try {
+    await session.withTransaction(async () => {
+      const resetToken = await passwordResetRepository.consumeActiveToken(
+        tokenHash,
+        now,
+        { session },
+      );
+
+      if (!resetToken) {
+        throw new AppError(
+          400,
+          'TOKEN_INVALID',
+          'Password reset link is invalid or has expired.',
+        );
+      }
+
+      const updateResult = await User.updateOne(
+        { _id: resetToken.userId },
+        { $set: { passwordHash } },
+        { session },
+      );
+
+      if (updateResult.matchedCount !== 1) {
+        throw new AppError(
+          400,
+          'TOKEN_INVALID',
+          'Password reset link is invalid or has expired.',
+        );
+      }
+
+      await refreshTokenRepository.revokeAllByUserId(
+        resetToken.userId,
+        now,
+        { session },
+      );
+    });
+  } finally {
+    await session.endSession();
+  }
+
+  return {
+    message: 'Password has been reset successfully. Please log in again.',
+  };
 }
 
 async function loginUser(input) {
@@ -341,4 +473,6 @@ module.exports = {
   loginUser,
   refreshUserSession,
   logoutUser,
+  requestPasswordReset,
+  resetPassword,
 };

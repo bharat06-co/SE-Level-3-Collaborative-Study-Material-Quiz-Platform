@@ -31,11 +31,22 @@ const schema = z.object({
       (secret) => secret === undefined || secret.length >= 64,
       'JWT access secret must contain at least 64 characters',
     ),
+
   JWT_ACCESS_TTL: z
     .string()
     .regex(/^[1-9]\d*(s|m|h|d)$/, 'Use a duration such as 15m')
     .default('15m'),
+
   STORAGE_DIR: z.string().min(1).default('data/uploads'),
+
+  // SMTP email configuration for password reset
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+  SMTP_SECURE: z.enum(['true', 'false']).default('false'),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  EMAIL_FROM: z.string().email().optional(),
+  PASSWORD_RESET_URL: z.string().url().optional(),
 });
 
 function readEnv(input = process.env) {
