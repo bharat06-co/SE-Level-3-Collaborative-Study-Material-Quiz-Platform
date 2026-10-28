@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { http } from '../../api/http';
 import MaterialForm from './MaterialForm';
 import MaterialSignIn from './MaterialSignIn';
 import { listMaterials, uploadMaterial } from './materialApi';
+import { useMaterialSession } from './MaterialSession';
 import './materials.css';
 
 const emptyFilters = { q: '', tag: '', category: '', topic: '' };
 
 export default function MaterialLibraryPage() {
-  const [auth, setAuth] = useState(null);
+  const { session: auth, signIn, clearSession, logout } = useMaterialSession();
   const [filters, setFilters] = useState(emptyFilters);
   const [applied, setApplied] = useState(emptyFilters);
   const [page, setPage] = useState(1);
@@ -25,7 +25,7 @@ export default function MaterialLibraryPage() {
       setNotice('');
     } catch (error) {
       if (error.response?.status === 401) {
-        setAuth(null);
+        clearSession();
         setNotice('Your session has expired. Sign in again.');
       } else {
         setNotice(error.response?.data?.error?.message || 'Materials could not be loaded.');
@@ -33,7 +33,7 @@ export default function MaterialLibraryPage() {
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
     if (!auth) return;
@@ -41,10 +41,9 @@ export default function MaterialLibraryPage() {
   }, [auth, page, applied, load]);
 
   async function signOut() {
-    setAuth(null);
     setResult({ items: [], page: 1, limit: 20, total: 0 });
     setNotice('Signed out.');
-    try { await http.post('/auth/logout'); } catch { /* Local token is already cleared. */ }
+    await logout();
   }
 
   function applyFilters(event) {
@@ -78,7 +77,7 @@ export default function MaterialLibraryPage() {
       </header>
       {notice && <p role="status">{notice}</p>}
       {!auth ? (
-        <MaterialSignIn heading="Sign in to browse materials" onSignedIn={(session) => { setAuth(session); setNotice(''); }} />
+        <MaterialSignIn heading="Sign in to browse materials" onSignedIn={(session) => { signIn(session); setNotice(''); }} />
       ) : (
         <>
           <div className="materials-session">

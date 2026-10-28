@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { http } from '../../api/http';
 import PlainText from '../../components/PlainText';
 import MaterialSignIn from './MaterialSignIn';
+import { useMaterialSession } from './MaterialSession';
 import { decideReport, fetchReports } from './materialApi';
 import './materials.css';
 
 export default function AdminReportsPage() {
-  const [auth, setAuth] = useState(null);
+  const { session: auth, signIn, clearSession, logout } = useMaterialSession();
   const [status, setStatus] = useState('open');
   const [items, setItems] = useState([]);
   const [busy, setBusy] = useState(false);
@@ -22,7 +22,7 @@ export default function AdminReportsPage() {
       setNotice('');
     } catch (error) {
       if (error.response?.status === 401) {
-        setAuth(null);
+        clearSession();
         setNotice('Your session has expired. Sign in again.');
       } else {
         setNotice(error.response?.data?.error?.message || 'Reports could not be loaded.');
@@ -30,7 +30,7 @@ export default function AdminReportsPage() {
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
     if (!auth) return;
@@ -42,10 +42,9 @@ export default function AdminReportsPage() {
   }, [auth, status, load]);
 
   async function signOut() {
-    setAuth(null);
     setItems([]);
     setNotice('Signed out.');
-    try { await http.post('/auth/logout'); } catch { /* Local token is already cleared. */ }
+    await logout();
   }
 
   async function decide(id, decision) {
@@ -65,10 +64,10 @@ export default function AdminReportsPage() {
     <main className="materials-page">
       <Link to="/">← Home</Link>
       <h1>Moderation reports</h1>
-      <p>Review reports against study material. Upholding keeps the material hidden; dismissing restores it when no other open report remains.</p>
+      <p>Review reports against study material. Upholding keeps the material hidden; dismissing restores it only when no other open or upheld report remains.</p>
       {notice && <p role="status">{notice}</p>}
       {!auth ? (
-        <MaterialSignIn heading="Sign in as an administrator" onSignedIn={(session) => { setAuth(session); setNotice(''); }} />
+        <MaterialSignIn heading="Sign in as an administrator" onSignedIn={(session) => { signIn(session); setNotice(''); }} />
       ) : (
         <>
           <div className="materials-session">

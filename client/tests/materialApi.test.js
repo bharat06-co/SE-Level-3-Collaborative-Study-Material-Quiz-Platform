@@ -2,6 +2,9 @@ import { http } from '../src/api/http';
 import {
   addComment,
   decideReport,
+  downloadMaterial,
+  materialDownloadName,
+  parseDownloadFilename,
   fetchComments,
   fetchReports,
   fetchRevisions,
@@ -61,6 +64,25 @@ test('validates comment and rating boundaries', () => {
   expect(validateRating(0)).toContain('1 to 5');
   expect(validateRating(3.5)).toContain('1 to 5');
   expect(validateRating(5)).toBeNull();
+});
+
+test('download filenames preserve the server file extension', async () => {
+  expect(parseDownloadFilename('attachment; filename="material-abc.docx"')).toBe('material-abc.docx');
+  expect(parseDownloadFilename("attachment; filename*=UTF-8''my%20notes.pptx")).toBe('my notes.pptx');
+  expect(materialDownloadName('Operating Systems: Notes', 'material-abc.docx')).toBe('Operating Systems Notes.docx');
+  expect(materialDownloadName('Notes', 'material-abc.PPTX')).toBe('Notes.pptx');
+  expect(materialDownloadName('Notes', 'no-extension')).toBe('Notes.bin');
+
+  const get = jest.spyOn(http, 'get').mockResolvedValue({
+    data: new Blob(['docx']),
+    headers: { 'content-disposition': 'attachment; filename="material-abc.docx"' },
+  });
+  await expect(downloadMaterial('abc', 'token-1')).resolves.toMatchObject({ filename: 'material-abc.docx' });
+  expect(get).toHaveBeenCalledWith('/materials/abc/file', {
+    ...auth,
+    responseType: 'blob',
+  });
+  get.mockRestore();
 });
 
 test('material reads send the bearer token and filters', async () => {

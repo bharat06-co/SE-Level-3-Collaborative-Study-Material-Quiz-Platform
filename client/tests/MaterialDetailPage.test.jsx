@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { http } from '../src/api/http';
 import MaterialDetailPage from '../src/features/materials/MaterialDetailPage';
+import { MaterialSessionProvider } from '../src/features/materials/MaterialSession';
 import {
   addComment,
   downloadMaterial,
@@ -44,7 +45,9 @@ const material = {
 function renderPage() {
   return render(
     <MemoryRouter initialEntries={['/materials/m1']}>
-      <Routes><Route path="/materials/:id" element={<MaterialDetailPage />} /></Routes>
+      <MaterialSessionProvider>
+        <Routes><Route path="/materials/:id" element={<MaterialDetailPage />} /></Routes>
+      </MaterialSessionProvider>
     </MemoryRouter>,
   );
 }
@@ -108,7 +111,9 @@ test('owner edits metadata, sees revisions and downloads the file', async () => 
     items: [{ id: 'v1', versionNo: 1, title: 'Old title', description: 'Old', category: 'Notes', topic: 'dbms', tags: ['sql'], createdAt: '2026-01-01T00:00:00.000Z' }],
   });
   updateMaterial.mockResolvedValue({ ...material, title: 'Updated notes' });
-  downloadMaterial.mockResolvedValue(new Blob(['pdf']));
+  downloadMaterial.mockResolvedValue({ blob: new Blob(['docx']), filename: 'material-m1.docx' });
+  let downloadedName = '';
+  const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function capture() { downloadedName = this.download; });
 
   renderPage();
   await user.type(screen.getByLabelText('Email'), 'owner@example.com');
@@ -127,6 +132,8 @@ test('owner edits metadata, sees revisions and downloads the file', async () => 
   await waitFor(() => expect(downloadMaterial).toHaveBeenCalledWith('m1', 'owner-token'));
   expect(createObjectURL).toHaveBeenCalled();
   expect(revokeObjectURL).toHaveBeenCalledWith('blob:material');
+  expect(downloadedName).toBe('Updated notes.docx');
+  click.mockRestore();
 
   URL.createObjectURL = originalCreate;
   URL.revokeObjectURL = originalRevoke;

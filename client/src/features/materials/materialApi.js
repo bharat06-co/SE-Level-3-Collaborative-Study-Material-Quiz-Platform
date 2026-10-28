@@ -138,9 +138,41 @@ export async function decideReport(id, decision, token) {
   return response.data;
 }
 
+export function parseDownloadFilename(disposition) {
+  if (typeof disposition !== 'string') return '';
+  const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition);
+  if (encoded) {
+    try {
+      return decodeURIComponent(encoded[1].trim());
+    } catch {
+      return encoded[1].trim();
+    }
+  }
+  const quoted = /filename="([^"]+)"/i.exec(disposition);
+  if (quoted) return quoted[1].trim();
+  const bare = /filename=([^;]+)/i.exec(disposition);
+  return bare ? bare[1].trim() : '';
+}
+
+export function materialDownloadName(title, serverFilename) {
+  const extension = /\.([a-z0-9]{1,10})$/i.exec(String(serverFilename || ''));
+  const sanitized = Array.from(String(title || ''), (character) => (
+    character.charCodeAt(0) < 32 ? ' ' : character
+  )).join('');
+  const safeTitle = sanitized
+    .replace(/[<>:"/\\|?*]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[. ]+$/, '')
+    .slice(0, 120) || 'material';
+  return `${safeTitle}${extension ? `.${extension[1].toLowerCase()}` : '.bin'}`;
+}
+
 export async function downloadMaterial(id, token) {
   const response = await http.get(`/materials/${id}/file`, { ...authorized(token), responseType: 'blob' });
-  return response.data;
+  const headers = response.headers || {};
+  const disposition = headers.get?.('content-disposition') || headers['content-disposition'] || '';
+  return { blob: response.data, filename: parseDownloadFilename(disposition) };
 }
 
 export const MATERIAL_LIMITS = Object.freeze({ MAX_FILE_BYTES, TAG_MAX_LENGTH, MAX_TAGS });

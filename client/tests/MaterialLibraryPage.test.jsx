@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../src/api/http';
 import MaterialLibraryPage from '../src/features/materials/MaterialLibraryPage';
+import { MaterialSessionProvider } from '../src/features/materials/MaterialSession';
 import { listMaterials, uploadMaterial } from '../src/features/materials/materialApi';
 
 jest.mock('../src/api/http', () => ({ http: { post: jest.fn() } }));
@@ -30,7 +31,7 @@ test('signs in, lists materials, filters and pages', async () => {
   http.post.mockResolvedValue({ data: { accessToken: 'token-1', user: { id: 'u1', name: 'Student', role: 'student' } } });
   listMaterials.mockResolvedValue({ items: [material], page: 1, limit: 20, total: 21 });
 
-  render(<MemoryRouter><MaterialLibraryPage /></MemoryRouter>);
+  render(<MemoryRouter><MaterialSessionProvider><MaterialLibraryPage /></MaterialSessionProvider></MemoryRouter>);
   await user.type(screen.getByLabelText('Email'), 'student@example.com');
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
@@ -65,7 +66,7 @@ test('contributor can upload and the list refreshes; sign out clears the session
   listMaterials.mockResolvedValue({ items: [material], page: 1, limit: 20, total: 1 });
   uploadMaterial.mockResolvedValue({ id: 'm2' });
 
-  render(<MemoryRouter><MaterialLibraryPage /></MemoryRouter>);
+  render(<MemoryRouter><MaterialSessionProvider><MaterialLibraryPage /></MaterialSessionProvider></MemoryRouter>);
   await user.type(screen.getByLabelText('Email'), 'contributor@example.com');
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
@@ -96,7 +97,7 @@ test('handles load failures without losing the ability to sign in again', async 
   http.post.mockResolvedValue({ data: { accessToken: 'token-3', user: { id: 'u3', name: 'Student', role: 'student' } } });
   listMaterials.mockRejectedValue({ response: { data: { error: { message: 'Search unavailable.' } } } });
 
-  render(<MemoryRouter><MaterialLibraryPage /></MemoryRouter>);
+  render(<MemoryRouter><MaterialSessionProvider><MaterialLibraryPage /></MaterialSessionProvider></MemoryRouter>);
   await user.type(screen.getByLabelText('Email'), 'student@example.com');
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));

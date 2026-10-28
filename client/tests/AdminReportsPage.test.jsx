@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../src/api/http';
 import AdminReportsPage from '../src/features/materials/AdminReportsPage';
+import { MaterialSessionProvider } from '../src/features/materials/MaterialSession';
 import { decideReport, fetchReports } from '../src/features/materials/materialApi';
 
 jest.mock('../src/api/http', () => ({ http: { post: jest.fn() } }));
@@ -27,7 +28,7 @@ const openReport = {
 test('non-admin cannot load the moderation queue', async () => {
   const user = userEvent.setup();
   http.post.mockResolvedValue({ data: { accessToken: 'token-1', user: { id: 'u1', name: 'Student', role: 'student' } } });
-  render(<MemoryRouter><AdminReportsPage /></MemoryRouter>);
+  render(<MemoryRouter><MaterialSessionProvider><AdminReportsPage /></MaterialSessionProvider></MemoryRouter>);
   await user.type(screen.getByLabelText('Email'), 'student@example.com');
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
@@ -43,7 +44,7 @@ test('admin reviews queue, renders notes as plain text, and decides reports', as
   fetchReports.mockResolvedValue({ items: [openReport] });
   decideReport.mockResolvedValue({ ...openReport, status: 'dismissed' });
 
-  render(<MemoryRouter><AdminReportsPage /></MemoryRouter>);
+  render(<MemoryRouter><MaterialSessionProvider><AdminReportsPage /></MaterialSessionProvider></MemoryRouter>);
   await user.type(screen.getByLabelText('Email'), 'admin@example.com');
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));

@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { http } from '../../api/http';
 import PlainText from '../../components/PlainText';
 import MaterialForm from './MaterialForm';
 import MaterialSignIn from './MaterialSignIn';
+import { useMaterialSession } from './MaterialSession';
 import {
   REPORT_REASONS,
   addComment,
   downloadMaterial,
+  materialDownloadName,
   fetchComments,
   fetchRevisions,
   getMaterial,
@@ -27,7 +28,7 @@ function formatDate(value) {
 
 export default function MaterialDetailPage() {
   const { id } = useParams();
-  const [auth, setAuth] = useState(null);
+  const { session: auth, signIn, clearSession, logout } = useMaterialSession();
   const [material, setMaterial] = useState(null);
   const [comments, setComments] = useState({ items: [], page: 1, limit: 20, total: 0 });
   const [revisions, setRevisions] = useState([]);
@@ -46,13 +47,13 @@ export default function MaterialDetailPage() {
 
   const handleError = useCallback((error, fallback) => {
     if (error.response?.status === 401) {
-      setAuth(null);
+      clearSession();
       setNotice('Your session has expired. Sign in again.');
       return;
     }
     const details = error.response?.data?.error?.details;
     setNotice(Array.isArray(details) && details.length ? details[0].message : (error.response?.data?.error?.message || fallback));
-  }, []);
+  }, [clearSession]);
 
   const load = useCallback(async (token) => {
     setBusy(true);
@@ -81,10 +82,9 @@ export default function MaterialDetailPage() {
   }, [auth, load]);
 
   async function signOut() {
-    setAuth(null);
     setMaterial(null);
     setNotice('Signed out.');
-    try { await http.post('/auth/logout'); } catch { /* Local token is already cleared. */ }
+    await logout();
   }
 
   async function saveMaterial(payload) {
@@ -99,11 +99,11 @@ export default function MaterialDetailPage() {
 
   async function download() {
     try {
-      const blob = await downloadMaterial(id, auth.token);
+      const { blob, filename } = await downloadMaterial(id, auth.token);
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = `${material.title}.pdf`;
+      anchor.download = materialDownloadName(material.title, filename);
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -159,7 +159,7 @@ export default function MaterialDetailPage() {
       <Link to="/materials">← Study materials</Link>
       {notice && <p role="status">{notice}</p>}
       {!auth ? (
-        <MaterialSignIn heading="Sign in to open this material" onSignedIn={(session) => { setAuth(session); setNotice(''); }} />
+        <MaterialSignIn heading="Sign in to open this material" onSignedIn={(session) => { signIn(session); setNotice(''); }} />
       ) : (
         <>
           <div className="materials-session">
