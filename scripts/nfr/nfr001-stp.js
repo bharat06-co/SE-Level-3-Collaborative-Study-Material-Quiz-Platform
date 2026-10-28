@@ -20,6 +20,7 @@ const serverError = new Rate('http_5xx_rate');
 
 // 25+25+25+25 constant VUs run *simultaneously*, not 100 users in successive phases.
 export const options = {
+  setupTimeout: '5m',
   scenarios: {
     page_clients: { executor: 'constant-vus', vus: 25, duration: '10m', exec: 'page', gracefulStop: '20s' },
     browse_clients: { executor: 'constant-vus', vus: 25, duration: '10m', exec: 'browse', gracefulStop: '20s' },
