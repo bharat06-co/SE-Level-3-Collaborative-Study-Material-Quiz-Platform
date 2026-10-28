@@ -1,0 +1,91 @@
+# Dedicated, disposable acceptance environment. Never point this at shared data.
+services:
+  mongo:
+    image: mongo:7
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes: [nfr-mongo:/data/db]
+    networks: [database]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval '
+          const hello = db.hello();
+          if (hello.isWritablePrimary) quit(0);
+          if (!hello.setName) {
+            try { rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "mongo:27017" }] }); }
+            catch (e) {}
+          }
+          quit(1);'
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: se-nfr-acceptance-api:local
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/team1_nfr_acceptance?replicaSet=rs0
+      JWT_ACCESS_SECRET: ${NFR_JWT_ACCESS_SECRET:?Generate a unique test-only 64-character secret}
+      JWT_ACCESS_TTL: 30m
+      STORAGE_DIR: /app/server/uploads
+      CORS_ORIGINS: http://localhost:18080,http://127.0.0.1:18080
+      TRUST_PROXY_HOPS: 1
+      LOG_LEVEL: warn
+    volumes: [nfr-uploads:/app/server/uploads]
+    networks: [application, database]
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports: ["127.0.0.1:18080:80"]
+    networks: [application]
+    depends_on:
+      api:
+        condition: service_healthy
+
+  probe:
+    profiles: [verify]
+    image: se-nfr-acceptance-api:local
+    working_dir: /app/server
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/team1_nfr_acceptance?replicaSet=rs0
+      NFR_API_URL: http://api:3000
+    volumes: ["./scripts/nfr:/verification:ro"]
+    networks: [application, database]
+    depends_on:
+      api:
+        condition: service_healthy
+
+  k6:
+    profiles: [verify]
+    image: grafana/k6:0.57.0
+    user: "0:0" # test-only: write exported summary to host results folder
+    environment:
+      NFR_WEB_URL: http://web
+      NFR_API_URL: http://web
+    volumes:
+      - "./scripts/nfr:/verification:ro"
+      - "${NFR_RESULTS_DIR:-./nfr-results}:/results"
+    networks: [application]
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  application:
+  database:
+    internal: true
+
+volumes:
+  nfr-mongo:
+  nfr-uploads:

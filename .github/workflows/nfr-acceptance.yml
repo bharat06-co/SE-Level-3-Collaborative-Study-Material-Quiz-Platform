@@ -1,0 +1,58 @@
+name: Isolated NFR-007 durability and NFR-001 load acceptance
+
+on:
+  pull_request:
+    paths:
+      - compose.acceptance.yaml
+      - scripts/nfr/**
+      - .github/workflows/nfr-acceptance.yml
+  workflow_dispatch:
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate throwaway authentication secret and record environment
+        run: |
+          echo "NFR_JWT_ACCESS_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          mkdir -p nfr-results
+          {
+            echo "runner=$RUNNER_OS"
+            echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "commit=$GITHUB_SHA"
+            echo "cpus=$(nproc)"
+            free -h
+            docker version --format 'docker={{.Server.Version}}'
+            docker compose version
+          } > nfr-results/environment.txt
+      - name: Build and start completely isolated MongoDB/API/web containers
+        run: docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} up -d --build --wait mongo api web
+      - name: NFR-007 real HTTP 201 and 100 parallel valid submissions
+        run: |
+          set -o pipefail
+          docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} run --rm -T probe node /verification/nfr007.cjs prepare | tee nfr-results/nfr007-before.log
+      - name: Restart ONLY the acceptance API container
+        run: docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} restart api
+      - name: NFR-007 post-restart persisted records and authenticated history
+        run: |
+          set -o pipefail
+          docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} run --rm -T probe node /verification/nfr007.cjs verify | tee nfr-results/nfr007-after.log
+          quiz_id=$(grep -oE 'NFR_QUIZ_ID=[a-f0-9]{24}' nfr-results/nfr007-after.log | tail -1 | cut -d= -f2)
+          test -n "$quiz_id"
+          echo "NFR_QUIZ_ID=$quiz_id" >> "$GITHUB_ENV"
+      - name: NFR-001 k6 - 100 constant active users for 10 minutes
+        run: |
+          set -o pipefail
+          docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} run --rm -T -e NFR_QUIZ_ID k6 run --summary-export=/results/nfr001-summary.json /verification/nfr001.js | tee nfr-results/nfr001-k6.log
+      - name: Upload measured acceptance evidence (including failures)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfr-007-001-evidence-${{ github.run_id }}
+          path: nfr-results/
+          if-no-files-found: warn
+      - name: Remove only the isolated acceptance Compose project and its volumes
+        if: always()
+        run: docker compose -f compose.acceptance.yaml -p se-nfr-${{ github.run_id }} down -v --remove-orphans
