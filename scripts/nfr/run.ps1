@@ -31,9 +31,12 @@ try {
   $found = Select-String -Path "${prefix}-nfr007-after.log" -Pattern 'NFR_QUIZ_ID=([a-f0-9]{24})' | Select-Object -Last 1
   if (-not $found) { throw 'NFR quiz ID was not found; do not start load test.' }
   $quizId = $found.Matches[0].Groups[1].Value
+  docker compose -f $compose -p $project run --rm -T probe node /verification/nfr001-seed.cjs |
+    Tee-Object -FilePath "${prefix}-nfr001-seed.log"
+  Assert-NativeSuccess 'NFR-001 seed of public browse/search materials'
   docker compose -f $compose -p $project run --rm -T -e "NFR_QUIZ_ID=$quizId" k6 run `
-    --summary-export=/results/$stamp-nfr001-summary.json /verification/nfr001.js |
-    Tee-Object -FilePath "${prefix}-nfr001-k6.log"
+    --summary-export=/results/$stamp-nfr001-summary.json /verification/nfr001-stp.js |
+    Tee-Object -FilePath "${prefix}-nfr001-stp-k6.log"
   Assert-NativeSuccess 'NFR-001 k6 thresholds'
   Write-Host "PASS: NFR-007 and NFR-001 acceptance tests. Evidence is in nfr-results/."
 } finally {
