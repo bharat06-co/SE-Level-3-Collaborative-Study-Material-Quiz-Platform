@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Material } = require('../../models/Material');
 
 function createMaterialRepository({ model = Material } = {}) {
@@ -29,7 +30,38 @@ function createMaterialRepository({ model = Material } = {}) {
     );
   }
 
-  return { create, findById, list, updateIfVersion };
+  async function rate(id, userId, value) {
+    const ratingUserId = new mongoose.Types.ObjectId(userId);
+    return model.findOneAndUpdate(
+      { _id: id },
+      [
+        {
+          $set: {
+            ratings: {
+              $concatArrays: [
+                {
+                  $filter: {
+                    input: { $ifNull: ['$ratings', []] },
+                    as: 'rating',
+                    cond: { $ne: ['$$rating.userId', ratingUserId] },
+                  },
+                },
+                [{ userId: ratingUserId, value }],
+              ],
+            },
+          },
+        },
+        {
+          $set: {
+            ratingAvg: { $round: [{ $avg: '$ratings.value' }, 2] },
+          },
+        },
+      ],
+      { new: true },
+    );
+  }
+
+  return { create, findById, list, updateIfVersion, rate };
 }
 
 module.exports = { createMaterialRepository };

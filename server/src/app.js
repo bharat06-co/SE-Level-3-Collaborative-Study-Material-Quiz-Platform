@@ -12,11 +12,17 @@ const authRouter = require('./modules/auth/auth.routes');
 const { createAuthenticate } = require('./middleware/authenticate');
 const { createMaterialsRouter } = require('./modules/materials/material.routes');
 const { createMaterialRepository } = require('./modules/materials/material.repository');
+const { createRevisionRepository } = require('./modules/materials/revision.repository');
+const { createCommentRepository } = require('./modules/materials/comment.repository');
+const { createCommentService } = require('./modules/materials/comment.service');
 const { createMaterialService } = require('./modules/materials/material.service');
 const { createStorage } = require('./adapters/storage');
 const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
 const { createAnalyticsRouter } = require('./modules/analytics/analytics.routes');
 const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
+const { createReportRepository } = require('./modules/moderation/report.repository');
+const { createReportService } = require('./modules/moderation/report.service');
+const { createModerationRouter } = require('./modules/moderation/moderation.routes');
 
 function rejectUnconfiguredQuizAuthentication(req, res, next) {
   next(new AppError(401, 'UNAUTHENTICATED', 'Authentication required.'));
@@ -36,10 +42,25 @@ function createApp({
   const materialRepository = createMaterialRepository();
   const materialService = createMaterialService({
     repository: materialRepository,
+    revisionRepository: createRevisionRepository(),
     storage: createStorage({ storageDir }),
+  });
+  const commentService = createCommentService({
+    repository: createCommentRepository(),
+    materialService,
   });
   const materialsRouter = createMaterialsRouter({
     service: materialService,
+    commentService,
+    authMiddleware,
+  });
+  const reportService = createReportService({
+    reportRepository: createReportRepository(),
+    materialRepository,
+    materialService,
+  });
+  const moderationRouter = createModerationRouter({
+    reportService,
     authMiddleware,
   });
   const app = express();
@@ -103,6 +124,7 @@ function createApp({
       checks: { process: 'up', database: 'connected' },
     });
   });
+  app.use('/api/v1', moderationRouter);
   app.use('/api/v1', materialsRouter);
 
   // Register feature routes before the 404 and error handlers.

@@ -31,6 +31,13 @@ S = plain student; C = student contributor; E = educator; A = admin.
 | Material download | GET /api/v1/materials/:id/file | Same access rules:200; exact file bytes checked | Inaccessible:404, no stored changes | material detail/download |
 | Material visibility update | PATCH /api/v1/materials/:id | Owner/A:200; persisted visibility/sharedWith checked | Non-owner:403; DB/files unchanged | material.visibility |
 | Material visibility alias | PATCH /api/v1/materials/:id/visibility | Same rules:200; persisted visibility/sharedWith checked | Non-owner:403; DB/files unchanged | material.visibility.alias |
+| Material metadata/file edit | PATCH /api/v1/materials/:id | Owner/A:200; revisions and replacement file checked | Non-owner:403; DB/files unchanged | material.revisions.integration |
+| Material revisions | GET /api/v1/materials/:id/revisions | Owner/A:200 | Other authenticated users:403 | material.revisions.integration |
+| Material rating | PUT /api/v1/materials/:id/rating | Visible S/C/E/A:200; one rating per user | Inaccessible:404; invalid value:400 | material.rating.comment.integration |
+| Material comments | GET/POST /api/v1/materials/:id/comments | Visible users:200/201; stored text literal | Inaccessible:404; invalid length:400 | material.rating.comment.integration |
+| Report material | POST /api/v1/materials/:id/reports | Visible S/C/E:201; hidden item remains reportable | A:403; duplicate open report:409; inaccessible:404 | moderation.integration |
+| Admin report queue | GET /api/v1/admin/reports | A:200; ordered by oldest open first | S/C/E:403 | moderation.integration |
+| Admin report decision | PATCH /api/v1/admin/reports/:id | A:200; dismiss restores when no open or upheld reports remain | S/C/E:403; already resolved:409 | moderation.integration |
 
 There are 16 distinct method/path operations in this PR extension; query/state variants expand the matrix. Every distinct operation is also checked with both missing and invalid tokens. Expected failures are 401 UNAUTHENTICATED and 401 TOKEN_INVALID respectively, with complete domain/user records and file hashes unchanged.
 
@@ -57,7 +64,7 @@ Issue #43's broad “every disallowed call returns 403” wording must be read a
 
 Current-main implemented endpoint coverage is ready for reviewer acceptance once this test/documentation PR is merged. Future endpoints must ship with their own permission tests. Do not require Anisha to implement unrelated features solely to close this verification increment, and do not claim missing routes have passed tests.
 
-Material metadata edit/delete operations remain outside this implemented matrix and tracked by #47 (with metadata feature #19 and the unresolved delete API contract). Their absence does not become “verified” merely because this suite passes. No whole-system/staging/security-certification claim is made.
+Material metadata/file edit, revision history, ratings, comments and moderation are now covered by feature integration tests listed above. Material delete remains outside this implemented matrix and the unresolved delete API contract is unchanged. No whole-system/staging/security-certification claim is made.
 
 ## PR #70 material extension
 PR #70 adds material search/list and the two visibility-update routes on top of the current-main matrix. This suite now verifies those endpoints across all five actors, including visibility-safe search results, owner/admin updates, non-owner 403 denials, missing/invalid token 401 responses and unchanged database/file snapshots after rejected calls. It does not merge Sprint 2 metadata editing or revision history; those remain future endpoint coverage.
