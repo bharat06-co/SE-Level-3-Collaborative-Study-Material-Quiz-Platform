@@ -5,7 +5,9 @@ function displayDate(value) { return new Date(value).toLocaleString(); }
 
 export default function StudentInsights({ token, refreshKey = 0, onUnauthorized }) {
   const [view, setView] = useState('');
-  const [data, setData] = useState(null);
+  const [loaded, setData] = useState(null);
+  // A view change renders before its effect clears the previous response.
+  const data = loaded?.view === view ? loaded.value : null;
   const [detail, setDetail] = useState(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +19,7 @@ export default function StudentInsights({ token, refreshKey = 0, onUnauthorized 
     setPending(true); setError(''); setDetail(null); setData(null);
     const operation = view === 'history' ? fetchAttemptHistory : fetchStudentProgress;
     operation({ token, signal: controller.signal }).then(value => {
-      if (active) setData(value);
+      if (active) setData({ view, value });
     }).catch(err => {
       if (!active) return;
       if (err.response?.status === 401) onUnauthorized?.();
