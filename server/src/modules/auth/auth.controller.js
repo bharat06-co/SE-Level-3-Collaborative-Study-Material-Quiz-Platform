@@ -1,9 +1,10 @@
-
 const {
   registerUser,
   loginUser,
   refreshUserSession,
   logoutUser,
+  requestPasswordReset,
+  resetPassword,
 } = require('./auth.service');
 
 const REFRESH_COOKIE_OPTIONS = {
@@ -85,6 +86,25 @@ async function logout(req, res, next) {
   }
 }
 
+async function requestPasswordResetController(req, res, next) {
+  try {
+    const result = await requestPasswordReset(req.body || {});
+    return res.status(200).json(result);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function resetPasswordController(req, res, next) {
+  try {
+    const result = await resetPassword(req.body || {});
+    clearRefreshCookie(res);
+    return res.status(200).json(result);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 function readCookieHeader(header, name) {
   if (typeof header !== 'string') return undefined;
 
@@ -101,4 +121,11 @@ function readCookieHeader(header, name) {
   return undefined;
 }
 
-module.exports = { register, login, refresh, logout };
+module.exports = {
+  register,
+  login,
+  refresh,
+  logout,
+  requestPasswordResetController,
+  resetPasswordController,
+};
