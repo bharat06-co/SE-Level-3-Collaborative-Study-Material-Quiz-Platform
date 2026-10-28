@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { http } from '../../api/http';
 import QuizEditor from './QuizEditor';
 import { getQuiz, listDraftQuizzes, saveQuiz, setQuizPublication } from './quizApi';
+import { validateEmail, validateObjectId, validatePassword } from '../../utils/formValidation';
 import './quizAuthoring.css';
 
 export default function QuizAuthoringPage() {
@@ -15,6 +16,8 @@ export default function QuizAuthoringPage() {
   const [editorVersion, setEditorVersion] = useState(0);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [quizIdError, setQuizIdError] = useState('');
 
   async function loadDrafts(token, page = 1) {
     const result = await listDraftQuizzes(token, page);
@@ -34,10 +37,30 @@ export default function QuizAuthoringPage() {
     }
   }
 
+  function changeLogin(field, value) {
+    if (field === 'email') setEmail(value);
+    else setPassword(value);
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  }
+
   async function signIn(event) {
     event.preventDefault();
-    setBusy(true);
     setNotice('');
+    const nextErrors = {
+      email: validateEmail(email),
+      password: validatePassword(password),
+    };
+    if (nextErrors.email || nextErrors.password) {
+      setFieldErrors(nextErrors);
+      return;
+    }
+    setFieldErrors({});
+    setBusy(true);
     try {
       const response = await http.post('/auth/login', { email, password });
       const { accessToken, user } = response.data;
@@ -79,6 +102,9 @@ export default function QuizAuthoringPage() {
   async function openById(event) {
     event.preventDefault();
     if (!auth) return;
+    const error = validateObjectId(quizId, 'Quiz ID');
+    setQuizIdError(error || '');
+    if (error) return;
     setNotice('');
     try {
       const quiz = await authenticated(() => getQuiz(quizId.trim(), auth.token));
@@ -103,10 +129,12 @@ export default function QuizAuthoringPage() {
       <p>Create a quiz draft, add questions, then publish it when the answer keys are ready.</p>
       {notice && <p role="status">{notice}</p>}
       {!auth ? (
-        <form className="quiz-login" onSubmit={signIn}>
+        <form className="quiz-login" onSubmit={signIn} noValidate>
           <h2>Sign in</h2>
-          <label>Email <input type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-          <label>Password <input type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+          <label>Email <input type="email" autoComplete="username" value={email} onChange={(event) => changeLogin('email', event.target.value)} aria-invalid={Boolean(fieldErrors.email)} /></label>
+          {fieldErrors.email && <span role="alert">{fieldErrors.email}</span>}
+          <label>Password <input type="password" autoComplete="current-password" value={password} onChange={(event) => changeLogin('password', event.target.value)} aria-invalid={Boolean(fieldErrors.password)} /></label>
+          {fieldErrors.password && <span role="alert">{fieldErrors.password}</span>}
           <button type="submit" disabled={busy}>Sign in to author quizzes</button>
         </form>
       ) : (
@@ -131,8 +159,9 @@ export default function QuizAuthoringPage() {
                   <span>Page {drafts.page}</span>
                   <button type="button" disabled={drafts.page * drafts.limit >= drafts.total} onClick={() => refreshDrafts(drafts.page + 1)}>Next</button>
                 </div>}
-                <form onSubmit={openById} className="quiz-open-id">
-                  <label>Open a published quiz by ID <input value={quizId} onChange={(event) => setQuizId(event.target.value)} /></label>
+                <form onSubmit={openById} className="quiz-open-id" noValidate>
+                  <label>Open a published quiz by ID <input value={quizId} onChange={(event) => { setQuizId(event.target.value); setQuizIdError(''); }} aria-invalid={Boolean(quizIdError)} /></label>
+                  {quizIdError && <span role="alert">{quizIdError}</span>}
                   <button type="submit" disabled={!quizId.trim()}>Open</button>
                 </form>
               </section>

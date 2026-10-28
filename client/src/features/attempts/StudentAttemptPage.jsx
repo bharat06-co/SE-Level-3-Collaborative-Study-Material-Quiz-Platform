@@ -3,6 +3,7 @@ import { http } from '../../api/http';
 import AttemptPage from './AttemptPage';
 import StudentInsights from './StudentInsights';
 import { loadAttemptQuiz, submitAttempt } from './attemptApi';
+import { validateEmail, validateObjectId, validatePassword } from '../../utils/formValidation';
 import './attempts.css';
 
 // Temporary feature entry point until the shared client auth context is available.
@@ -16,6 +17,8 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
   const [busy, setBusy] = useState(false);
   const [dataRevision, setDataRevision] = useState(0);
   const [notice, setNotice] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [quizIdError, setQuizIdError] = useState('');
   const activeToken = useRef(null);
   const token = auth?.token;
 
@@ -35,10 +38,30 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
   const sendAttempt = useCallback((id, answers, options) =>
     guardedRequest(() => submitAttempt(id, answers, { ...options, token })), [guardedRequest, token]);
 
+  function changeLogin(field, value) {
+    if (field === 'email') setEmail(value);
+    else setPassword(value);
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  }
+
   async function signIn(event) {
     event.preventDefault();
-    setBusy(true);
     setNotice('');
+    const nextErrors = {
+      email: validateEmail(email),
+      password: validatePassword(password),
+    };
+    if (nextErrors.email || nextErrors.password) {
+      setFieldErrors(nextErrors);
+      return;
+    }
+    setFieldErrors({});
+    setBusy(true);
     try {
       const { data } = await http.post('/auth/login', { email, password });
       if (typeof data.accessToken !== 'string' || !data.accessToken || !data.user) {
@@ -73,11 +96,13 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
     <a href="/">Platform home</a>
     <h1>Sign in to attempt a quiz</h1>
     {notice && <p role="status">{notice}</p>}
-    <form onSubmit={signIn}>
+    <form onSubmit={signIn} noValidate>
       <fieldset disabled={busy}>
         <legend>Student account</legend>
-        <label>Email <input type="email" autoComplete="username" required value={email} onChange={event => setEmail(event.target.value)} /></label>
-        <label>Password <input type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} /></label>
+        <label>Email <input type="email" autoComplete="username" value={email} onChange={event => changeLogin('email', event.target.value)} aria-invalid={Boolean(fieldErrors.email)} /></label>
+        {fieldErrors.email && <span role="alert">{fieldErrors.email}</span>}
+        <label>Password <input type="password" autoComplete="current-password" value={password} onChange={event => changeLogin('password', event.target.value)} aria-invalid={Boolean(fieldErrors.password)} /></label>
+        {fieldErrors.password && <span role="alert">{fieldErrors.password}</span>}
         <button type="submit">{busy ? 'Please wait…' : 'Sign in'}</button>
       </fieldset>
     </form>
@@ -95,12 +120,14 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
       <button type="button" onClick={signOut}>Sign out</button>
       <form onSubmit={event => {
         event.preventDefault();
-        if (/^[a-f\d]{24}$/i.test(quizId.trim())) {
-          setOpenedId(quizId.trim());
-          setNotice('');
-        } else setNotice('Enter a valid 24-character quiz ID.');
-      }}>
-        <label>Published quiz ID <input required value={quizId} onChange={event => setQuizId(event.target.value)} /></label>
+        const error = validateObjectId(quizId, 'Quiz ID');
+        setQuizIdError(error || '');
+        if (error) return;
+        setOpenedId(quizId.trim());
+        setNotice('');
+      }} noValidate>
+        <label>Published quiz ID <input value={quizId} onChange={event => { setQuizId(event.target.value); setQuizIdError(''); }} aria-invalid={Boolean(quizIdError)} /></label>
+        {quizIdError && <span role="alert">{quizIdError}</span>}
         <button type="submit">Open quiz</button>
       </form>
       {notice && <p role="status">{notice}</p>}
