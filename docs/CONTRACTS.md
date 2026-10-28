@@ -44,11 +44,11 @@ Domain schemas are intentionally not invented in this foundation. Read SAD §3.6
 
 ### Material revisions, ratings, comments and moderation (Sprint 2)
 - `PATCH /api/v1/materials/:id` accepts metadata (`title`, `description`, `category`, `topic`, `tags`), visibility/sharing and an optional multipart `file`. Owner/admin only. Metadata or file changes snapshot the previous material into `materialrevisions`; visibility-only edits create no revision. The current version predicate is reused for conflict detection.
-- `GET /api/v1/materials/:id/revisions` returns `{items}` oldest first. Owner/admin only; other authenticated users receive 403.
+- `GET /api/v1/materials/:id/revisions` returns `{items}` newest first. Owner/admin only; other authenticated users receive 403.
 - `PUT /api/v1/materials/:id/rating` accepts `{value: 1..5}` and upserts one rating per user. Reads expose `ratingAvg` (two decimals) and `ratingCount`; inaccessible material is 404.
 - `GET /api/v1/materials/:id/comments` (page/limit) and `POST /api/v1/materials/:id/comments` (`{content}`) use material visibility checks. Comments are 1–1000 trimmed UTF-16 units, stored literally and rendered with `PlainText`/React text nodes.
 - `POST /api/v1/materials/:id/reports` accepts `{reason, note?}` with reason `copyright | spam | inappropriate | misleading | other`, optional note ≤1000. Eligible non-admin users may report visible material; hidden items remain reportable to avoid one report blocking another. Admins review rather than report. Duplicate open reports by the same user return 409; default rate limit is 10 reports per user per hour (configurable in the service).
-- Reporting an eligible public/shared material hides it immediately. `GET /api/v1/admin/reports?status=open|dismissed|actioned` and `PATCH /api/v1/admin/reports/:id` (`{decision: "dismiss"|"uphold"}`) are administrator-only. Upholding keeps the material hidden; dismissing restores it only when no other open report exists. Decisions record reviewer and timestamp and are logged.
+- Reporting an eligible public/shared material hides it immediately. `GET /api/v1/admin/reports?status=open|dismissed|actioned` and `PATCH /api/v1/admin/reports/:id` (`{decision: "dismiss"|"uphold"}`) are administrator-only. Upholding keeps the material hidden; dismissing restores it only when no other open or upheld report exists. Decisions record reviewer and timestamp and are logged.
 
 ## Dependency-first work
 1. Merge reviewed starter and agree shared middleware/model boundaries.
@@ -60,7 +60,7 @@ Domain schemas are intentionally not invented in this foundation. Read SAD §3.6
 ## Do not accidentally change the rules
 - New material defaults private; plain students cannot author until contributor permission is granted.
 - Topic-related material quizzes are published-only (FR-024).
-- Reports hide material following BR-4 and the full SAD handling of other open reports; don't restore a still-reported item blindly.
+- Reports hide material following BR-4 and the full SAD handling of other open reports; don't restore a still-reported or upheld item blindly.
 - Quiz attempts are by students (including contributors), not educators/admins.
 - Competition ranking is 1,1,3; topic ranking sums per-quiz best percentages, not raw scores.
 - No new quiz-versioning design: stored attempts retain historical outcomes per D-3.

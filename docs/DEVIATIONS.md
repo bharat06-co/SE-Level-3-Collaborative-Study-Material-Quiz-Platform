@@ -69,7 +69,7 @@ SRS v1.2 prints 28 but enumerates 27 (6 accounts, 9 material, 7 quiz/leaderboard
 - Reporting is allowed for otherwise visibility-eligible non-admin users even when the material is currently hidden, so a second eligible user can report an item already hidden by the first report. This supports the STP two-open-report moderation case without bypassing private/shared access checks.
 - Administrators review reports but cannot submit them. Duplicate open reports by the same user on the same material return 409 `REPORT_EXISTS`.
 - A successful report hides the material immediately. A default limit of 10 reports per user per hour is applied in the report service and can be configured when constructing it.
-- Dismiss restores visibility only if no other open report remains for that material; uphold keeps it hidden. Decisions record reviewer/timestamp and emit an audit log event. `hidden` is changed with the same version predicate used by other material mutations.
+- Dismiss restores visibility only if no other open or upheld (`actioned`) report remains for that material; an upheld report keeps the material hidden even if later reports are dismissed. Decisions record reviewer/timestamp and emit an audit log event. `hidden` is changed with the same version predicate used by other material mutations.
 - Reasons are `copyright`, `spam`, `inappropriate`, `misleading`, `other`; optional notes use the SEC-004 plain-text rules (≤1000 trimmed UTF-16 units).
 
 ## DEV-08 — Material revision snapshots

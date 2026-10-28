@@ -37,7 +37,7 @@ S = plain student; C = student contributor; E = educator; A = admin.
 | Material comments | GET/POST /api/v1/materials/:id/comments | Visible users:200/201; stored text literal | Inaccessible:404; invalid length:400 | material.rating.comment.integration |
 | Report material | POST /api/v1/materials/:id/reports | Visible S/C/E:201; hidden item remains reportable | A:403; duplicate open report:409; inaccessible:404 | moderation.integration |
 | Admin report queue | GET /api/v1/admin/reports | A:200; ordered by oldest open first | S/C/E:403 | moderation.integration |
-| Admin report decision | PATCH /api/v1/admin/reports/:id | A:200; dismiss restores when no open reports remain | S/C/E:403; already resolved:409 | moderation.integration |
+| Admin report decision | PATCH /api/v1/admin/reports/:id | A:200; dismiss restores when no open or upheld reports remain | S/C/E:403; already resolved:409 | moderation.integration |
 
 There are 16 distinct method/path operations in this PR extension; query/state variants expand the matrix. Every distinct operation is also checked with both missing and invalid tokens. Expected failures are 401 UNAUTHENTICATED and 401 TOKEN_INVALID respectively, with complete domain/user records and file hashes unchanged.
 
