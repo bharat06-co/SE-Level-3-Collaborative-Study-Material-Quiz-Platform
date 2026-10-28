@@ -42,7 +42,7 @@ Payloads covered script tags, image onerror, SVG onload, javascript links and en
 ## Integration checklist before issue #44 is Done
 - [ ] Real auth/login schema rejects operator objects with 400 before querying, no account bypass.
 - [ ] Feature owners apply typed schemas and explicit MongoDB selectors/updates; run guard after multipart parsing where applicable.
-- [ ] FR-014 real authenticated comment storage/read path preserves text, enforces ownership/access and length rules.
+- [x] FR-014 real authenticated comment storage/read path preserves text, enforces ownership/access and length rules. Automated database/HTTP/component coverage is in `material.rating.comment.integration.test.js` and the material detail tests.
 - [ ] Real comment page renders stored hostile input as text in a browser; no unsafe HTML or automatic unsafe URL interpretation.
 - [ ] Merge/retest combined auth, quizzes, attempts and materials; repeat relevant SEC-004 checks.
 
