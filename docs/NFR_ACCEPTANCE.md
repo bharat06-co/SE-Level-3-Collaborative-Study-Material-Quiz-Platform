@@ -82,4 +82,14 @@ Automated coverage is in `client/tests/formValidation.test.js`, `MaterialSignIn.
 
 The material flow also has a real-stack integration suite, `client/tests/material.fullstack.test.jsx`. It drives the actual React pages through the real Axios client, Express routes, authentication and a disposable MongoDB replica set. It covers shared library-to-detail session use, rating and comment persistence, owner revision creation, and the admin uphold-then-dismiss moderation regression.
 
-The #35B usability session with five real participants has not been conducted. Do not close #35 on automated validation checks alone; record the participant evidence separately when the human session is completed.
+The session kit is in [`docs/NFR004_USABILITY.md`](NFR004_USABILITY.md). It provides the TC-UX-01 protocol, a disposable five-account DBMS quiz environment, the neutral task card and observer rule, evidence tables, and a Chromium inline-validation check. Reproduce the browser evidence with:
+
+```bash
+npm ci
+npm install --no-save --package-lock=false playwright@1.56.1
+npx playwright install chromium
+npm run nfr004:session:verify
+npm run nfr004:validation
+```
+
+The #35B usability session with five real participants has **not** been conducted. Do not close #35 on automated validation checks alone. Complete the participant and form-observation tables in the session kit at the recorded commit before closure.
