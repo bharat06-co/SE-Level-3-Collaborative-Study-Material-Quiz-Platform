@@ -1,0 +1,75 @@
+name: SEC-005 TLS and HTTPS acceptance
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sec005-tls.yml'
+      - 'compose.sec005.yaml'
+      - 'infra/sec005-nginx.conf.template'
+      - 'scripts/sec005/**'
+      - 'docs/SEC005_DEPLOYMENT.md'
+      - 'Dockerfile.web'
+      - 'Dockerfile.api'
+      - 'server/src/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tls-acceptance:
+    name: Real HTTPS stack and legacy-TLS rejection
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      SEC005_BIND_IP: 127.0.0.1
+      SEC005_HTTP_PORT: '18081'
+      SEC005_HTTPS_PORT: '18443'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create throwaway localhost certificate and isolated JWT secret
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cert_dir="$RUNNER_TEMP/sec005-certs"
+          mkdir -p "$cert_dir"
+          chmod 700 "$cert_dir"
+          openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 \
+            -keyout "$cert_dir/privkey.pem" -out "$cert_dir/fullchain.pem" \
+            -subj '/CN=localhost' -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1'
+          chmod 600 "$cert_dir/privkey.pem"
+          echo "SEC005_CERT_DIR=$cert_dir" >> "$GITHUB_ENV"
+          echo "SEC005_JWT_ACCESS_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          mkdir -p test-results/sec005
+          {
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "commit=$GITHUB_SHA"
+            echo "utc=$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            docker version --format 'docker={{.Server.Version}}'
+            docker compose version
+            openssl version
+            curl --version | head -1
+          } > test-results/sec005/environment.txt
+      - name: Validate isolated deployment configuration
+        run: docker compose -f compose.sec005.yaml -p se-sec005-${{ github.run_id }} config --quiet
+      - name: Start isolated real MongoDB, API and TLS-enabled frontend
+        run: docker compose -f compose.sec005.yaml -p se-sec005-${{ github.run_id }} up -d --build --wait --wait-timeout 180 mongo api web
+      - name: Verify HTTPS, redirects, HSTS and TLS protocol versions
+        shell: bash
+        run: bash scripts/sec005/verify-tls.sh
+      - name: Save limited failure diagnostics
+        if: failure()
+        run: |
+          docker compose -f compose.sec005.yaml -p se-sec005-${{ github.run_id }} ps > test-results/sec005/containers.txt || true
+          docker compose -f compose.sec005.yaml -p se-sec005-${{ github.run_id }} logs --tail=70 web api > test-results/sec005/service-tail.log 2>&1 || true
+      - name: Upload SEC-005 evidence (including failures)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sec005-https-tls-evidence-${{ github.run_id }}
+          path: test-results/sec005/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Remove only this disposable SEC-005 Compose project and its volumes
+        if: always()
+        run: docker compose -f compose.sec005.yaml -p se-sec005-${{ github.run_id }} down -v --remove-orphans

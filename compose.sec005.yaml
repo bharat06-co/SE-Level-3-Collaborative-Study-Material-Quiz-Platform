@@ -1,0 +1,81 @@
+# Independent SEC-005 deployment/acceptance stack. Does not modify compose.yaml.
+# Run with a UNIQUE Compose project name. Never use credentials/data from other stacks.
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - sec005-mongo:/data/db
+    networks: [database]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval '
+          const hello = db.hello();
+          if (hello.isWritablePrimary) quit(0);
+          if (!hello.setName) {
+            try { rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "mongo:27017" }] }); }
+            catch (e) {}
+          }
+          quit(1);'
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/team1_sec005?replicaSet=rs0
+      JWT_ACCESS_SECRET: ${SEC005_JWT_ACCESS_SECRET:?Set a unique random test/deployment secret (at least 64 chars)}
+      JWT_ACCESS_TTL: 15m
+      STORAGE_DIR: /app/server/uploads
+      CORS_ORIGINS: https://localhost:${SEC005_HTTPS_PORT:-18443},https://127.0.0.1:${SEC005_HTTPS_PORT:-18443}
+      TRUST_PROXY_HOPS: 1
+      LOG_LEVEL: warn
+    volumes:
+      - sec005-uploads:/app/server/uploads
+    networks: [application, database]
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    environment:
+      SEC005_HTTPS_PORT: ${SEC005_HTTPS_PORT:-18443}
+    ports:
+      - "${SEC005_BIND_IP:-127.0.0.1}:${SEC005_HTTP_PORT:-18081}:80"
+      - "${SEC005_BIND_IP:-127.0.0.1}:${SEC005_HTTPS_PORT:-18443}:443"
+    volumes:
+      - type: bind
+        source: ./infra/sec005-nginx.conf.template
+        target: /etc/nginx/templates/default.conf.template
+        read_only: true
+      - type: bind
+        source: ${SEC005_CERT_DIR:?Set an absolute host directory containing fullchain.pem and privkey.pem}
+        target: /etc/nginx/tls
+        read_only: true
+    networks: [application]
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  application:
+  database:
+    internal: true
+
+volumes:
+  sec005-mongo:
+  sec005-uploads:
