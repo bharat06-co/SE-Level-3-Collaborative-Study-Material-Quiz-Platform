@@ -271,4 +271,5 @@ async function main() {
   }
   if (failed) process.exitCode = 1;
   else console.log(`SEC-004 PASS: ${checks.length} checks; details in test-results/sec004/sec004-results.json`);
+  process.exit(failed ? 1 : 0);
 })().catch((error) => { console.error(error); process.exitCode = 1; });
