@@ -1,5 +1,5 @@
 import { http } from '../src/api/http';
-import { getQuiz, listDraftQuizzes, saveQuiz, setQuizPublication } from '../src/features/quizzes/quizApi';
+import { getQuiz, listDraftQuizzes, listPublishedQuizzesByTopic, saveQuiz, setQuizPublication } from '../src/features/quizzes/quizApi';
 
 test('quiz writes require and send a Bearer token', async () => {
   const post = jest.spyOn(http, 'post').mockResolvedValue({ data: { id: 'quiz-1' } });
@@ -27,6 +27,11 @@ test('draft listing and quiz detail send the same Bearer credential', async () =
   await getQuiz('quiz-1', 'access-token');
   expect(get).toHaveBeenCalledWith('/quizzes/quiz-1', {
     headers: { Authorization: 'Bearer access-token' },
+  });
+  await listPublishedQuizzesByTopic('DBMS', 'access-token', 2);
+  expect(get).toHaveBeenCalledWith('/quizzes', {
+    headers: { Authorization: 'Bearer access-token' },
+    params: { topic: 'DBMS', status: 'published', page: 2, limit: 20 },
   });
   get.mockRestore();
 });

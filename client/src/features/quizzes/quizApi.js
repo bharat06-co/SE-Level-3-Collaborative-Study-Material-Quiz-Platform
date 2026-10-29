@@ -10,6 +10,13 @@ export async function listDraftQuizzes(token, page = 1) {
   return response.data;
 }
 
+export async function listPublishedQuizzesByTopic(topic, token, page = 1) {
+  const response = await http.get('/quizzes', {
+    ...authorized(token), params: { topic, status: 'published', page, limit: 20 },
+  });
+  return response.data;
+}
+
 export async function getQuiz(id, token) {
   const response = await http.get(`/quizzes/${id}`, authorized(token));
   return response.data;

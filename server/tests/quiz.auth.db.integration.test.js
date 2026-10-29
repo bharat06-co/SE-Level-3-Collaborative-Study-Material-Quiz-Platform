@@ -181,4 +181,39 @@ describe('authenticated quiz flow with MongoDB', () => {
       .set('Authorization', owner)).status).toBe(204);
     expect(await Quiz.findById(ownerDraft.body.id)).toBeNull();
   });
+
+  test('topic filtering links only published quizzes, regardless of topic case', async () => {
+    const passwordHash = await bcrypt.hash('Study1234', 10);
+    await User.create([
+      { name: 'Topic Author', email: 'topic-author@example.com', passwordHash, role: 'educator' },
+      { name: 'Topic Student', email: 'topic-student@example.com', passwordHash, role: 'student' },
+    ]);
+    async function token(email) {
+      const login = await request(app).post('/api/v1/auth/login').send({ email, password: 'Study1234' });
+      expect(login.status).toBe(200);
+      return `Bearer ${login.body.accessToken}`;
+    }
+    const owner = await token('topic-author@example.com');
+    const student = await token('topic-student@example.com');
+    const path = '/api/v1/quizzes';
+    const question = [{ text: 'Choose B', type: 'mcq', options: ['A', 'B'], answerKey: 1 }];
+    const matching = await request(app).post(path).set('Authorization', owner)
+      .send({ title: 'Related questions', topic: 'Relational-Algebra', questions: question });
+    const draft = await request(app).post(path).set('Authorization', owner)
+      .send({ title: 'Unpublished questions', topic: 'RELATIONAL-ALGEBRA', questions: question });
+    const unrelated = await request(app).post(path).set('Authorization', owner)
+      .send({ title: 'Other topic questions', topic: 'networks', questions: question });
+    for (const created of [matching, draft, unrelated]) expect(created.status).toBe(201);
+    for (const created of [matching, unrelated]) {
+      expect((await request(app).post(`${path}/${created.body.id}/publish`)
+        .set('Authorization', owner)).status).toBe(200);
+    }
+
+    const listed = await request(app).get(path).query({ topic: 'relational-algebra', status: 'published' })
+      .set('Authorization', student);
+    expect(listed.status).toBe(200);
+    expect(listed.body.items.map((item) => item.id)).toEqual([matching.body.id]);
+    expect(listed.body.total).toBe(1);
+    expect(JSON.stringify(listed.body)).not.toMatch(/answerKey|correctAnswer/);
+  });
 });
