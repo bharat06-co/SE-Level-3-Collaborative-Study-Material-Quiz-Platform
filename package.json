@@ -18,6 +18,9 @@
     "build": "npm run build --workspace client",
     "check": "npm run lint && npm run test:coverage && npm run build",
     "smoke": "node scripts/check-running-app.cjs",
+    "nfr004:session": "node scripts/nfr004-session.cjs",
+    "nfr004:session:verify": "node scripts/nfr004-session.cjs --verify",
+    "nfr004:validation": "node scripts/nfr004-browser-acceptance.cjs",
     "audit:runtime": "npm audit --omit=dev"
   },
   "devDependencies": {
