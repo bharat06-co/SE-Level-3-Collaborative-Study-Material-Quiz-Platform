@@ -199,12 +199,14 @@ describe('authenticated quiz flow with MongoDB', () => {
     const question = [{ text: 'Choose B', type: 'mcq', options: ['A', 'B'], answerKey: 1 }];
     const matching = await request(app).post(path).set('Authorization', owner)
       .send({ title: 'Related questions', topic: 'Relational-Algebra', questions: question });
+    const secondMatching = await request(app).post(path).set('Authorization', owner)
+      .send({ title: 'More related questions', topic: 'RELATIONAL-ALGEBRA', questions: question });
     const draft = await request(app).post(path).set('Authorization', owner)
       .send({ title: 'Unpublished questions', topic: 'RELATIONAL-ALGEBRA', questions: question });
     const unrelated = await request(app).post(path).set('Authorization', owner)
       .send({ title: 'Other topic questions', topic: 'networks', questions: question });
-    for (const created of [matching, draft, unrelated]) expect(created.status).toBe(201);
-    for (const created of [matching, unrelated]) {
+    for (const created of [matching, secondMatching, draft, unrelated]) expect(created.status).toBe(201);
+    for (const created of [matching, secondMatching, unrelated]) {
       expect((await request(app).post(`${path}/${created.body.id}/publish`)
         .set('Authorization', owner)).status).toBe(200);
     }
@@ -212,8 +214,10 @@ describe('authenticated quiz flow with MongoDB', () => {
     const listed = await request(app).get(path).query({ topic: 'relational-algebra', status: 'published' })
       .set('Authorization', student);
     expect(listed.status).toBe(200);
-    expect(listed.body.items.map((item) => item.id)).toEqual([matching.body.id]);
-    expect(listed.body.total).toBe(1);
+    expect(listed.body.items.map((item) => item.id))
+      .toEqual(expect.arrayContaining([matching.body.id, secondMatching.body.id]));
+    expect(listed.body.items).toHaveLength(2);
+    expect(listed.body.total).toBe(2);
     expect(JSON.stringify(listed.body)).not.toMatch(/answerKey|correctAnswer/);
   });
 });
