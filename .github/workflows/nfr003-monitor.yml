@@ -1,0 +1,29 @@
+name: NFR-003 availability monitor self-test
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/nfr003/**'
+      - 'docs/NFR003_AVAILABILITY.md'
+      - '.github/workflows/nfr003-monitor.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor-smoke:
+    name: Verify measurement logic (NOT 24h acceptance)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Exercise probe schedule, evidence and failure accounting against localhost fixture
+        run: node --test scripts/nfr003/monitor.test.cjs
+      - name: Confirm monitoring tool does not claim acceptance from a smoke test
+        run: |
+          echo 'Smoke tests only. No 24-hour availability measurement was performed.'
+          echo 'Real TC-AVL-01 requires 2880 probes at 30-second intervals with faculty approval.'
