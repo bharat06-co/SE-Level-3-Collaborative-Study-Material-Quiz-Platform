@@ -19,6 +19,7 @@ const { createMaterialService } = require('./modules/materials/material.service'
 const { createStorage } = require('./adapters/storage');
 const { createAttemptRouter } = require('./modules/attempts/attempt.routes');
 const { createAnalyticsRouter } = require('./modules/analytics/analytics.routes');
+const { createLeaderboardRouter } = require('./modules/analytics/leaderboard.routes');
 const { createQuizRouter } = require('./modules/quizzes/quiz.routes');
 const { createReportRepository } = require('./modules/moderation/report.repository');
 const { createReportService } = require('./modules/moderation/report.service');
@@ -132,6 +133,7 @@ function createApp({
   app.use('/api/v1/auth', authRouter);
   app.use('/api/v1', createAttemptRouter(attempts));
   app.use('/api/v1', createAnalyticsRouter(attempts));
+  app.use('/api/v1', createLeaderboardRouter({ authenticate: attempts.authenticate }));
   app.use('/api/v1/quizzes', createQuizRouter({ authenticate: quizAuthenticate }));
 
   app.use((req, res, next) =>
