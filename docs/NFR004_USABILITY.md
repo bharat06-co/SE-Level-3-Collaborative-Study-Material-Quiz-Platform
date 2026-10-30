@@ -58,10 +58,10 @@ npm run nfr004:session:verify
 npm run nfr004:session
 ```
 
-`npm run nfr004:session` prints the app URL, quiz ID, five disposable
-participant accounts and one disposable password. Keep that terminal open for
-the whole session. Press `Ctrl+C` to stop and delete the temporary MongoDB
-data, upload directory, API process and Vite process.
+`npm run nfr004:session` prints the app URL, material and quiz details, five
+disposable participant accounts and one disposable password. Keep that terminal
+open for the whole session. Press `Ctrl+C` to stop and delete the temporary
+MongoDB data, upload directory, API process and Vite process.
 
 Use a fresh private/incognito window for each participant so no session is
 shared. If a browser or machine failure prevents an attempt, record it as a
@@ -73,15 +73,16 @@ than helping the original participant.
 Read this wording without adding hints:
 
 > You are trying this study platform for the first time. Please sign in with
-> the account on this card, open the DBMS Fundamentals quiz using the quiz ID,
-> answer the questions, submit the attempt and read your result aloud. I cannot
+> the account on this card, open Study materials and find the DBMS normalisation
+> notes, then find and open the DBMS Fundamentals quiz from that material.
+> Answer the questions, submit the attempt and read your result aloud. I cannot
 > help while you work, but I will stop you if something breaks.
 
 Provide:
 
-- app URL: printed by `npm run nfr004:session`;
+- app URL and start page: printed by `npm run nfr004:session`;
 - participant email and the shared disposable password;
-- quiz ID: printed by `npm run nfr004:session`.
+- quiz ID only as a fallback if the material-to-quiz link is unavailable.
 
 ### Assistance rule
 
@@ -127,20 +128,24 @@ npm run nfr004:validation
 ```
 
 This starts the real React frontend and real Express/MongoDB-backed API in an
-isolated disposable environment, then checks field-level errors and
-`aria-invalid` in Chromium. It writes:
+isolated disposable environment, then checks field-level `aria-invalid` state
+and visible inline alerts in Chromium. It also verifies the material-to-related-
+quiz link used by the session task. It writes:
 
 - `test-results/nfr004/inline-validation-results.json`;
 - screenshots `material-signin-inline-validation.png`,
   `material-upload-inline-validation.png`,
   `material-edit-inline-validation.png`,
   `material-comment-inline-validation.png`,
+  `material-related-quiz.png`,
+  `quiz-open-id-inline-validation.png`,
   `quiz-editor-inline-validation.png`,
+  `leaderboard-inline-validation.png`,
   `student-signin-inline-validation.png`,
   `student-quiz-id-inline-validation.png` and
   `attempt-blank-answers-valid.png`.
 
-The browser check passed locally on 29 October 2026 with 7/7 evidence groups.
+The browser check passed locally on 30 October 2026 with 10/10 evidence groups.
 Re-run it at the session commit and retain the generated JSON and screenshots
 with the session evidence. The `test-results/` directory is ignored by Git.
 
@@ -158,7 +163,9 @@ build matches it.
 | Material edit (`MaterialForm` edit) | Empty title; malformed shared ID | Title and 24-hex-character shared-ID messages | Automated |
 | Material comment | Empty comment | `Comment cannot be empty.` | Automated + manual |
 | Quiz-author sign-in | Empty fields | `Email is required.` / `Password is required.` | Automated |
+| Quiz-author open-by-ID | Malformed ID | `Quiz ID must be 24 hexadecimal characters.` | Automated |
 | Quiz editor | Empty title/topic/question/options/answer | Field-level title, topic, question, options and answer messages | Automated + manual |
+| Leaderboard query | Empty/malformed quiz ID; empty/over-length topic | `Enter a valid 24-character quiz ID.` / `Enter a topic of 1–100 characters.` | Automated |
 | Student sign-in | Empty fields | `Email is required.` / `Password is required.` | Automated + manual |
 | Student quiz-ID entry | Empty or malformed ID | `Quiz ID is required.` / `Quiz ID must be 24 hexadecimal characters.` | Automated + manual |
 | Rating form | Select constrained to 1–5 | Local validator exists; no user-reachable invalid option | Code review |
@@ -167,9 +174,10 @@ build matches it.
 | Moderation queue status | Constrained select | No invalid state | Code review |
 | Quiz attempt answers | Blank answers are allowed | No error; blank answers are scored as unanswered/zero | Automated + manual |
 
-Server validation remains authoritative. The quiz attempt deliberately does
-not require every answer because blank answers are a valid scoring case, not a
-malformed form.
+The leaderboard uses visible `role="alert"` errors rather than marking its
+inputs `aria-invalid`. Server validation remains authoritative. The quiz
+attempt deliberately does not require every answer because blank answers are a
+valid scoring case, not a malformed form.
 
 ## Evidence to record
 
@@ -182,6 +190,9 @@ malformed form.
 | Node version | |
 | Browser and version | |
 | App origin | |
+| Session start | `/materials` |
+| Material | `DBMS Normalisation Notes` |
+| Quiz discovery | `Quizzes for dbms` → `DBMS Fundamentals` |
 | Quiz ID/title | |
 | Facilitator | |
 | Observer | |
@@ -209,7 +220,9 @@ participant required substantive help.
 | Material edit | | | | |
 | Material comment | | | | |
 | Quiz-author sign-in | | | | |
+| Quiz-author open-by-ID | | | | |
 | Quiz editor | | | | |
+| Leaderboard query | | | | |
 | Student sign-in | | | | |
 | Student quiz-ID entry | | | | |
 

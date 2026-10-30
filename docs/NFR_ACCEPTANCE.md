@@ -73,16 +73,16 @@ Client forms validate locally before submission and display field-level messages
 
 - material upload/edit, comment, rating, report and moderation forms;
 - student and quiz-author sign-in forms;
-- student quiz-ID entry and quiz-author open-by-ID forms;
+- student quiz-ID entry, quiz-author open-by-ID and leaderboard query forms;
 - the quiz editor, which already had inline question/option validation.
 
 Server validation remains authoritative, and field errors returned in the central error envelope are mapped back to the corresponding material inputs. The quiz attempt answer form intentionally has no required-answer validation because blank answers are explicitly scored as unanswered/zero rather than treated as an invalid form.
 
-Automated coverage is in `client/tests/formValidation.test.js`, `MaterialSignIn.test.jsx`, `MaterialForm.test.jsx`, `MaterialLibraryPage.test.jsx`, `MaterialDetailPage.test.jsx`, `MaterialSession.test.jsx`, `StudentAttemptPage.test.jsx`, `QuizAuthoringPage.test.jsx`, `QuizEditor.test.jsx` and `materialApi.test.js`.
+Automated coverage is in `client/tests/formValidation.test.js`, `MaterialSignIn.test.jsx`, `MaterialForm.test.jsx`, `MaterialLibraryPage.test.jsx`, `MaterialDetailPage.test.jsx`, `MaterialSession.test.jsx`, `StudentAttemptPage.test.jsx`, `QuizAuthoringPage.test.jsx`, `QuizEditor.test.jsx`, `LeaderboardPage.test.jsx` and `materialApi.test.js`.
 
 The material flow also has a real-stack integration suite, `client/tests/material.fullstack.test.jsx`. It drives the actual React pages through the real Axios client, Express routes, authentication and a disposable MongoDB replica set. It covers shared library-to-detail session use, rating and comment persistence, owner revision creation, and the admin uphold-then-dismiss moderation regression.
 
-The session kit is in [`docs/NFR004_USABILITY.md`](NFR004_USABILITY.md). It provides the TC-UX-01 protocol, a disposable five-account DBMS quiz environment, the neutral task card and observer rule, evidence tables, and a Chromium inline-validation check. Reproduce the browser evidence with:
+The session kit is in [`docs/NFR004_USABILITY.md`](NFR004_USABILITY.md). It provides the TC-UX-01 protocol, a disposable five-account DBMS quiz environment, the neutral task card and observer rule, evidence tables, and a Chromium check covering the material-to-related-quiz flow, leaderboard and quiz-open-ID forms, and inline validation. Reproduce the browser evidence with:
 
 ```bash
 npm ci

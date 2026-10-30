@@ -67,6 +67,14 @@ async function verify(seed) {
       if (material.status !== 200) {
         throw new Error(`Participant ${participant.id} could not load the material fixture (HTTP ${material.status}).`);
       }
+      const query = new URLSearchParams({
+        topic: material.json.topic, status: 'published', page: '1', limit: '20',
+      });
+      const related = await request(seed.baseURL, `/quizzes?${query}`, { token: login.json.accessToken });
+      if (related.status !== 200 || !Array.isArray(related.json.items)
+        || !related.json.items.some((quiz) => quiz.id === seed.quiz.id)) {
+        throw new Error(`Participant ${participant.id} could not find the DBMS quiz from the material topic (HTTP ${related.status}).`);
+      }
     }
   }
 }
@@ -114,10 +122,14 @@ async function main() {
   console.log('');
   console.log('NFR-004 moderated usability session is ready.');
   console.log(`App:      ${origin}`);
+  console.log(`Start:    ${seed.material ? `${origin}/materials` : `${origin}/attempt`}`);
+  console.log(`Material: ${seed.material?.title || 'not seeded'} (${seed.material?.url || 'n/a'})`);
   console.log(`Quiz:     ${seed.quiz.title}`);
-  console.log(`Quiz ID:  ${seed.quiz.id}`);
-  console.log(`Start:    ${origin}/attempt`);
+  console.log(`Quiz link: ${seed.quiz.url}`);
+  console.log(`Quiz ID:  ${seed.quiz.id} (fallback only)`);
   console.log(`Evidence: ${environmentPath}`);
+  console.log('');
+  console.log('Primary task: sign in, open the material, find the quiz under the topic, and attempt it.');
   console.log('');
   console.log('Participant accounts (disposable; use a fresh private window per person):');
   for (const participant of seed.participants) {

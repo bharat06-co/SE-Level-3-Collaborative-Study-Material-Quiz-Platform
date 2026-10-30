@@ -123,6 +123,14 @@ async function main() {
   await screenshot(page, 'material-comment-inline-validation');
   record('Material comment form shows an inline empty-comment error');
 
+  // Material-to-topic-quiz discovery used by the moderated session task.
+  await heading(page, `Quizzes for ${seed.material.topic}`, 2);
+  const relatedQuiz = page.getByRole('link', { name: seed.quiz.title, exact: true });
+  await relatedQuiz.waitFor({ state: 'visible', timeout: 15000 });
+  assert.equal(await relatedQuiz.getAttribute('href'), new URL(seed.quiz.url).pathname);
+  await screenshot(page, 'material-related-quiz');
+  record('Material detail links the published DBMS quiz for its topic');
+
   // Quiz author sign-in and quiz editor.
   await page.goto(`${origin}/quizzes`, { waitUntil: 'domcontentloaded' });
   await heading(page, 'Quiz authoring', 1);
@@ -131,6 +139,12 @@ async function main() {
   await expectInvalid(page, 'Password', 'Password is required.');
   await signIn(page, { email: seed.author.email, password, button: 'Sign in to author quizzes' });
   await heading(page, 'Draft quizzes', 2);
+  await page.getByLabel('Open a published quiz by ID').fill('invalid');
+  await page.getByRole('button', { name: 'Open', exact: true }).click();
+  await expectInvalid(page, 'Open a published quiz by ID', 'Quiz ID must be 24 hexadecimal characters.');
+  await screenshot(page, 'quiz-open-id-inline-validation');
+  record('Quiz-author open-by-ID form shows an inline malformed-ID error');
+
   await page.getByRole('button', { name: 'New quiz', exact: true }).click();
   await heading(page, 'Create quiz', 1);
   await page.getByRole('button', { name: 'Add question', exact: true }).click();
@@ -142,6 +156,25 @@ async function main() {
   await visibleText(page, 'Choose the correct option.');
   await screenshot(page, 'quiz-editor-inline-validation');
   record('Quiz author sign-in and quiz editor show field-level inline errors');
+
+  // Leaderboard quiz/topic query validation.
+  await page.goto(`${origin}/leaderboard`, { waitUntil: 'domcontentloaded' });
+  await heading(page, 'Leaderboards', 1);
+  await signIn(page, { email: seed.participants[1].email, password, button: 'Sign in' });
+  await page.getByText(`Signed in as ${seed.participants[1].name}`, { exact: false }).waitFor();
+  await page.getByRole('button', { name: 'Show leaderboard', exact: true }).click();
+  await visibleText(page, 'Enter a valid 24-character quiz ID.');
+  await page.getByLabel('Quiz ID').fill('invalid');
+  await page.getByRole('button', { name: 'Show leaderboard', exact: true }).click();
+  await visibleText(page, 'Enter a valid 24-character quiz ID.');
+  await page.getByRole('button', { name: 'Topic leaderboard', exact: true }).click();
+  await page.getByRole('button', { name: 'Show leaderboard', exact: true }).click();
+  await visibleText(page, 'Enter a topic of 1–100 characters.');
+  await page.getByLabel('Topic').fill('x'.repeat(101));
+  await page.getByRole('button', { name: 'Show leaderboard', exact: true }).click();
+  await visibleText(page, 'Enter a topic of 1–100 characters.');
+  await screenshot(page, 'leaderboard-inline-validation');
+  record('Leaderboard form shows inline quiz-ID and topic errors');
 
   // Student sign-in, quiz-ID entry, and the intentionally optional attempt answers.
   await page.goto(`${origin}/attempt`, { waitUntil: 'domcontentloaded' });

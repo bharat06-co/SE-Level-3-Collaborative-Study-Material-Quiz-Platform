@@ -131,7 +131,7 @@ async function seed() {
     const document = await Material.create({
       _id: materialId,
       title: materialTitle,
-      description: 'Disposable public material used only for NFR-004 form validation.',
+      description: 'Disposable public material used only for NFR-004 usability and form validation.',
       category: 'Notes',
       topic: 'dbms',
       tags: ['dbms', 'normalisation'],
@@ -146,6 +146,7 @@ async function seed() {
     material = {
       id: document._id.toString(),
       title: materialTitle,
+      topic: document.topic,
       url: `${origin}/materials/${document._id.toString()}`,
     };
   }
