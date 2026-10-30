@@ -20,6 +20,11 @@ export default function LeaderboardPage() {
 
   async function load(page = 1) {
     if (!session) return;
+    // Supersede any pending response even if this submission is invalid.
+    const version = ++requestVersion.current;
+    setResult(null);
+    setBusy(false);
+    setError('');
     const value = scope === 'quiz' ? quizId.trim() : topic.trim();
     if (scope === 'quiz' && !objectId.test(value)) {
       setError('Enter a valid 24-character quiz ID.');
@@ -29,9 +34,7 @@ export default function LeaderboardPage() {
       setError('Enter a topic of 1–100 characters.');
       return;
     }
-    const version = ++requestVersion.current;
     setBusy(true);
-    setError('');
     try {
       const nextResult = await fetchLeaderboard({
         ...(scope === 'quiz' ? { quizId: value } : { topic: value }), token: session.token, page,
@@ -59,6 +62,16 @@ export default function LeaderboardPage() {
     setBusy(false);
   }
 
+  // Changing the query invalidates the old request and enables a new submission.
+  // This also lets invalid submissions clear an outdated pending result.
+  function changeQuery(setValue, value) {
+    requestVersion.current += 1;
+    setValue(value);
+    setResult(null);
+    setError('');
+    setBusy(false);
+  }
+
   return <main className="leaderboard-page">
     <Link to="/">← Platform home</Link>
     <h1>Leaderboards</h1>
@@ -70,9 +83,9 @@ export default function LeaderboardPage() {
       </div>
       <form onSubmit={(event) => { event.preventDefault(); load(); }}>
         {scope === 'quiz' ? <label>Quiz ID
-          <input value={quizId} onChange={(event) => setQuizId(event.target.value)} />
+          <input value={quizId} onChange={(event) => changeQuery(setQuizId, event.target.value)} />
         </label> : <label>Topic
-          <input value={topic} onChange={(event) => setTopic(event.target.value)} />
+          <input value={topic} onChange={(event) => changeQuery(setTopic, event.target.value)} />
         </label>}
         <button type="submit" disabled={busy}>Show leaderboard</button>
       </form>

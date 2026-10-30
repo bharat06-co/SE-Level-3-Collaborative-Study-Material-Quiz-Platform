@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../src/api/http';
@@ -83,4 +83,50 @@ test('ignores an outdated quiz response after switching to a topic leaderboard',
   expect(screen.getByRole('region', { name: 'Topic leaderboard results' })).toBeInTheDocument();
   expect(screen.getByText('Topic winner')).toBeInTheDocument();
   expect(screen.queryByText('Stale quiz winner')).not.toBeInTheDocument();
+});
+
+test('rejecting a query clears prior results and leaves a helpful error', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({ data: { accessToken: 'student-token', user: { id: 'u1', name: 'Student', role: 'student' } } });
+  fetchLeaderboard.mockResolvedValueOnce({
+    quizId: 'aaaaaaaaaaaaaaaaaaaaaaaa', title: 'Original quiz', page: 1, limit: 20, total: 1,
+    items: [{ studentId: 'a', studentName: 'Alice', score: 8, rank: 1 }],
+  }).mockRejectedValueOnce({ response: { status: 404, data: { error: { message: 'Published quiz not found.' } } } });
+  render(<MemoryRouter><MaterialSessionProvider><LeaderboardPage /></MaterialSessionProvider></MemoryRouter>);
+  await user.type(screen.getByLabelText('Email'), 'student@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+  await user.type(screen.getByLabelText('Quiz ID'), 'aaaaaaaaaaaaaaaaaaaaaaaa');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  expect(await screen.findByText('Original quiz')).toBeInTheDocument();
+  await user.clear(screen.getByLabelText('Quiz ID'));
+  await user.type(screen.getByLabelText('Quiz ID'), 'bbbbbbbbbbbbbbbbbbbbbbbb');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Published quiz not found.');
+  expect(screen.queryByText('Original quiz')).not.toBeInTheDocument();
+});
+
+test('invalid submission supersedes an older pending leaderboard request', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({ data: { accessToken: 'student-token', user: { id: 'u1', name: 'Student', role: 'student' } } });
+  let resolveOld;
+  fetchLeaderboard.mockReturnValueOnce(new Promise((resolve) => { resolveOld = resolve; }));
+  render(<MemoryRouter><MaterialSessionProvider><LeaderboardPage /></MaterialSessionProvider></MemoryRouter>);
+  await user.type(screen.getByLabelText('Email'), 'student@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+  await user.type(screen.getByLabelText('Quiz ID'), 'aaaaaaaaaaaaaaaaaaaaaaaa');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  expect(screen.getByText('Loading leaderboard…')).toBeInTheDocument();
+  await user.clear(screen.getByLabelText('Quiz ID'));
+  await user.type(screen.getByLabelText('Quiz ID'), 'not-a-quiz-id');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid 24-character quiz ID.');
+  expect(screen.queryByText('Loading leaderboard…')).not.toBeInTheDocument();
+  await act(async () => {
+    resolveOld({ quizId: 'aaaaaaaaaaaaaaaaaaaaaaaa', title: 'Old request', page: 1, limit: 20, total: 1,
+      items: [{ studentId: 'a', studentName: 'Alice', score: 8, rank: 1 }] });
+  });
+  expect(screen.queryByText('Old request')).not.toBeInTheDocument();
+  expect(screen.queryByRole('region', { name: 'Quiz leaderboard results' })).not.toBeInTheDocument();
 });
