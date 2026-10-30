@@ -45,3 +45,42 @@ test('student switches quiz and topic rankings without reloading the page', asyn
   expect(within(topic).getByText('140')).toBeInTheDocument();
   expect(fetchLeaderboard).toHaveBeenLastCalledWith({ topic: 'dbms', token: 'student-token', page: 1 });
 });
+
+test('ignores an outdated quiz response after switching to a topic leaderboard', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({
+    data: { accessToken: 'student-token', user: { id: 'u1', name: 'Student', role: 'student' } },
+  });
+  let resolveQuiz;
+  const quizRequest = new Promise((resolve) => { resolveQuiz = resolve; });
+  fetchLeaderboard
+    .mockReturnValueOnce(quizRequest)
+    .mockResolvedValueOnce({
+      topic: 'networks', page: 1, limit: 20, total: 1,
+      items: [{ studentId: 'topic-student', studentName: 'Topic winner', rankingScore: 175, rank: 1 }],
+    });
+
+  render(<MemoryRouter><MaterialSessionProvider><LeaderboardPage /></MaterialSessionProvider></MemoryRouter>);
+  await user.type(screen.getByLabelText('Email'), 'student@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+  await user.type(screen.getByLabelText('Quiz ID'), 'aaaaaaaaaaaaaaaaaaaaaaaa');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  expect(screen.getByText('Loading leaderboard…')).toBeInTheDocument();
+
+  await user.click(screen.getByRole('button', { name: 'Topic leaderboard' }));
+  await user.type(screen.getByLabelText('Topic'), 'networks');
+  await user.click(screen.getByRole('button', { name: 'Show leaderboard' }));
+  const topic = await screen.findByRole('region', { name: 'Topic leaderboard results' });
+  expect(within(topic).getByText('Topic winner')).toBeInTheDocument();
+  expect(within(topic).getByText('175')).toBeInTheDocument();
+
+  resolveQuiz({
+    quizId: 'aaaaaaaaaaaaaaaaaaaaaaaa', title: 'Stale quiz', page: 1, limit: 20, total: 1,
+    items: [{ studentId: 'quiz-student', studentName: 'Stale quiz winner', score: 10, rank: 1 }],
+  });
+  await Promise.resolve();
+  expect(screen.getByRole('region', { name: 'Topic leaderboard results' })).toBeInTheDocument();
+  expect(screen.getByText('Topic winner')).toBeInTheDocument();
+  expect(screen.queryByText('Stale quiz winner')).not.toBeInTheDocument();
+});

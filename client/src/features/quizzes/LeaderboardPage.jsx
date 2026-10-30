@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import MaterialSignIn from '../materials/MaterialSignIn';
 import { useMaterialSession } from '../materials/MaterialSession';
@@ -16,6 +16,7 @@ export default function LeaderboardPage() {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const requestVersion = useRef(0);
 
   async function load(page = 1) {
     if (!session) return;
@@ -28,13 +29,16 @@ export default function LeaderboardPage() {
       setError('Enter a topic of 1–100 characters.');
       return;
     }
+    const version = ++requestVersion.current;
     setBusy(true);
     setError('');
     try {
-      setResult(await fetchLeaderboard({
+      const nextResult = await fetchLeaderboard({
         ...(scope === 'quiz' ? { quizId: value } : { topic: value }), token: session.token, page,
-      }));
+      });
+      if (version === requestVersion.current) setResult(nextResult);
     } catch (failure) {
+      if (version !== requestVersion.current) return;
       if (failure.response?.status === 401) {
         clearSession();
         setResult(null);
@@ -43,14 +47,16 @@ export default function LeaderboardPage() {
         setError(failure.response?.data?.error?.message || 'Leaderboard could not be loaded.');
       }
     } finally {
-      setBusy(false);
+      if (version === requestVersion.current) setBusy(false);
     }
   }
 
   function changeScope(next) {
+    requestVersion.current += 1;
     setScope(next);
     setResult(null);
     setError('');
+    setBusy(false);
   }
 
   return <main className="leaderboard-page">
