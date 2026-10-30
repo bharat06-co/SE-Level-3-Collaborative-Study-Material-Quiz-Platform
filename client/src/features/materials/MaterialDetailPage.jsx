@@ -114,6 +114,13 @@ export default function MaterialDetailPage() {
     setNotice('Material updated. The previous details are kept in revision history.');
     const nextRevisions = await fetchRevisions(id, auth.token);
     setRevisions(nextRevisions.items || []);
+    setRelatedError('');
+    try {
+      setRelatedQuizzes(await listPublishedQuizzesByTopic(updated.topic, auth.token));
+    } catch {
+      setRelatedQuizzes({ items: [], page: 1, limit: 20, total: 0 });
+      setRelatedError('Related quizzes could not be loaded.');
+    }
     return updated;
   }
 

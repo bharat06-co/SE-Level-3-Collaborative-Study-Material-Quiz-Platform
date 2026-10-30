@@ -172,3 +172,34 @@ test('material detail links published quizzes with the same topic', async () => 
     .toHaveAttribute('href', '/quizzes/quiz-1/attempt');
   expect(listPublishedQuizzesByTopic).toHaveBeenCalledWith('DBMS', 'student-token');
 });
+
+test('editing a material topic replaces quizzes from the previous topic', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({
+    data: { accessToken: 'owner-token', user: { id: 'u2', name: 'Owner', role: 'student', contributor: true } },
+  });
+  getMaterial.mockResolvedValue(material);
+  fetchComments.mockResolvedValue({ items: [], page: 1, limit: 20, total: 0 });
+  fetchRevisions.mockResolvedValue({ items: [] });
+  listPublishedQuizzesByTopic
+    .mockResolvedValueOnce({ items: [{ id: 'old-quiz', title: 'Old DBMS quiz' }], page: 1, limit: 20, total: 1 })
+    .mockResolvedValueOnce({ items: [{ id: 'new-quiz', title: 'New networks quiz' }], page: 1, limit: 20, total: 1 });
+  updateMaterial.mockResolvedValue({ ...material, topic: 'networks' });
+
+  renderPage();
+  await user.type(screen.getByLabelText('Email'), 'owner@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+  expect(await screen.findByRole('link', { name: 'Old DBMS quiz' })).toBeInTheDocument();
+
+  await user.click(screen.getByRole('button', { name: 'Edit material' }));
+  await user.clear(screen.getByLabelText('Topic'));
+  await user.type(screen.getByLabelText('Topic'), 'networks');
+  await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+  expect(await screen.findByRole('link', { name: 'New networks quiz' }))
+    .toHaveAttribute('href', '/quizzes/new-quiz/attempt');
+  expect(screen.queryByRole('link', { name: 'Old DBMS quiz' })).not.toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Quizzes for networks' })).toBeInTheDocument();
+  expect(listPublishedQuizzesByTopic).toHaveBeenNthCalledWith(2, 'networks', 'owner-token');
+});
