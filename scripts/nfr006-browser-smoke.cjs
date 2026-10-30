@@ -75,9 +75,7 @@ async function smoke(config, origin, fixture) {
   } catch (error) {
     return { browser: config.name, result: 'UNAVAILABLE', reason: error.message.split('\n')[0] };
   }
-  const browserProcess = process.env.NFR006_EDGE_PATH
-    ? browser._connection.toImpl(browser).options.browserProcess
-    : null;
+  const browserProcess = browser._connection.toImpl(browser).options.browserProcess;
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   page.setDefaultTimeout(10000);
   const errors = [];
@@ -126,17 +124,13 @@ async function smoke(config, origin, fixture) {
     await page.screenshot({ path: screenshot, fullPage: true, timeout: 5000 }).catch(() => {});
     return { browser: config.name, version: browser.version(), result: 'FAIL', reason: error.message, screenshot };
   } finally {
-    // An Edge app extracted outside /Applications can keep its process open;
-    // force-stop only that explicitly configured disposable process.
-    if (!browserProcess) {
-      await browser.close();
-    } else {
-      const closed = await Promise.race([
-        browser.close().then(() => true),
-        new Promise((resolve) => setTimeout(() => resolve(false), 5000)),
-      ]);
-      if (!closed) await browserProcess.kill();
-    }
+    // Some branded browser builds keep background processes open after the
+    // automation connection closes. Bound cleanup keeps CI deterministic.
+    const closed = await Promise.race([
+      browser.close().then(() => true),
+      new Promise((resolve) => setTimeout(() => resolve(false), 5000)),
+    ]);
+    if (!closed) await browserProcess.kill();
   }
 }
 
