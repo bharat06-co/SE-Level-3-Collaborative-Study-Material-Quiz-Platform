@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { http } from '../src/api/http';
+import { listPublishedQuizzesByTopic } from '../src/features/quizzes/quizApi';
 import MaterialDetailPage from '../src/features/materials/MaterialDetailPage';
 import { MaterialSessionProvider } from '../src/features/materials/MaterialSession';
 import {
@@ -16,6 +17,9 @@ import {
 } from '../src/features/materials/materialApi';
 
 jest.mock('../src/api/http', () => ({ http: { post: jest.fn() } }));
+jest.mock('../src/features/quizzes/quizApi', () => ({
+  listPublishedQuizzesByTopic: jest.fn().mockResolvedValue({ items: [], page: 1, limit: 20, total: 0 }),
+}));
 jest.mock('../src/features/materials/materialApi', () => ({
   ...jest.requireActual('../src/features/materials/materialApi'),
   addComment: jest.fn(),
@@ -148,4 +152,54 @@ test('validation errors stay local and failed loads are announced', async () => 
   await user.type(screen.getByLabelText('Password'), 'Study1234');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
   expect(await screen.findByText('Material not found.')).toBeInTheDocument();
+});
+
+test('material detail links published quizzes with the same topic', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({ data: { accessToken: 'student-token', user: { id: 'u1', name: 'Student', role: 'student' } } });
+  getMaterial.mockResolvedValue({ ...material, topic: 'DBMS' });
+  fetchComments.mockResolvedValue({ items: [], page: 1, limit: 20, total: 0 });
+  fetchRevisions.mockRejectedValue({ response: { status: 403 } });
+  listPublishedQuizzesByTopic.mockResolvedValueOnce({
+    items: [{ id: 'quiz-1', title: 'Database questions' }], page: 1, limit: 20, total: 1,
+  });
+  renderPage();
+  await user.type(screen.getByLabelText('Email'), 'student@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+
+  expect(await screen.findByRole('link', { name: 'Database questions' }))
+    .toHaveAttribute('href', '/quizzes/quiz-1/attempt');
+  expect(listPublishedQuizzesByTopic).toHaveBeenCalledWith('DBMS', 'student-token');
+});
+
+test('editing a material topic replaces quizzes from the previous topic', async () => {
+  const user = userEvent.setup();
+  http.post.mockResolvedValue({
+    data: { accessToken: 'owner-token', user: { id: 'u2', name: 'Owner', role: 'student', contributor: true } },
+  });
+  getMaterial.mockResolvedValue(material);
+  fetchComments.mockResolvedValue({ items: [], page: 1, limit: 20, total: 0 });
+  fetchRevisions.mockResolvedValue({ items: [] });
+  listPublishedQuizzesByTopic
+    .mockResolvedValueOnce({ items: [{ id: 'old-quiz', title: 'Old DBMS quiz' }], page: 1, limit: 20, total: 1 })
+    .mockResolvedValueOnce({ items: [{ id: 'new-quiz', title: 'New networks quiz' }], page: 1, limit: 20, total: 1 });
+  updateMaterial.mockResolvedValue({ ...material, topic: 'networks' });
+
+  renderPage();
+  await user.type(screen.getByLabelText('Email'), 'owner@example.com');
+  await user.type(screen.getByLabelText('Password'), 'Study1234');
+  await user.click(screen.getByRole('button', { name: 'Sign in' }));
+  expect(await screen.findByRole('link', { name: 'Old DBMS quiz' })).toBeInTheDocument();
+
+  await user.click(screen.getByRole('button', { name: 'Edit material' }));
+  await user.clear(screen.getByLabelText('Topic'));
+  await user.type(screen.getByLabelText('Topic'), 'networks');
+  await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+  expect(await screen.findByRole('link', { name: 'New networks quiz' }))
+    .toHaveAttribute('href', '/quizzes/new-quiz/attempt');
+  expect(screen.queryByRole('link', { name: 'Old DBMS quiz' })).not.toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Quizzes for networks' })).toBeInTheDocument();
+  expect(listPublishedQuizzesByTopic).toHaveBeenNthCalledWith(2, 'networks', 'owner-token');
 });

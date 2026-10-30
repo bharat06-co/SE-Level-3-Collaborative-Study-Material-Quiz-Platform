@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import PlainText from '../../components/PlainText';
+import { listPublishedQuizzesByTopic } from '../quizzes/quizApi';
 import MaterialForm from './MaterialForm';
 import MaterialSignIn from './MaterialSignIn';
 import { useMaterialSession } from './MaterialSession';
@@ -32,6 +33,8 @@ export default function MaterialDetailPage() {
   const [material, setMaterial] = useState(null);
   const [comments, setComments] = useState({ items: [], page: 1, limit: 20, total: 0 });
   const [revisions, setRevisions] = useState([]);
+  const [relatedQuizzes, setRelatedQuizzes] = useState({ items: [], page: 1, limit: 20, total: 0 });
+  const [relatedError, setRelatedError] = useState('');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
   const [editing, setEditing] = useState(false);
@@ -70,12 +73,29 @@ export default function MaterialDetailPage() {
       setComments(nextComments);
       setRevisions(nextRevisions.items || []);
       setNotice('');
+      setRelatedError('');
+      try {
+        setRelatedQuizzes(await listPublishedQuizzesByTopic(nextMaterial.topic, token));
+      } catch {
+        setRelatedQuizzes({ items: [], page: 1, limit: 20, total: 0 });
+        setRelatedError('Related quizzes could not be loaded.');
+      }
     } catch (error) {
       handleError(error, 'Material could not be loaded.');
     } finally {
       setBusy(false);
     }
   }, [id, handleError]);
+
+  async function changeRelatedPage(page) {
+    if (!material || !auth) return;
+    try {
+      setRelatedError('');
+      setRelatedQuizzes(await listPublishedQuizzesByTopic(material.topic, auth.token, page));
+    } catch {
+      setRelatedError('Related quizzes could not be loaded.');
+    }
+  }
 
   useEffect(() => {
     if (auth) load(auth.token);
@@ -94,6 +114,13 @@ export default function MaterialDetailPage() {
     setNotice('Material updated. The previous details are kept in revision history.');
     const nextRevisions = await fetchRevisions(id, auth.token);
     setRevisions(nextRevisions.items || []);
+    setRelatedError('');
+    try {
+      setRelatedQuizzes(await listPublishedQuizzesByTopic(updated.topic, auth.token));
+    } catch {
+      setRelatedQuizzes({ items: [], page: 1, limit: 20, total: 0 });
+      setRelatedError('Related quizzes could not be loaded.');
+    }
     return updated;
   }
 
@@ -193,6 +220,24 @@ export default function MaterialDetailPage() {
                   onCancel={() => setEditing(false)}
                 />
               )}
+
+              <section aria-labelledby="related-quizzes-title">
+                <h2 id="related-quizzes-title">Quizzes for {material.topic}</h2>
+                {relatedError && <p role="alert">{relatedError}</p>}
+                {!relatedError && relatedQuizzes.items.length === 0 && <p>No published quizzes for this topic yet.</p>}
+                <ul className="material-list">
+                  {relatedQuizzes.items.map((quiz) => (
+                    <li key={quiz.id}>
+                      <h3><Link to={`/quizzes/${quiz.id}/attempt`}>{quiz.title}</Link></h3>
+                    </li>
+                  ))}
+                </ul>
+                {relatedQuizzes.total > relatedQuizzes.limit && <div className="material-pagination">
+                  <button type="button" disabled={relatedQuizzes.page <= 1} onClick={() => changeRelatedPage(relatedQuizzes.page - 1)}>Previous quizzes</button>
+                  <span>Page {relatedQuizzes.page}</span>
+                  <button type="button" disabled={relatedQuizzes.page * relatedQuizzes.limit >= relatedQuizzes.total} onClick={() => changeRelatedPage(relatedQuizzes.page + 1)}>Next quizzes</button>
+                </div>}
+              </section>
 
               <section aria-labelledby="rating-title">
                 <h2 id="rating-title">Rate this material</h2>
