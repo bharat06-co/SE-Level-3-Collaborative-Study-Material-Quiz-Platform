@@ -1,0 +1,10 @@
+.leaderboard-page { width: min(820px, 100%); margin: 0 auto; padding: 32px 24px 80px; }
+.leaderboard-page a { color: #155e75; }
+.leaderboard-page form { display: flex; align-items: end; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+.leaderboard-page label { display: grid; gap: 5px; font-weight: 600; }
+.leaderboard-page input { min-width: min(320px, 75vw); padding: 8px; font: inherit; }
+.leaderboard-tabs, .leaderboard-page nav { display: flex; gap: 12px; align-items: center; }
+.leaderboard-tabs [aria-pressed="true"] { background: #155e75; color: white; }
+.leaderboard-page table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+.leaderboard-page th, .leaderboard-page td { border-bottom: 1px solid #d7dee3; padding: 10px; text-align: left; }
+.leaderboard-page [role="alert"] { color: #b42318; }

@@ -2,6 +2,7 @@ import { Routes, Route, useParams, Link } from 'react-router-dom';
 import App from './App';
 import StudentAttemptPage from './features/attempts/StudentAttemptPage';
 import QuizAuthoringPage from './features/quizzes/QuizAuthoringPage';
+import LeaderboardPage from './features/quizzes/LeaderboardPage';
 import MaterialLibraryPage from './features/materials/MaterialLibraryPage';
 import MaterialDetailPage from './features/materials/MaterialDetailPage';
 import AdminReportsPage from './features/materials/AdminReportsPage';
@@ -12,6 +13,7 @@ export default function AppRoutes() {
     <Route path="/" element={<App />} />
     <Route path="/attempt" element={<StudentAttemptPage />} />
     <Route path="/quizzes" element={<QuizAuthoringPage />} />
+    <Route path="/leaderboard" element={<LeaderboardPage />} />
     <Route path="/quizzes/:quizId/attempt" element={<AttemptRoute />} />
     <Route path="/materials" element={<MaterialLibraryPage />} />
     <Route path="/materials/:id" element={<MaterialDetailPage />} />

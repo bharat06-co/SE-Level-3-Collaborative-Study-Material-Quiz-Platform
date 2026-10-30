@@ -20,7 +20,7 @@ export default function App() {
       <p className="eyebrow">TEAM 1 · SHARED FOUNDATION</p>
       <h1>Collaborative Study Material &amp; Quiz Platform</h1>
       <p className="intro">The shared React, Express and MongoDB foundation is ready for feature development. This page is a connection check, not a completed product demo.</p>
-      <p><Link to="/materials">Browse study materials</Link> · <Link to="/quizzes">Open quiz authoring</Link> · <Link to="/attempt">Sign in and attempt a quiz</Link> · <Link to="/admin/reports">Review reports</Link></p>
+      <p><Link to="/materials">Browse study materials</Link> · <Link to="/quizzes">Open quiz authoring</Link> · <Link to="/attempt">Sign in and attempt a quiz</Link> · <Link to="/leaderboard">View leaderboards</Link> · <Link to="/admin/reports">Review reports</Link></p>
       <section className="status-panel" aria-labelledby="status-title">
         <h2 id="status-title">Connection status</h2>
         <p role="status" aria-live="polite">{status === 'checking' ? 'Checking the API and database…' : status === 'ready' ? 'API and MongoDB are connected.' : 'API or database unavailable. Check the setup instructions and local services.'}</p>
