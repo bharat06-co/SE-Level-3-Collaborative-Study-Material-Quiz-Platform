@@ -158,4 +158,9 @@ async function main() {
 main().catch((error) => { console.error(error); process.exitCode = 1; }).finally(async () => {
   if (vite && vite.exitCode === null) vite.kill('SIGTERM');
   if (api && api.exitCode === null) api.kill('SIGTERM');
+  // Vite/npm and branded browsers may retain background handles after their
+  // disposable processes receive SIGTERM. The result and evidence are already
+  // flushed at this point, so terminate the runner with its recorded status.
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  process.exit(process.exitCode || 0);
 });
