@@ -73,13 +73,23 @@ Client forms validate locally before submission and display field-level messages
 
 - material upload/edit, comment, rating, report and moderation forms;
 - student and quiz-author sign-in forms;
-- student quiz-ID entry and quiz-author open-by-ID forms;
+- student quiz-ID entry, quiz-author open-by-ID and leaderboard query forms;
 - the quiz editor, which already had inline question/option validation.
 
 Server validation remains authoritative, and field errors returned in the central error envelope are mapped back to the corresponding material inputs. The quiz attempt answer form intentionally has no required-answer validation because blank answers are explicitly scored as unanswered/zero rather than treated as an invalid form.
 
-Automated coverage is in `client/tests/formValidation.test.js`, `MaterialSignIn.test.jsx`, `MaterialForm.test.jsx`, `MaterialLibraryPage.test.jsx`, `MaterialDetailPage.test.jsx`, `MaterialSession.test.jsx`, `StudentAttemptPage.test.jsx`, `QuizAuthoringPage.test.jsx`, `QuizEditor.test.jsx` and `materialApi.test.js`.
+Automated coverage is in `client/tests/formValidation.test.js`, `MaterialSignIn.test.jsx`, `MaterialForm.test.jsx`, `MaterialLibraryPage.test.jsx`, `MaterialDetailPage.test.jsx`, `MaterialSession.test.jsx`, `StudentAttemptPage.test.jsx`, `QuizAuthoringPage.test.jsx`, `QuizEditor.test.jsx`, `LeaderboardPage.test.jsx` and `materialApi.test.js`.
 
 The material flow also has a real-stack integration suite, `client/tests/material.fullstack.test.jsx`. It drives the actual React pages through the real Axios client, Express routes, authentication and a disposable MongoDB replica set. It covers shared library-to-detail session use, rating and comment persistence, owner revision creation, and the admin uphold-then-dismiss moderation regression.
 
-The #35B usability session with five real participants has not been conducted. Do not close #35 on automated validation checks alone; record the participant evidence separately when the human session is completed.
+The session kit is in [`docs/NFR004_USABILITY.md`](NFR004_USABILITY.md). It provides the TC-UX-01 protocol, a disposable five-account DBMS quiz environment, the neutral task card and observer rule, evidence tables, and a Chromium check covering the material-to-related-quiz flow, leaderboard and quiz-open-ID forms, and inline validation. Reproduce the browser evidence with:
+
+```bash
+npm ci
+npm install --no-save --package-lock=false playwright@1.56.1
+npx playwright install chromium
+npm run nfr004:session:verify
+npm run nfr004:validation
+```
+
+The #35B usability session with five real participants has **not** been conducted. Do not close #35 on automated validation checks alone. Complete the participant and form-observation tables in the session kit at the recorded commit before closure.
