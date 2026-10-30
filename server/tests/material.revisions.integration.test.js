@@ -212,7 +212,7 @@ describe('Material revision history (FR-015) and metadata edit (FR-018)', () => 
     });
   });
 
-  test('a non-owner contributor receives 403 and no revision is written', async () => {
+  test('a non-owner contributor receives 403 for edit/delete and leaves record, reference and file unchanged', async () => {
     const { token: ownerToken } = await createAndLogin({
       name: 'Owner Student',
       email: 'owner@example.com',
@@ -224,6 +224,14 @@ describe('Material revision history (FR-015) and metadata edit (FR-018)', () => 
       contributor: true,
     });
     const id = await upload(ownerToken);
+    const before = JSON.parse(JSON.stringify(await Material.findById(id).lean()));
+    const originalFile = await request(app)
+      .get(`/api/v1/materials/${id}/file`)
+      .set('Authorization', `Bearer ${ownerToken}`)
+      .buffer(true)
+      .parse(binaryParser);
+    expect(originalFile.status).toBe(200);
+    expect(originalFile.body.equals(PDF_ONE)).toBe(true);
 
     const edit = await request(app)
       .patch(`/api/v1/materials/${id}`)
@@ -232,11 +240,80 @@ describe('Material revision history (FR-015) and metadata edit (FR-018)', () => 
     expect(edit.status).toBe(403);
     expect(edit.body.error.code).toBe('FORBIDDEN');
 
+    const deletion = await request(app)
+      .delete(`/api/v1/materials/${id}`)
+      .set('Authorization', `Bearer ${otherToken}`);
+    expect(deletion.status).toBe(403);
+    expect(deletion.body.error.code).toBe('FORBIDDEN');
+
     const revisions = await request(app)
       .get(`/api/v1/materials/${id}/revisions`)
       .set('Authorization', `Bearer ${ownerToken}`);
     expect(revisions.body.items).toHaveLength(0);
-    expect((await Material.findById(id)).title).toBe(FIELDS.title);
+    expect(JSON.parse(JSON.stringify(await Material.findById(id).lean()))).toEqual(before);
+
+    const preservedFile = await request(app)
+      .get(`/api/v1/materials/${id}/file`)
+      .set('Authorization', `Bearer ${ownerToken}`)
+      .buffer(true)
+      .parse(binaryParser);
+    expect(preservedFile.status).toBe(200);
+    expect(preservedFile.body.equals(PDF_ONE)).toBe(true);
+  });
+
+  test.each([
+    ['owner', false],
+    ['admin', true],
+  ])('%s deletion removes both the material record and stored file', async (_actor, useAdmin) => {
+    const { token: ownerToken } = await createAndLogin({
+      name: 'Owner Student',
+      email: 'owner@example.com',
+      contributor: true,
+    });
+    let actorToken = ownerToken;
+    if (useAdmin) {
+      ({ token: actorToken } = await createAndLogin({
+        name: 'Admin User',
+        email: 'admin@example.com',
+        role: 'admin',
+      }));
+    }
+    const id = await upload(ownerToken);
+    const stored = await Material.findById(id).lean();
+    const storedPath = path.join(storageDir, stored.storageKey);
+    await expect(fsp.readFile(storedPath)).resolves.toEqual(PDF_ONE);
+
+    const deletion = await request(app)
+      .delete(`/api/v1/materials/${id}`)
+      .set('Authorization', `Bearer ${actorToken}`);
+    expect(deletion.status).toBe(204);
+    expect(deletion.text).toBe('');
+    await expect(Material.findById(id).lean()).resolves.toBeNull();
+    await expect(fsp.readFile(storedPath)).rejects.toMatchObject({ code: 'ENOENT' });
+  });
+
+  test('material deletion returns the standard authentication, validation and missing-resource errors', async () => {
+    const { token } = await createAndLogin({
+      name: 'Owner Student',
+      email: 'owner@example.com',
+      contributor: true,
+    });
+
+    const noToken = await request(app).delete(`/api/v1/materials/${new mongoose.Types.ObjectId()}`);
+    expect(noToken.status).toBe(401);
+    expect(noToken.body.error.code).toBe('UNAUTHENTICATED');
+
+    const malformed = await request(app)
+      .delete('/api/v1/materials/not-an-id')
+      .set('Authorization', `Bearer ${token}`);
+    expect(malformed.status).toBe(400);
+    expect(malformed.body.error.code).toBe('VALIDATION_ERROR');
+
+    const missing = await request(app)
+      .delete(`/api/v1/materials/${new mongoose.Types.ObjectId()}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(missing.status).toBe(404);
+    expect(missing.body.error.code).toBe('NOT_FOUND');
   });
 
   test('only owner or admin can read revisions', async () => {

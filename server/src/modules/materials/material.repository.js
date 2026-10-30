@@ -30,6 +30,10 @@ function createMaterialRepository({ model = Material } = {}) {
     );
   }
 
+  async function deleteIfVersion(id, version) {
+    return model.findOneAndDelete({ _id: id, __v: version });
+  }
+
   async function rate(id, userId, value) {
     const ratingUserId = new mongoose.Types.ObjectId(userId);
     return model.findOneAndUpdate(
@@ -61,7 +65,7 @@ function createMaterialRepository({ model = Material } = {}) {
     );
   }
 
-  return { create, findById, list, updateIfVersion, rate };
+  return { create, findById, list, updateIfVersion, deleteIfVersion, rate };
 }
 
 module.exports = { createMaterialRepository };

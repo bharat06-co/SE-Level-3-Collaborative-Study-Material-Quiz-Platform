@@ -59,6 +59,7 @@ describe('Material service (unit, mocked repository/storage)', () => {
       findById: jest.fn(),
       list: jest.fn(async () => ({ items: [], page: 1, limit: 20, total: 0 })),
       updateIfVersion: jest.fn(async (id, version, data) => ({ _id: id, __v: version + 1, ...data })),
+      deleteIfVersion: jest.fn(async () => materialDocument()),
     };
     storage = { put: jest.fn(async () => ({ key: '' })), get: jest.fn(), remove: jest.fn(async () => ({})) };
     service = createMaterialService({ repository, storage });
@@ -445,6 +446,76 @@ describe('Material service (unit, mocked repository/storage)', () => {
         statusCode: 400,
         code: 'VALIDATION_ERROR',
       });
+    });
+  });
+
+  describe('deleteMaterial', () => {
+    const storedBytes = Buffer.from('stored material');
+
+    beforeEach(() => {
+      repository.findById.mockResolvedValue(materialDocument());
+      storage.get.mockResolvedValue(storedBytes);
+    });
+
+    test('owner deletes the versioned record and stored file', async () => {
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .resolves.toMatchObject({ _id: materialId });
+      expect(storage.get).toHaveBeenCalledWith(`${materialId}.pdf`);
+      expect(storage.remove).toHaveBeenCalledWith(`${materialId}.pdf`);
+      expect(repository.deleteIfVersion).toHaveBeenCalledWith(materialId, 0);
+      expect(storage.put).not.toHaveBeenCalled();
+    });
+
+    test('admin can delete another user material', async () => {
+      await expect(service.deleteMaterial(adminAuth, materialId)).resolves.toBeDefined();
+      expect(repository.deleteIfVersion).toHaveBeenCalledWith(materialId, 0);
+    });
+
+    test('non-owner receives 403 before storage or database mutation', async () => {
+      await expect(service.deleteMaterial(outsiderAuth, materialId))
+        .rejects.toMatchObject({ statusCode: 403, code: 'FORBIDDEN' });
+      expect(storage.get).not.toHaveBeenCalled();
+      expect(storage.remove).not.toHaveBeenCalled();
+      expect(repository.deleteIfVersion).not.toHaveBeenCalled();
+    });
+
+    test('requires authentication, valid ID and an existing material', async () => {
+      await expect(service.deleteMaterial(undefined, materialId))
+        .rejects.toMatchObject({ statusCode: 401, code: 'UNAUTHENTICATED' });
+      await expect(service.deleteMaterial(contributorAuth, 'bad-id'))
+        .rejects.toMatchObject({ statusCode: 400, code: 'VALIDATION_ERROR' });
+      repository.findById.mockResolvedValueOnce(null);
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+    });
+
+    test('database failure restores the exact file bytes and leaves an error', async () => {
+      repository.deleteIfVersion.mockRejectedValueOnce(new Error('database unavailable'));
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
+      expect(storage.remove).toHaveBeenCalledWith(`${materialId}.pdf`);
+      expect(storage.put).toHaveBeenCalledWith(`${materialId}.pdf`, storedBytes);
+    });
+
+    test('concurrent material changes restore the file and retry with the current version', async () => {
+      repository.findById
+        .mockResolvedValueOnce(materialDocument())
+        .mockResolvedValueOnce(materialDocument({ __v: 1 }));
+      repository.deleteIfVersion
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(materialDocument({ __v: 1 }));
+
+      await expect(service.deleteMaterial(contributorAuth, materialId)).resolves.toBeDefined();
+      expect(repository.deleteIfVersion.mock.calls.map((call) => call[1])).toEqual([0, 1]);
+      expect(storage.put).toHaveBeenCalledWith(`${materialId}.pdf`, storedBytes);
+      expect(storage.remove).toHaveBeenCalledTimes(2);
+    });
+
+    test('missing stored bytes prevent database deletion', async () => {
+      storage.get.mockRejectedValueOnce(new Error('missing file'));
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
+      expect(repository.deleteIfVersion).not.toHaveBeenCalled();
     });
   });
 });

@@ -435,6 +435,57 @@ function createMaterialService({ repository, storage, revisionRepository } = {})
     return revisionRepository.listByMaterial(id);
   }
 
+  async function deleteMaterial(auth, id) {
+    requireAuth(auth);
+    requireMaterialId(id);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const document = await repository.findById(id);
+      if (!document) {
+        throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+      }
+      if (String(document.ownerId) !== String(auth.userId) && auth.role !== 'admin') {
+        throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can delete material.');
+      }
+
+      let bytes;
+      try {
+        bytes = await storage.get(document.storageKey);
+      } catch {
+        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material before deletion.');
+      }
+      if (!Buffer.isBuffer(bytes)) {
+        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material before deletion.');
+      }
+
+      let fileRemoved = false;
+      try {
+        await storage.remove(document.storageKey);
+        fileRemoved = true;
+        const deleted = await repository.deleteIfVersion(id, document.__v);
+        if (deleted) return deleted;
+      } catch (error) {
+        if (fileRemoved) {
+          try {
+            await storage.put(document.storageKey, bytes);
+          } catch {
+            throw new AppError(500, 'INTERNAL_ERROR', 'Unable to restore the stored material after deletion failed.');
+          }
+        }
+        if (error instanceof AppError) throw error;
+        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to delete material.');
+      }
+
+      try {
+        await storage.put(document.storageKey, bytes);
+      } catch {
+        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to restore the stored material after a concurrent change.');
+      }
+    }
+
+    throw new AppError(409, 'MATERIAL_CONFLICT', 'Material changed during this request. Please retry.');
+  }
+
   async function getMaterialForReporting(auth, id) {
     requireAuth(auth);
     requireMaterialId(id);
@@ -474,6 +525,7 @@ function createMaterialService({ repository, storage, revisionRepository } = {})
     searchMaterials,
     updateVisibility,
     updateMaterial,
+    deleteMaterial,
     getRevisions,
     rateMaterial,
     getMaterialForReporting,

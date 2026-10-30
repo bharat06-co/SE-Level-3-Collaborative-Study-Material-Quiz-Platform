@@ -30,7 +30,12 @@ SRS v1.2 prints 28 but enumerates 27 (6 accounts, 9 material, 7 quiz/leaderboard
 
 ## Open clarifications — not implemented or resolved here
 - Exact refresh-on-expired-access-token error semantics (`TOKEN_EXPIRED` reference vs catalogue).
-- Material delete API catalogue completeness for SEC-007/TC-SEC-07.
+- Material deletion is implemented as `DELETE /api/v1/materials/{id}` for the
+  owner or an administrator, returning 204 on success. A non-owner receives
+  403. The version-guarded deletion removes the stored file before committing
+  the database deletion and restores the bytes if the database write loses a
+  race or fails. This resolves the earlier SEC-007/TC-SEC-07 catalogue gap;
+  reviewer/faculty acknowledgement of the added endpoint remains pending.
 - Runtime decision is recorded in DEV-04 below. Do not restore the EOL Node 20 version merely because it appears in the original PDF.
 
 ## DEV-04 — Supported Node 24 LTS instead of EOL Node 20

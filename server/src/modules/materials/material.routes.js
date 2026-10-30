@@ -167,6 +167,10 @@ function createMaterialsRouter({ service, commentService, authMiddleware } = {})
 
   router.patch('/materials/:id/visibility', handleUpdateVisibility);
   router.patch('/materials/:id', parseOptionalFile, rejectUnsafeKeys, handleUpdateMaterial);
+  router.delete('/materials/:id', asyncHandler(async (req, res) => {
+    await service.deleteMaterial(req.auth, req.params.id);
+    return res.status(204).end();
+  }));
 
   return router;
 }
