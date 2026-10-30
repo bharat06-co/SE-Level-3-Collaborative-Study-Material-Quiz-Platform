@@ -1,0 +1,45 @@
+name: NFR-006 browser compatibility
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/nfr006-browser-compatibility.yml'
+      - 'scripts/nfr006-browser-smoke.cjs'
+      - 'scripts/sec004-fixture-server.cjs'
+      - 'server/src/**'
+      - 'client/src/**'
+      - 'docs/NFR006_BROWSER_COMPATIBILITY.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    name: Chrome, Edge, Firefox and WebKit smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install locked application dependencies
+        run: npm ci
+      - name: Install temporary browser runner
+        run: npm install --no-save --package-lock=false playwright@1.64.1
+      - name: Install branded and engine browsers
+        run: npx playwright install --with-deps chrome msedge firefox webkit
+      - name: Run TC-PORT-01 against the real application
+        env:
+          NFR006_REQUIRE_ALL: '1'
+        run: node scripts/nfr006-browser-smoke.cjs
+      - name: Preserve versioned results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfr006-browser-evidence
+          path: test-results/nfr006/
+          if-no-files-found: error
+          retention-days: 14

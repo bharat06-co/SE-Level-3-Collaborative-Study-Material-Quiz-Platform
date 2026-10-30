@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
 const { createApp } = require('../server/src/app');
+const { createAuthenticatedFeatures } = require('../server/src/config/features');
 const User = require('../server/src/models/User');
 const RefreshToken = require('../server/src/models/RefreshToken');
 const { Material } = require('../server/src/models/Material');
@@ -71,6 +72,7 @@ async function main() {
 
   storageDir = await fs.mkdtemp(path.join(os.tmpdir(), 'team1-sec004-'));
   const app = createApp({
+    ...createAuthenticatedFeatures(),
     origins: [origin], databaseIsConnected: () => mongoose.connection.readyState === 1,
     storageDir,
   });
