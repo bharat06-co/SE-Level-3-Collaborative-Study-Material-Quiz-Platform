@@ -457,10 +457,16 @@ describe('Material service (unit, mocked repository/storage)', () => {
       storage.get.mockResolvedValue(storedBytes);
     });
 
-    test('owner deletes the versioned record and stored file', async () => {
+    test('owner commits the database delete before removing the stored file', async () => {
+      const calls = [];
+      repository.deleteIfVersion.mockImplementation(async () => {
+        calls.push('database');
+        return materialDocument();
+      });
+      storage.remove.mockImplementation(async () => { calls.push('file'); });
       await expect(service.deleteMaterial(contributorAuth, materialId))
         .resolves.toMatchObject({ _id: materialId });
-      expect(storage.get).toHaveBeenCalledWith(`${materialId}.pdf`);
+      expect(calls).toEqual(['database', 'file']);
       expect(storage.remove).toHaveBeenCalledWith(`${materialId}.pdf`);
       expect(repository.deleteIfVersion).toHaveBeenCalledWith(materialId, 0);
       expect(storage.put).not.toHaveBeenCalled();
@@ -489,26 +495,73 @@ describe('Material service (unit, mocked repository/storage)', () => {
         .rejects.toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
     });
 
-    test('database failure restores the exact file bytes and leaves an error', async () => {
+    test('database failure leaves the existing file untouched', async () => {
       repository.deleteIfVersion.mockRejectedValueOnce(new Error('database unavailable'));
       await expect(service.deleteMaterial(contributorAuth, materialId))
         .rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
-      expect(storage.remove).toHaveBeenCalledWith(`${materialId}.pdf`);
-      expect(storage.put).toHaveBeenCalledWith(`${materialId}.pdf`, storedBytes);
+      expect(storage.remove).not.toHaveBeenCalled();
+      expect(storage.put).not.toHaveBeenCalled();
     });
 
-    test('concurrent material changes restore the file and retry with the current version', async () => {
+    test('stale database version retries without touching a file until deletion commits', async () => {
       repository.findById
         .mockResolvedValueOnce(materialDocument())
         .mockResolvedValueOnce(materialDocument({ __v: 1 }));
       repository.deleteIfVersion
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(materialDocument({ __v: 1 }));
-
       await expect(service.deleteMaterial(contributorAuth, materialId)).resolves.toBeDefined();
       expect(repository.deleteIfVersion.mock.calls.map((call) => call[1])).toEqual([0, 1]);
+      expect(storage.put).not.toHaveBeenCalled();
+      expect(storage.remove).toHaveBeenCalledTimes(1);
+    });
+
+    test('storage cleanup failure restores the old record and exact original bytes', async () => {
+      storage.remove.mockRejectedValueOnce(new Error('disk temporarily unavailable'));
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .rejects.toMatchObject({ statusCode: 500, code: 'INTERNAL_ERROR' });
       expect(storage.put).toHaveBeenCalledWith(`${materialId}.pdf`, storedBytes);
-      expect(storage.remove).toHaveBeenCalledTimes(2);
+      expect(repository.create).toHaveBeenCalledWith(expect.objectContaining({ _id: materialId }));
+    });
+
+    test('failed cleanup compensation explicitly reports when record cannot be restored', async () => {
+      storage.remove.mockRejectedValueOnce(new Error('disk failure'));
+      repository.create.mockRejectedValueOnce(new Error('database failure'));
+      await expect(service.deleteMaterial(contributorAuth, materialId))
+        .rejects.toMatchObject({
+          statusCode: 500, code: 'INTERNAL_ERROR',
+          message: 'Material deletion cleanup failed; administrator recovery required.',
+        });
+    });
+
+    test('two overlapping deletions: one winner, one 404, no file restoration', async () => {
+      let readers = 0;
+      let releaseReaders;
+      const bothRead = new Promise((resolve) => { releaseReaders = resolve; });
+      let stillExists = true;
+      repository.findById.mockImplementation(async () => {
+        if (readers < 2) {
+          readers += 1;
+          if (readers === 2) releaseReaders();
+          await bothRead;
+          return materialDocument();
+        }
+        return stillExists ? materialDocument() : null;
+      });
+      repository.deleteIfVersion.mockImplementation(async () => {
+        if (!stillExists) return null;
+        stillExists = false;
+        return materialDocument();
+      });
+      const outcomes = await Promise.allSettled([
+        service.deleteMaterial(contributorAuth, materialId),
+        service.deleteMaterial(contributorAuth, materialId),
+      ]);
+      expect(outcomes.filter((outcome) => outcome.status === 'fulfilled')).toHaveLength(1);
+      const failure = outcomes.find((outcome) => outcome.status === 'rejected');
+      expect(failure.reason).toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+      expect(storage.remove).toHaveBeenCalledTimes(1);
+      expect(storage.put).not.toHaveBeenCalled();
     });
 
     test('missing stored bytes prevent database deletion', async () => {

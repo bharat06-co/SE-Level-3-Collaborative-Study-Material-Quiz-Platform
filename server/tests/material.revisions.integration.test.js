@@ -292,6 +292,30 @@ describe('Material revision history (FR-015) and metadata edit (FR-018)', () => 
     await expect(fsp.readFile(storedPath)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
+  test('overlapping HTTP deletions remove the record and file only once', async () => {
+    const { token: ownerToken } = await createAndLogin({
+      name: 'Owner Student',
+      email: 'owner@example.com',
+      contributor: true,
+    });
+    const { token: adminToken } = await createAndLogin({
+      name: 'Admin User',
+      email: 'admin@example.com',
+      role: 'admin',
+    });
+    const id = await upload(ownerToken);
+    const stored = await Material.findById(id).lean();
+    const filePath = path.join(storageDir, stored.storageKey);
+
+    const results = await Promise.all([
+      request(app).delete(`/api/v1/materials/${id}`).set('Authorization', `Bearer ${ownerToken}`),
+      request(app).delete(`/api/v1/materials/${id}`).set('Authorization', `Bearer ${adminToken}`),
+    ]);
+    expect(results.map((response) => response.status).sort()).toEqual([204, 404]);
+    await expect(Material.findById(id).lean()).resolves.toBeNull();
+    await expect(fsp.readFile(filePath)).rejects.toMatchObject({ code: 'ENOENT' });
+  });
+
   test('material deletion returns the standard authentication, validation and missing-resource errors', async () => {
     const { token } = await createAndLogin({
       name: 'Owner Student',

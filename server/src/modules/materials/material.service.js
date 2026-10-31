@@ -439,6 +439,8 @@ function createMaterialService({ repository, storage, revisionRepository } = {})
     requireAuth(auth);
     requireMaterialId(id);
 
+    // The database record is the concurrency gate. A losing request must NEVER
+    // restore a file that the winning deletion already removed.
     for (let attempt = 0; attempt < 3; attempt += 1) {
       const document = await repository.findById(id);
       if (!document) {
@@ -448,39 +450,48 @@ function createMaterialService({ repository, storage, revisionRepository } = {})
         throw new AppError(403, 'FORBIDDEN', 'Only the owner or an administrator can delete material.');
       }
 
+      // Save exact bytes only for the winning request's possible cleanup failure.
       let bytes;
       try {
         bytes = await storage.get(document.storageKey);
       } catch {
+        // Another request may have finished deleting this material while the
+        // snapshot was being read. Distinguish that from a genuinely lost file.
+        const current = await repository.findById(id);
+        if (!current) throw new AppError(404, 'NOT_FOUND', 'Material not found.');
+        if (current.__v !== document.__v || current.storageKey !== document.storageKey) continue;
         throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material before deletion.');
       }
       if (!Buffer.isBuffer(bytes)) {
         throw new AppError(500, 'INTERNAL_ERROR', 'Unable to read the stored material before deletion.');
       }
 
-      let fileRemoved = false;
+      let deleted;
       try {
-        await storage.remove(document.storageKey);
-        fileRemoved = true;
-        const deleted = await repository.deleteIfVersion(id, document.__v);
-        if (deleted) return deleted;
-      } catch (error) {
-        if (fileRemoved) {
-          try {
-            await storage.put(document.storageKey, bytes);
-          } catch {
-            throw new AppError(500, 'INTERNAL_ERROR', 'Unable to restore the stored material after deletion failed.');
-          }
-        }
-        if (error instanceof AppError) throw error;
+        // database-first delete: the losing request never touches storage.
+        deleted = await repository.deleteIfVersion(id, document.__v);
+      } catch {
         throw new AppError(500, 'INTERNAL_ERROR', 'Unable to delete material.');
       }
+      if (!deleted) continue;
 
       try {
-        await storage.put(document.storageKey, bytes);
+        // Only the winner is permitted to touch the file.
+        await storage.remove(deleted.storageKey);
       } catch {
-        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to restore the stored material after a concurrent change.');
+        // Best-effort compensation on cleanup failure: restore bytes first,
+        // then restore the deleted record with its original ID and fields.
+        // This is NOT a distributed transaction; report unrecoverable failure.
+        try {
+          await storage.put(deleted.storageKey, bytes);
+          await repository.create(typeof deleted.toObject === 'function'
+            ? deleted.toObject() : deleted);
+        } catch {
+          throw new AppError(500, 'INTERNAL_ERROR', 'Material deletion cleanup failed; administrator recovery required.');
+        }
+        throw new AppError(500, 'INTERNAL_ERROR', 'Unable to delete material.');
       }
+      return deleted;
     }
 
     throw new AppError(409, 'MATERIAL_CONFLICT', 'Material changed during this request. Please retry.');
