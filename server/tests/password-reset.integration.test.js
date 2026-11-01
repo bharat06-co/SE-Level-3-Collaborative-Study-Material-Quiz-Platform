@@ -201,12 +201,27 @@ describe('FR-006 password reset integration', () => {
     expect(await bcrypt.compare('NewStudy1234', user.passwordHash)).toBe(true);
     expect(await bcrypt.compare('Study1234', user.passwordHash)).toBe(false);
 
+const oldPasswordLogin = await request(app)
+  .post('/api/v1/auth/login')
+  .send({
+    email: 'student@example.com',
+    password: 'Study1234',
+  });
+
+expect(oldPasswordLogin.status).toBe(401);
+expect(oldPasswordLogin.body.error.code).toBe('INVALID_CREDENTIALS');
     const storedRefreshToken = await RefreshToken.findOne({
       tokenHash: hashToken(refreshToken),
     });
 
     expect(storedRefreshToken).not.toBeNull();
     expect(storedRefreshToken.revokedAt).toBeInstanceOf(Date);
+    const oldRefreshAttempt = await request(app)
+      .post('/api/v1/auth/refresh')
+      .set('Cookie', `rt=${refreshToken}`);
+
+    expect(oldRefreshAttempt.status).toBe(401);
+    expect(oldRefreshAttempt.body.error.code).toBe('TOKEN_INVALID');
 
     const reuse = await request(app)
       .post('/api/v1/auth/reset-password')
