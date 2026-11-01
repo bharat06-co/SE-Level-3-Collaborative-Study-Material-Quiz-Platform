@@ -10,3 +10,82 @@ button { border: 0; border-radius: 6px; padding: 10px 16px; background: #155e75;
 button:disabled { opacity: .6; cursor: wait; }
 button:focus-visible { outline: 3px solid #e89221; outline-offset: 3px; }
 .note { margin-top: 32px; color: #4b6274; font-size: 14px; }
+/* FR-006: Password reset pages */
+
+.auth-shell {
+  max-width: 560px;
+  padding-top: 70px;
+}
+
+.auth-panel {
+  background: white;
+  border: 1px solid #cbd5df;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(23, 43, 58, 0.06);
+}
+
+.auth-panel h1 {
+  font-size: clamp(28px, 5vw, 36px);
+}
+
+.auth-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.auth-panel label {
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.auth-panel input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b8c6d1;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.auth-panel input:focus {
+  outline: 2px solid #155e75;
+  border-color: #155e75;
+}
+
+.auth-panel button {
+  margin-top: 12px;
+}
+
+.auth-success {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #e8f5ec;
+  color: #176333;
+}
+
+.auth-error {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #fdecec;
+  color: #a32121;
+}
+
+.auth-hint {
+  margin: 0;
+  color: #536878;
+  font-size: 13px;
+}
+
+.auth-back {
+  margin-top: 24px;
+}
+
+@media (max-width: 600px) {
+  .auth-panel {
+    padding: 22px;
+  }
+}
