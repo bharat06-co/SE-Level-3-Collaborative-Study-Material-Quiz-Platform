@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 export default [
-  { ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**'] },
+  { ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**', 'docs/part3-evidence/**/lcov-report/**', '.part3-*/**', '.scannerwork/**', '.nfr005-tools/**'] },
   js.configs.recommended,
   { files: ['**/*.{js,cjs,mjs,jsx}'], languageOptions: { ecmaVersion: 'latest', parserOptions: { ecmaFeatures: { jsx: true } }, globals: { ...globals.node, ...globals.browser } } },
   { files: ['**/*.test.{js,jsx}', '**/tests/**'], languageOptions: { globals: globals.jest } },

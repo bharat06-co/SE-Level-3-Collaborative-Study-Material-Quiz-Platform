@@ -1,4 +1,5 @@
 const express = require('express');
+const { createLoginRateLimit } = require('../../middleware/loginRateLimit');
 
 const {
   register,
@@ -9,17 +10,21 @@ const {
   resetPasswordController,
 } = require('./auth.controller');
 
-const router = express.Router();
+function createAuthRouter({ loginRateLimitOptions } = {}) {
+  const router = express.Router();
 
-router.post('/register', register);
-router.post('/login', login);
-router.post('/refresh', refresh);
-router.post('/logout', logout);
+  router.post('/register', register);
+  router.post('/login', createLoginRateLimit(loginRateLimitOptions), login);
+  router.post('/refresh', refresh);
+  router.post('/logout', logout);
 
-// Request a password-reset email
-router.post('/forgot-password', requestPasswordResetController);
+  // Request a password-reset email
+  router.post('/forgot-password', requestPasswordResetController);
 
-// Submit the reset token and new password
-router.post('/reset-password', resetPasswordController);
+  // Submit the reset token and new password
+  router.post('/reset-password', resetPasswordController);
 
-module.exports = router;
+  return router;
+}
+
+module.exports = { createAuthRouter };

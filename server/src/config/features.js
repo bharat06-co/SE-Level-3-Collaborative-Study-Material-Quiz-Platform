@@ -14,6 +14,7 @@ function createAuthenticatedFeatures() {
 
     registerRoutes(app) {
       app.use('/api/v1/admin', createAdminRouter({ authenticate }));
+      app.use('/api/v1/users/me', createProfileRouter({ authenticate }));
       app.use('/api/v1/profile', createProfileRouter({ authenticate }));
     },
 

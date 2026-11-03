@@ -218,14 +218,19 @@ describe('Admin user management', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .send({})
       .expect(400);
+
+    const unchangedStudent = await User.findById(student._id).lean();
+    expect(unchangedStudent).toEqual(expect.objectContaining({ role: 'student', contributor: false }));
   });
 
   test('returns not found when updating a nonexistent user', async () => {
-    await request(app)
+    const response = await request(app)
       .patch(`/api/v1/admin/users/${new mongoose.Types.ObjectId()}/role`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ contributor: true })
       .expect(404);
+
+    expect(response.body.error.code).toBe('NOT_FOUND');
   });
 
   test('admin updates role and contributor together', async () => {

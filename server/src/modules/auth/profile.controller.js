@@ -37,7 +37,7 @@ async function updateOwnProfile(req, res, next) {
     }
 
     const keys = Object.keys(body);
-    const allowedFields = ['name', 'email'];
+    const allowedFields = ['name'];
 
     if (
       keys.length === 0 ||
@@ -46,7 +46,7 @@ async function updateOwnProfile(req, res, next) {
       throw new AppError(
         400,
         'VALIDATION_ERROR',
-        'Only name and email can be updated.',
+        'Only name can be updated.',
       );
     }
 
@@ -68,49 +68,13 @@ async function updateOwnProfile(req, res, next) {
       updates.name = body.name.trim();
     }
 
-    if (Object.hasOwn(body, 'email')) {
-      if (typeof body.email !== 'string') {
-        throw new AppError(
-          400,
-          'VALIDATION_ERROR',
-          'Provide a valid email address.',
-        );
-      }
-
-      const email = body.email.trim().toLowerCase();
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw new AppError(
-          400,
-          'VALIDATION_ERROR',
-          'Provide a valid email address.',
-        );
-      }
-
-      updates.email = email;
-    }
-
-    let user;
-
-    try {
-      user = await User.findByIdAndUpdate(
-        req.auth.userId,
-        { $set: updates },
-        { new: true, runValidators: true },
-      )
-        .select(SAFE_PROFILE_FIELDS)
-        .lean();
-    } catch (error) {
-      if (error.code === 11000) {
-        throw new AppError(
-          409,
-          'CONFLICT',
-          'That email address is already in use.',
-        );
-      }
-
-      throw error;
-    }
+    const user = await User.findByIdAndUpdate(
+      req.auth.userId,
+      { $set: updates },
+      { new: true, runValidators: true },
+    )
+      .select(SAFE_PROFILE_FIELDS)
+      .lean();
 
     if (!user) {
       throw new AppError(404, 'NOT_FOUND', 'User not found.');

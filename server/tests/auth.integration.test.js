@@ -344,6 +344,28 @@ delete otherOverrides.passwordHash;
     });
   });
 
+  test('TC-AUTH-13: ten wrong logins, 429 on eleventh, correct login after 15-minute clock expiry', async () => {
+    await createTestUser();
+    let clock = Date.now();
+    const limitedApp = createApp({ loginRateLimitOptions: { now: () => clock } });
+    for (let i = 0; i < 10; i++) {
+      const failed = await request(limitedApp).post('/api/v1/auth/login')
+        .send({ email: 'student@example.com', password: 'WrongPassword1' });
+      expect(failed.status).toBe(401);
+      expect(failed.body.error.code).toBe('INVALID_CREDENTIALS');
+    }
+    const blocked = await request(limitedApp).post('/api/v1/auth/login')
+      .send({ email: 'student@example.com', password: 'Study1234' });
+    expect(blocked.status).toBe(429);
+    expect(blocked.body.error.code).toBe('RATE_LIMITED');
+    expect(blocked.headers['retry-after']).toBe('900');
+    clock += 15 * 60 * 1000;
+    const recovered = await request(limitedApp).post('/api/v1/auth/login')
+      .send({ email: 'student@example.com', password: 'Study1234' });
+    expect(recovered.status).toBe(200);
+    expect(recovered.body.accessToken).toEqual(expect.any(String));
+  });
+
   describe('FR-002 refresh tokens', () => {
     test('rotates a valid refresh token and invalidates the old token', async () => {
       const { refreshToken: oldToken } = await loginAndGetRefreshToken();
@@ -449,8 +471,8 @@ delete otherOverrides.passwordHash;
         .post('/api/v1/auth/logout')
         .set('Cookie', `rt=${refreshToken}`);
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Logged out successfully.');
+      expect(response.status).toBe(204);
+      expect(response.text).toBe('');
 
       const clearedCookie = (response.headers['set-cookie'] || []).find(
         (cookie) => cookie.startsWith('rt='),
@@ -476,7 +498,7 @@ delete otherOverrides.passwordHash;
         .post('/api/v1/auth/logout')
         .set('Cookie', `rt=${refreshToken}`);
 
-      expect(logoutResponse.status).toBe(200);
+      expect(logoutResponse.status).toBe(204);
 
       const refreshResponse = await request(app)
         .post('/api/v1/auth/refresh')
