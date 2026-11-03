@@ -1,0 +1,58 @@
+{
+  "kind": "Packaging assessment, not a fabricated Git/CI or Sonar export",
+  "preparedUtc": "2026-11-03T11:36:18.059254+00:00",
+  "explicitSuppliedCopy": "C:\\Users\\bhara\\Desktop\\SE-Part3-Workspace\\fresh-main-evidence",
+  "originalRepositoryAccessed": false,
+  "githubAccessed": false,
+  "originalRepositoryMountPathRecordedInExport": "C:\\Users\\bhara\\Documents\\GitHub\\SE-Level-3-Collaborative-Study-Material-Quiz-Platform:/usr/src:ro",
+  "assertedBranch": "main - owner-confirmed; no branch-name record supplied",
+  "commit": "942cf9ed65099441b30c704a388fd882f0a1d876",
+  "commitVerification": "Copied git-commit.txt exactly matches owner-provided full 40-hex SHA.",
+  "gitStatusContent": "?? docs/part3-evidence/\r\n",
+  "trackedWorktreeCleanAtCapturedStatus": true,
+  "untrackedEvidenceOnly": true,
+  "gitRecordCaptureTime": "Not embedded; filesystem modification times are preserved separately and are not treated as command execution timestamps.",
+  "scanAnalysisId": "a5c1e10e-2804-49f7-801b-4dc55722eaf0",
+  "scanComputeTaskId": "21c9cba5-4cff-49a5-ac54-0512cd9312a6",
+  "analysisDate": "2026-11-03T06:24:59+0000",
+  "scanTimeCommitBinding": "Owner-associated with supplied copied Git records; no cryptographic contemporaneous worktree attestation. SCM publisher disabled; no embedded revision SHA in supplied scan JSON/log.",
+  "freshScanVsHistorical": "Uses only supplied fresh a5c1e10e analysis. No historical local evidence is copied or substituted.",
+  "sourceProvenanceLimitations": [
+    "Git records contain no embedded capture timestamp or full source-file hash manifest.",
+    "The scan did not publish a Git revision; supplied records support review of the owner-associated commit but do not independently prove an unchanged worktree throughout the scan.",
+    "Jest counts remain owner-confirmed pending the original execution log or machine-readable test results."
+  ],
+  "nativeAndNormalizedCoverageVerified": {
+    "server": {
+      "nativeSha256": "e368563d058d6d364ec20d0164482b0ff308d3c62f41749904048afa36f268b3",
+      "normalizedSha256": "a72398ed3872f7ffc19c562ab37b519f21734c374fe436447c0747aeb5089eee",
+      "nativeMatchesScannerExecutionRecord": true,
+      "onlySourcePathMetadataChanged": true,
+      "allLineFunctionBranchRecordCountsReconciled": true
+    },
+    "client": {
+      "nativeSha256": "1b7eebe4a8b23e5fea870c0fce235630a3da7ccfba69a61214295ab332831a91",
+      "normalizedSha256": "3af3f091593b6abebdaaea6911a196611f962c992a46e1e6d355d369a3b1aaf0",
+      "nativeMatchesScannerExecutionRecord": true,
+      "onlySourcePathMetadataChanged": true,
+      "allLineFunctionBranchRecordCountsReconciled": true
+    }
+  },
+  "workingReportsComparedWithoutModification": {
+    "docs/NFR005_SONARQUBE_VERIFICATION.md": "b71bbae1975efd01cbd848a25990ad24d13abce25ca9bb00f8d1ba5d6c4bb049",
+    "docs/PART3_UNIT_TEST_REPORT.md": "cb819916d36739b79984284726e9a6c174d5fa5e80db6cdcb31589bbcbd0ee91",
+    "docs/PART3_CODE_COVERAGE_REPORT.md": "717c820f3e091dae15249be0433e574ab4542eabbcba05f1c11324f3e0d1ee8c",
+    "docs/PART3_BRANCH_COVERAGE_REPORT.md": "5b5510b32673ff3fcf7d72213e2a3972b6e42403668a7cd43b671614c76792dc",
+    "docs/DEVIATIONS.md": "c58622c6cee31c8d7e4bb2f82fe270a624c9a78f86d1646b560e9c98e36b3c92",
+    "docs/NFR006_BROWSER_COMPATIBILITY.md": "d6d362da5ea78a7aa322406d150465933dd977a966cc4716688784a45f8c843d"
+  },
+  "allFiveCriteria": {
+    "gate": "PASS - direct fresh server export",
+    "noBlockerOrCritical": "PASS - all 9 fresh open findings inspected",
+    "minimumCoreLineCoverage": "PASS - all five core services independently calculated from native LCOV",
+    "requiredServicesCovered": "PASS - all five services present with positive line/function/branch hits",
+    "reportsPreserved": "PASS - essential authentic artifacts and reports staged with original hashes"
+  },
+  "independentReviewReadiness": "READY WITH EXPLICIT PROVENANCE AND TEST-COUNT QUALIFICATIONS",
+  "finalRepositoryIntegrationPerformed": false
+}

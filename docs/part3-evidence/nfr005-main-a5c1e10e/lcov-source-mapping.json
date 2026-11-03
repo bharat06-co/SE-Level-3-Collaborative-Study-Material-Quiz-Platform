@@ -1,0 +1,437 @@
+[
+  {
+    "workspace": "server",
+    "original": "src\\app.js",
+    "normalized": "server/src/app.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\adapters\\storage.js",
+    "normalized": "server/src/adapters/storage.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\config\\env.js",
+    "normalized": "server/src/config/env.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\config\\features.js",
+    "normalized": "server/src/config/features.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\middleware\\authenticate.js",
+    "normalized": "server/src/middleware/authenticate.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\middleware\\errorHandler.js",
+    "normalized": "server/src/middleware/errorHandler.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\middleware\\loginRateLimit.js",
+    "normalized": "server/src/middleware/loginRateLimit.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\middleware\\rejectUnsafeKeys.js",
+    "normalized": "server/src/middleware/rejectUnsafeKeys.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\middleware\\requestId.js",
+    "normalized": "server/src/middleware/requestId.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\migrations\\materialTextIndex.js",
+    "normalized": "server/src/migrations/materialTextIndex.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\Comment.js",
+    "normalized": "server/src/models/Comment.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\Material.js",
+    "normalized": "server/src/models/Material.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\MaterialReport.js",
+    "normalized": "server/src/models/MaterialReport.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\MaterialRevision.js",
+    "normalized": "server/src/models/MaterialRevision.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\PasswordResetToken.js",
+    "normalized": "server/src/models/PasswordResetToken.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\RefreshToken.js",
+    "normalized": "server/src/models/RefreshToken.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\models\\User.js",
+    "normalized": "server/src/models/User.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\admin\\admin.controller.js",
+    "normalized": "server/src/modules/admin/admin.controller.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\admin\\admin.routes.js",
+    "normalized": "server/src/modules/admin/admin.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\analytics\\analytics.routes.js",
+    "normalized": "server/src/modules/analytics/analytics.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\analytics\\leaderboard.repository.js",
+    "normalized": "server/src/modules/analytics/leaderboard.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\analytics\\leaderboard.routes.js",
+    "normalized": "server/src/modules/analytics/leaderboard.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\analytics\\leaderboard.service.js",
+    "normalized": "server/src/modules/analytics/leaderboard.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\analytics\\progress.service.js",
+    "normalized": "server/src/modules/analytics/progress.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.auth.js",
+    "normalized": "server/src/modules/attempts/attempt.auth.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.controller.js",
+    "normalized": "server/src/modules/attempts/attempt.controller.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.history.js",
+    "normalized": "server/src/modules/attempts/attempt.history.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.model.js",
+    "normalized": "server/src/modules/attempts/attempt.model.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.repo.js",
+    "normalized": "server/src/modules/attempts/attempt.repo.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.routes.js",
+    "normalized": "server/src/modules/attempts/attempt.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.schemas.js",
+    "normalized": "server/src/modules/attempts/attempt.schemas.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\attempt.service.js",
+    "normalized": "server/src/modules/attempts/attempt.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\attempts\\scoring.service.js",
+    "normalized": "server/src/modules/attempts/scoring.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\auth.controller.js",
+    "normalized": "server/src/modules/auth/auth.controller.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\auth.routes.js",
+    "normalized": "server/src/modules/auth/auth.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\auth.service.js",
+    "normalized": "server/src/modules/auth/auth.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\password-reset.email.js",
+    "normalized": "server/src/modules/auth/password-reset.email.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\password-reset.repository.js",
+    "normalized": "server/src/modules/auth/password-reset.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\profile.controller.js",
+    "normalized": "server/src/modules/auth/profile.controller.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\profile.routes.js",
+    "normalized": "server/src/modules/auth/profile.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\refresh-token.repository.js",
+    "normalized": "server/src/modules/auth/refresh-token.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\auth\\user.repository.js",
+    "normalized": "server/src/modules/auth/user.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\comment.repository.js",
+    "normalized": "server/src/modules/materials/comment.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\comment.service.js",
+    "normalized": "server/src/modules/materials/comment.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\fileValidation.js",
+    "normalized": "server/src/modules/materials/fileValidation.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\index.js",
+    "normalized": "server/src/modules/materials/index.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\material.repository.js",
+    "normalized": "server/src/modules/materials/material.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\material.routes.js",
+    "normalized": "server/src/modules/materials/material.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\material.service.js",
+    "normalized": "server/src/modules/materials/material.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\materials\\revision.repository.js",
+    "normalized": "server/src/modules/materials/revision.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\moderation\\moderation.routes.js",
+    "normalized": "server/src/modules/moderation/moderation.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\moderation\\report.repository.js",
+    "normalized": "server/src/modules/moderation/report.repository.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\moderation\\report.service.js",
+    "normalized": "server/src/modules/moderation/report.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.controller.js",
+    "normalized": "server/src/modules/quizzes/quiz.controller.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.model.js",
+    "normalized": "server/src/modules/quizzes/quiz.model.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.repo.js",
+    "normalized": "server/src/modules/quizzes/quiz.repo.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.routes.js",
+    "normalized": "server/src/modules/quizzes/quiz.routes.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.schemas.js",
+    "normalized": "server/src/modules/quizzes/quiz.schemas.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\modules\\quizzes\\quiz.service.js",
+    "normalized": "server/src/modules/quizzes/quiz.service.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\utils\\AppError.js",
+    "normalized": "server/src/utils/AppError.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\utils\\asyncHandler.js",
+    "normalized": "server/src/utils/asyncHandler.js"
+  },
+  {
+    "workspace": "server",
+    "original": "src\\utils\\plainText.js",
+    "normalized": "server/src/utils/plainText.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\App.jsx",
+    "normalized": "client/src/App.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\AppRoutes.jsx",
+    "normalized": "client/src/AppRoutes.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\api\\http.js",
+    "normalized": "client/src/api/http.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\components\\PlainText.jsx",
+    "normalized": "client/src/components/PlainText.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\attempts\\AttemptPage.jsx",
+    "normalized": "client/src/features/attempts/AttemptPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\attempts\\AttemptResults.jsx",
+    "normalized": "client/src/features/attempts/AttemptResults.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\attempts\\StudentAttemptPage.jsx",
+    "normalized": "client/src/features/attempts/StudentAttemptPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\attempts\\StudentInsights.jsx",
+    "normalized": "client/src/features/attempts/StudentInsights.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\attempts\\attemptApi.js",
+    "normalized": "client/src/features/attempts/attemptApi.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\auth\\ForgotPasswordPage.jsx",
+    "normalized": "client/src/features/auth/ForgotPasswordPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\auth\\ResetPasswordPage.jsx",
+    "normalized": "client/src/features/auth/ResetPasswordPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\auth\\auth.js",
+    "normalized": "client/src/features/auth/auth.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\AdminReportsPage.jsx",
+    "normalized": "client/src/features/materials/AdminReportsPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\MaterialDetailPage.jsx",
+    "normalized": "client/src/features/materials/MaterialDetailPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\MaterialForm.jsx",
+    "normalized": "client/src/features/materials/MaterialForm.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\MaterialLibraryPage.jsx",
+    "normalized": "client/src/features/materials/MaterialLibraryPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\MaterialSession.jsx",
+    "normalized": "client/src/features/materials/MaterialSession.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\MaterialSignIn.jsx",
+    "normalized": "client/src/features/materials/MaterialSignIn.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\materials\\materialApi.js",
+    "normalized": "client/src/features/materials/materialApi.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\quizzes\\LeaderboardPage.jsx",
+    "normalized": "client/src/features/quizzes/LeaderboardPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\quizzes\\QuizAuthoringPage.jsx",
+    "normalized": "client/src/features/quizzes/QuizAuthoringPage.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\quizzes\\QuizEditor.jsx",
+    "normalized": "client/src/features/quizzes/QuizEditor.jsx"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\quizzes\\leaderboardApi.js",
+    "normalized": "client/src/features/quizzes/leaderboardApi.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\features\\quizzes\\quizApi.js",
+    "normalized": "client/src/features/quizzes/quizApi.js"
+  },
+  {
+    "workspace": "client",
+    "original": "src\\utils\\formValidation.js",
+    "normalized": "client/src/utils/formValidation.js"
+  }
+]

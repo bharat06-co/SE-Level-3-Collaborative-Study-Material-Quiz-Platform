@@ -1,0 +1,88 @@
+{
+  "kind": "Exact, numbered excerpts from supplied fresh scanner log; not a full log or new execution",
+  "sourceCopyFilename": "sonar-scanner.log",
+  "sourceSha256": "5285ca9b90a5e2c82bd075cccc484e89d1b12546e4559995e2b0548dacfcec7e",
+  "sourceLineCount": 110,
+  "lines": [
+    {
+      "sourceLine": 4,
+      "text": "06:24:41.124 INFO  SonarScanner CLI 8.1.0.6389"
+    },
+    {
+      "sourceLine": 6,
+      "text": "06:24:43.232 INFO  Communicating with SonarQube Community Build 26.10.0.133078"
+    },
+    {
+      "sourceLine": 9,
+      "text": "06:24:53.492 INFO  Java 21.0.12.1 Eclipse Adoptium (64-bit)"
+    },
+    {
+      "sourceLine": 22,
+      "text": "06:24:58.825 INFO  Project key: study-platform-nfr005-local"
+    },
+    {
+      "sourceLine": 41,
+      "text": "06:25:13.642 INFO    Excluded sources: **/node_modules/**, **/coverage/**, **/dist/**"
+    },
+    {
+      "sourceLine": 42,
+      "text": "06:25:15.939 INFO  167 files indexed (done) | time=2298ms"
+    },
+    {
+      "sourceLine": 43,
+      "text": "06:25:15.941 INFO  Quality profile for css: Sonar way core"
+    },
+    {
+      "sourceLine": 44,
+      "text": "06:25:15.942 INFO  Quality profile for js: Sonar way core"
+    },
+    {
+      "sourceLine": 62,
+      "text": "06:25:16.826 INFO  Analysing [/usr/src/docs/part3-evidence/nfr005-final-main/client-lcov-sonar.info, /usr/src/docs/part3-evidence/nfr005-final-main/server-lcov-sonar.info]"
+    },
+    {
+      "sourceLine": 63,
+      "text": "06:25:29.520 INFO  Sensor JavaScript/TypeScript Coverage [javascript] (done) | time=12738ms"
+    },
+    {
+      "sourceLine": 82,
+      "text": "06:25:44.496 INFO  Plugin version: [14.0.0.46108]"
+    },
+    {
+      "sourceLine": 86,
+      "text": "06:27:47.761 INFO  154/154 source files have been analyzed"
+    },
+    {
+      "sourceLine": 93,
+      "text": "06:27:47.806 INFO  Sensor Zero Coverage Sensor (done) | time=10ms"
+    },
+    {
+      "sourceLine": 96,
+      "text": "06:27:47.833 INFO  SCM Publisher is disabled"
+    },
+    {
+      "sourceLine": 102,
+      "text": "06:27:50.870 INFO  Analysis report uploaded in 602ms"
+    },
+    {
+      "sourceLine": 104,
+      "text": "06:27:50.874 INFO  Waiting for the analysis report to be processed (max 300s)"
+    },
+    {
+      "sourceLine": 105,
+      "text": "06:28:06.222 INFO  QUALITY GATE STATUS: PASSED - View details on http://host.docker.internal:9000/dashboard?id=study-platform-nfr005-local"
+    },
+    {
+      "sourceLine": 107,
+      "text": "06:28:06.529 INFO  SonarScanner Engine completed successfully"
+    },
+    {
+      "sourceLine": 108,
+      "text": "06:28:06.576 INFO  EXECUTION SUCCESS"
+    },
+    {
+      "sourceLine": 109,
+      "text": "06:28:06.602 INFO  Total time: 3:25.501s"
+    }
+  ]
+}
