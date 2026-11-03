@@ -1,0 +1,22 @@
+{
+  "queue": [],
+  "current": {
+    "id": "21c9cba5-4cff-49a5-ac54-0512cd9312a6",
+    "type": "REPORT",
+    "componentId": "776b391f-9e70-4abd-9d02-0c37904e15f9",
+    "componentKey": "study-platform-nfr005-local",
+    "componentName": "Collaborative Study Material and Quiz Platform - NFR005",
+    "componentQualifier": "TRK",
+    "analysisId": "a5c1e10e-2804-49f7-801b-4dc55722eaf0",
+    "status": "SUCCESS",
+    "submittedAt": "2026-11-03T06:27:50+0000",
+    "submitterLogin": "admin",
+    "startedAt": "2026-11-03T06:27:51+0000",
+    "executedAt": "2026-11-03T06:28:03+0000",
+    "executionTimeMs": 12502,
+    "hasScannerContext": true,
+    "warningCount": 0,
+    "warnings": [],
+    "infoMessages": []
+  }
+}

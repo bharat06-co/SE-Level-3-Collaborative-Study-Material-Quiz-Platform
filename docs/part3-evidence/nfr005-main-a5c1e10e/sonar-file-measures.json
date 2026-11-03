@@ -1,0 +1,2601 @@
+{
+  "total": 97,
+  "components": [
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/admin/admin.controller.js",
+      "name": "admin.controller.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/admin/admin.controller.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "94.2",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "96.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "30"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/admin/admin.routes.js",
+      "name": "admin.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/admin/admin.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/AdminReportsPage.jsx",
+      "name": "AdminReportsPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/AdminReportsPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "82.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "89.8",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "49"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "5",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/analytics/analytics.routes.js",
+      "name": "analytics.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/analytics/analytics.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "94.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/app.js",
+      "name": "app.js",
+      "qualifier": "FIL",
+      "path": "server/src/app.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "95.7",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "96.1",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "76"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "3",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/App.jsx",
+      "name": "App.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/App.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/utils/AppError.js",
+      "name": "AppError.js",
+      "qualifier": "FIL",
+      "path": "server/src/utils/AppError.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "7"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/AppRoutes.jsx",
+      "name": "AppRoutes.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/AppRoutes.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "3"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/utils/asyncHandler.js",
+      "name": "asyncHandler.js",
+      "qualifier": "FIL",
+      "path": "server/src/utils/asyncHandler.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "2"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.auth.js",
+      "name": "attempt.auth.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.auth.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "10"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.controller.js",
+      "name": "attempt.controller.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.controller.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.history.js",
+      "name": "attempt.history.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.history.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "90.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "18"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.model.js",
+      "name": "attempt.model.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.model.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "9"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.repo.js",
+      "name": "attempt.repo.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.repo.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "94.6",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "25"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.routes.js",
+      "name": "attempt.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "96.4",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "22"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.schemas.js",
+      "name": "attempt.schemas.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.schemas.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "15"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/attempt.service.js",
+      "name": "attempt.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/attempt.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "18"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/attemptApi.js",
+      "name": "attemptApi.js",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/attemptApi.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "81.2",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "75.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "10",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/AttemptPage.jsx",
+      "name": "AttemptPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/AttemptPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "97.8",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "63"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/AttemptResults.jsx",
+      "name": "AttemptResults.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/AttemptResults.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "95.5",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "8"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/attempts.css",
+      "name": "attempts.css",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/attempts.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/auth.controller.js",
+      "name": "auth.controller.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/auth.controller.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "88.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "95.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "49"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "2",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/auth/auth.js",
+      "name": "auth.js",
+      "qualifier": "FIL",
+      "path": "client/src/features/auth/auth.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "4"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "4",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/auth.routes.js",
+      "name": "auth.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/auth.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.7",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "92.3",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/auth.service.js",
+      "name": "auth.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/auth.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "90.8",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "92.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "141"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "10",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/middleware/authenticate.js",
+      "name": "authenticate.js",
+      "qualifier": "FIL",
+      "path": "server/src/middleware/authenticate.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "30"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/Comment.js",
+      "name": "Comment.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/Comment.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "4"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/comment.repository.js",
+      "name": "comment.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/comment.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "76.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "88.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "9"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/comment.service.js",
+      "name": "comment.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/comment.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "68.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "77.8",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "27"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/config/database.js",
+      "name": "database.js",
+      "qualifier": "FIL",
+      "path": "server/src/config/database.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "5",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/config/env.js",
+      "name": "env.js",
+      "qualifier": "FIL",
+      "path": "server/src/config/env.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "23"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/middleware/errorHandler.js",
+      "name": "errorHandler.js",
+      "qualifier": "FIL",
+      "path": "server/src/middleware/errorHandler.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "93.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/config/features.js",
+      "name": "features.js",
+      "qualifier": "FIL",
+      "path": "server/src/config/features.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "12"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/fileValidation.js",
+      "name": "fileValidation.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/fileValidation.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "87.6",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "97.3",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "111"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "3",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/auth/ForgotPasswordPage.jsx",
+      "name": "ForgotPasswordPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/auth/ForgotPasswordPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "23"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "23",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/utils/formValidation.js",
+      "name": "formValidation.js",
+      "qualifier": "FIL",
+      "path": "client/src/utils/formValidation.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "81.5",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "90.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "10"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/api/http.js",
+      "name": "http.js",
+      "qualifier": "FIL",
+      "path": "client/src/api/http.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "4"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/index.js",
+      "name": "index.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/index.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "2"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "2",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/index.js",
+      "name": "index.js",
+      "qualifier": "FIL",
+      "path": "server/src/index.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "23"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "23",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/leaderboard.css",
+      "name": "leaderboard.css",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/leaderboard.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/analytics/leaderboard.repository.js",
+      "name": "leaderboard.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/analytics/leaderboard.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "94.7",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "15"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/analytics/leaderboard.routes.js",
+      "name": "leaderboard.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/analytics/leaderboard.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "86.4",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "93.3",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "15"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/analytics/leaderboard.service.js",
+      "name": "leaderboard.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/analytics/leaderboard.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "95.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "64"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/leaderboardApi.js",
+      "name": "leaderboardApi.js",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/leaderboardApi.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/LeaderboardPage.jsx",
+      "name": "LeaderboardPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/LeaderboardPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "83.6",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "87.5",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "64"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "8",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/config/logger.js",
+      "name": "logger.js",
+      "qualifier": "FIL",
+      "path": "server/src/config/logger.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "3"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "3",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/middleware/loginRateLimit.js",
+      "name": "loginRateLimit.js",
+      "qualifier": "FIL",
+      "path": "server/src/middleware/loginRateLimit.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "34"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/main.jsx",
+      "name": "main.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/main.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "1"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/Material.js",
+      "name": "Material.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/Material.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "96.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/material.repository.js",
+      "name": "material.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/material.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "78.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "92.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "14"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/material.routes.js",
+      "name": "material.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/material.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "87.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "97.6",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "82"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "2",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/material.service.js",
+      "name": "material.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/material.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "90.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "93.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "264"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "16",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/materialApi.js",
+      "name": "materialApi.js",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/materialApi.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "88.2",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "93.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "98"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/MaterialDetailPage.jsx",
+      "name": "MaterialDetailPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/MaterialDetailPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "81.3",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "85.8",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "134"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "19",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/MaterialForm.jsx",
+      "name": "MaterialForm.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/MaterialForm.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "97.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "74"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/MaterialLibraryPage.jsx",
+      "name": "MaterialLibraryPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/MaterialLibraryPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "86.4",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "88.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "53"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/MaterialReport.js",
+      "name": "MaterialReport.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/MaterialReport.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "8"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/MaterialRevision.js",
+      "name": "MaterialRevision.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/MaterialRevision.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "4"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/materials.css",
+      "name": "materials.css",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/materials.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/MaterialSession.jsx",
+      "name": "MaterialSession.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/MaterialSession.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "93.8",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "14"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/materials/MaterialSignIn.jsx",
+      "name": "MaterialSignIn.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/materials/MaterialSignIn.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "90.2",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "94.6",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "37"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "2",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/migrations/materialTextIndex.js",
+      "name": "materialTextIndex.js",
+      "qualifier": "FIL",
+      "path": "server/src/migrations/materialTextIndex.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "81.3",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "85.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "35"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "5",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/moderation/moderation.routes.js",
+      "name": "moderation.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/moderation/moderation.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "82.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "94.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "19"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/password-reset.email.js",
+      "name": "password-reset.email.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/password-reset.email.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "20.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "33.3",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "9"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/password-reset.repository.js",
+      "name": "password-reset.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/password-reset.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "56.5",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "61.5",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "13"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "5",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/PasswordResetToken.js",
+      "name": "PasswordResetToken.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/PasswordResetToken.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/utils/plainText.js",
+      "name": "plainText.js",
+      "qualifier": "FIL",
+      "path": "server/src/utils/plainText.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "8"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/components/PlainText.jsx",
+      "name": "PlainText.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/components/PlainText.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "1"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/profile.controller.js",
+      "name": "profile.controller.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/profile.controller.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "84.6",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "87.5",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "32"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "4",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/profile.routes.js",
+      "name": "profile.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/profile.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "8"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/analytics/progress.service.js",
+      "name": "progress.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/analytics/progress.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "94.4",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "21"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.controller.js",
+      "name": "quiz.controller.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.controller.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "11"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.model.js",
+      "name": "quiz.model.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.model.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "7"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.repo.js",
+      "name": "quiz.repo.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.repo.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "9"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.routes.js",
+      "name": "quiz.routes.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.routes.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "96.4",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "21"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.schemas.js",
+      "name": "quiz.schemas.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.schemas.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "14"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/quizzes/quiz.service.js",
+      "name": "quiz.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/quizzes/quiz.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "95.8",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "98.4",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "64"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/quizApi.js",
+      "name": "quizApi.js",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/quizApi.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "83.3",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "92.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "14"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/quizAuthoring.css",
+      "name": "quizAuthoring.css",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/quizAuthoring.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/QuizAuthoringPage.jsx",
+      "name": "QuizAuthoringPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/QuizAuthoringPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "64.3",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "69.4",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "98"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "30",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/quizEditor.css",
+      "name": "quizEditor.css",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/quizEditor.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/quizzes/QuizEditor.jsx",
+      "name": "QuizEditor.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/quizzes/QuizEditor.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "95.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "95.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "92"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "4",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/refresh-token.repository.js",
+      "name": "refresh-token.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/refresh-token.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "55.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "75.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "12"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "3",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/RefreshToken.js",
+      "name": "RefreshToken.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/RefreshToken.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/middleware/rejectUnsafeKeys.js",
+      "name": "rejectUnsafeKeys.js",
+      "qualifier": "FIL",
+      "path": "server/src/middleware/rejectUnsafeKeys.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "24"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/moderation/report.repository.js",
+      "name": "report.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/moderation/report.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "92.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "91.7",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "12"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/moderation/report.service.js",
+      "name": "report.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/moderation/report.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "87.2",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "91.8",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "85"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "7",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/middleware/requestId.js",
+      "name": "requestId.js",
+      "qualifier": "FIL",
+      "path": "server/src/middleware/requestId.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "5"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/auth/ResetPasswordPage.jsx",
+      "name": "ResetPasswordPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/auth/ResetPasswordPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "38"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "38",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/materials/revision.repository.js",
+      "name": "revision.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/materials/revision.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "92.3",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "88.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "9"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/attempts/scoring.service.js",
+      "name": "scoring.service.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/attempts/scoring.service.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "34"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/adapters/storage.js",
+      "name": "storage.js",
+      "qualifier": "FIL",
+      "path": "server/src/adapters/storage.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "88.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "92.0",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "25"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "2",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/StudentAttemptPage.jsx",
+      "name": "StudentAttemptPage.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/StudentAttemptPage.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "88.1",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "88.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "81"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "9",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/features/attempts/StudentInsights.jsx",
+      "name": "StudentInsights.jsx",
+      "qualifier": "FIL",
+      "path": "client/src/features/attempts/StudentInsights.jsx",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.9",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "90.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "44"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "4",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:client/src/styles.css",
+      "name": "styles.css",
+      "qualifier": "FIL",
+      "path": "client/src/styles.css",
+      "language": "css",
+      "measures": []
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/models/User.js",
+      "name": "User.js",
+      "qualifier": "FIL",
+      "path": "server/src/models/User.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "3"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "study-platform-nfr005-local:server/src/modules/auth/user.repository.js",
+      "name": "user.repository.js",
+      "qualifier": "FIL",
+      "path": "server/src/modules/auth/user.repository.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "87.5",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "90.9",
+          "bestValue": false
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "11"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "1",
+          "bestValue": false
+        }
+      ]
+    }
+  ]
+}

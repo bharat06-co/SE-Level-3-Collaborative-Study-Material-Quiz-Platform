@@ -1,0 +1,926 @@
+{
+  "kind": "Derived solely from supplied authentic native LCOV; not Jest coverage-final.json or a test-result export",
+  "derivationUtc": "2026-11-03T11:36:18.059254+00:00",
+  "percentageConvention": "Truncate covered/total * 100 to two decimals, matching displayed Jest/Istanbul percentages; preserve exact counters.",
+  "statementCoverage": "Unavailable: LCOV does not provide statement counters. No historical value substituted.",
+  "workspaces": {
+    "server": {
+      "files": 62,
+      "counters": {
+        "LF": 1617,
+        "LH": 1547,
+        "FNF": 339,
+        "FNH": 324,
+        "BRF": 1120,
+        "BRH": 940
+      },
+      "linesPct": 95.67,
+      "functionsPct": 95.57,
+      "branchesPct": 83.92
+    },
+    "client": {
+      "files": 25,
+      "counters": {
+        "LF": 906,
+        "LH": 757,
+        "FNF": 302,
+        "FNH": 251,
+        "BRF": 872,
+        "BRH": 700
+      },
+      "linesPct": 83.55,
+      "functionsPct": 83.11,
+      "branchesPct": 80.27
+    }
+  },
+  "coreServices": {
+    "authentication": {
+      "path": "server/src/modules/auth/auth.service.js",
+      "FNF": 17,
+      "FNH": 16,
+      "LF": 134,
+      "LH": 124,
+      "BRF": 87,
+      "BRH": 76
+    },
+    "materials": {
+      "path": "server/src/modules/materials/material.service.js",
+      "FNF": 38,
+      "FNH": 35,
+      "LF": 257,
+      "LH": 243,
+      "BRF": 229,
+      "BRH": 196
+    },
+    "quizzes": {
+      "path": "server/src/modules/quizzes/quiz.service.js",
+      "FNF": 20,
+      "FNH": 20,
+      "LF": 60,
+      "LH": 59,
+      "BRF": 54,
+      "BRH": 50
+    },
+    "attempts": {
+      "path": "server/src/modules/attempts/attempt.service.js",
+      "FNF": 4,
+      "FNH": 4,
+      "LF": 18,
+      "LH": 18,
+      "BRF": 15,
+      "BRH": 15
+    },
+    "scoring": {
+      "path": "server/src/modules/attempts/scoring.service.js",
+      "FNF": 8,
+      "FNH": 8,
+      "LF": 34,
+      "LH": 34,
+      "BRF": 49,
+      "BRH": 49
+    }
+  },
+  "coreModuleGroupLines": {
+    "authentication": {
+      "covered": 240,
+      "total": 266,
+      "pct": 90.22
+    },
+    "materials": {
+      "covered": 472,
+      "total": 497,
+      "pct": 94.96
+    },
+    "quizzes": {
+      "covered": 118,
+      "total": 119,
+      "pct": 99.15
+    },
+    "attemptsIncludingScoring": {
+      "covered": 152,
+      "total": 152,
+      "pct": 100.0
+    }
+  },
+  "perFileCounters": {
+    "server": [
+      {
+        "path": "server/src/app.js",
+        "FNF": 11,
+        "FNH": 8,
+        "LF": 66,
+        "LH": 63,
+        "BRF": 18,
+        "BRH": 17
+      },
+      {
+        "path": "server/src/adapters/storage.js",
+        "FNF": 6,
+        "FNH": 6,
+        "LF": 24,
+        "LH": 23,
+        "BRF": 17,
+        "BRH": 14
+      },
+      {
+        "path": "server/src/config/env.js",
+        "FNF": 6,
+        "FNH": 6,
+        "LF": 19,
+        "LH": 19,
+        "BRF": 14,
+        "BRH": 14
+      },
+      {
+        "path": "server/src/config/features.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/middleware/authenticate.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 27,
+        "LH": 27,
+        "BRF": 21,
+        "BRH": 21
+      },
+      {
+        "path": "server/src/middleware/errorHandler.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 10,
+        "LH": 10,
+        "BRF": 20,
+        "BRH": 18
+      },
+      {
+        "path": "server/src/middleware/loginRateLimit.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 33,
+        "LH": 33,
+        "BRF": 25,
+        "BRH": 25
+      },
+      {
+        "path": "server/src/middleware/rejectUnsafeKeys.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 24,
+        "LH": 24,
+        "BRF": 15,
+        "BRH": 15
+      },
+      {
+        "path": "server/src/middleware/requestId.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 5,
+        "LH": 5,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/migrations/materialTextIndex.js",
+        "FNF": 11,
+        "FNH": 10,
+        "LF": 32,
+        "LH": 28,
+        "BRF": 29,
+        "BRH": 22
+      },
+      {
+        "path": "server/src/models/Comment.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 4,
+        "LH": 4,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/models/Material.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 13,
+        "LH": 13,
+        "BRF": 12,
+        "BRH": 11
+      },
+      {
+        "path": "server/src/models/MaterialReport.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 8,
+        "LH": 8,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/models/MaterialRevision.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 4,
+        "LH": 4,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/models/PasswordResetToken.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 5,
+        "LH": 5,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/models/RefreshToken.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 5,
+        "LH": 5,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/models/User.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 3,
+        "LH": 3,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/admin/admin.controller.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 28,
+        "LH": 27,
+        "BRF": 22,
+        "BRH": 20
+      },
+      {
+        "path": "server/src/modules/admin/admin.routes.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 13,
+        "LH": 13,
+        "BRF": 2,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/analytics/analytics.routes.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 4,
+        "BRH": 3
+      },
+      {
+        "path": "server/src/modules/analytics/leaderboard.repository.js",
+        "FNF": 7,
+        "FNH": 7,
+        "LF": 15,
+        "LH": 15,
+        "BRF": 4,
+        "BRH": 3
+      },
+      {
+        "path": "server/src/modules/analytics/leaderboard.routes.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 14,
+        "LH": 13,
+        "BRF": 7,
+        "BRH": 5
+      },
+      {
+        "path": "server/src/modules/analytics/leaderboard.service.js",
+        "FNF": 18,
+        "FNH": 18,
+        "LF": 62,
+        "LH": 62,
+        "BRF": 56,
+        "BRH": 50
+      },
+      {
+        "path": "server/src/modules/analytics/progress.service.js",
+        "FNF": 8,
+        "FNH": 8,
+        "LF": 21,
+        "LH": 21,
+        "BRF": 15,
+        "BRH": 13
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.auth.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 10,
+        "LH": 10,
+        "BRF": 6,
+        "BRH": 6
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.controller.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 5,
+        "LH": 5,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.history.js",
+        "FNF": 5,
+        "FNH": 5,
+        "LF": 17,
+        "LH": 17,
+        "BRF": 12,
+        "BRH": 9
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.model.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 8,
+        "LH": 8,
+        "BRF": 3,
+        "BRH": 3
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.repo.js",
+        "FNF": 13,
+        "FNH": 13,
+        "LF": 24,
+        "LH": 24,
+        "BRF": 12,
+        "BRH": 10
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.routes.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 21,
+        "LH": 21,
+        "BRF": 6,
+        "BRH": 5
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.schemas.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 15,
+        "LH": 15,
+        "BRF": 10,
+        "BRH": 10
+      },
+      {
+        "path": "server/src/modules/attempts/attempt.service.js",
+        "FNF": 4,
+        "FNH": 4,
+        "LF": 18,
+        "LH": 18,
+        "BRF": 15,
+        "BRH": 15
+      },
+      {
+        "path": "server/src/modules/attempts/scoring.service.js",
+        "FNF": 8,
+        "FNH": 8,
+        "LF": 34,
+        "LH": 34,
+        "BRF": 49,
+        "BRH": 49
+      },
+      {
+        "path": "server/src/modules/auth/auth.controller.js",
+        "FNF": 9,
+        "FNH": 9,
+        "LF": 49,
+        "LH": 47,
+        "BRF": 18,
+        "BRH": 12
+      },
+      {
+        "path": "server/src/modules/auth/auth.routes.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 1,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/auth/auth.service.js",
+        "FNF": 17,
+        "FNH": 16,
+        "LF": 134,
+        "LH": 124,
+        "BRF": 87,
+        "BRH": 76
+      },
+      {
+        "path": "server/src/modules/auth/password-reset.email.js",
+        "FNF": 1,
+        "FNH": 0,
+        "LF": 8,
+        "LH": 3,
+        "BRF": 6,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/auth/password-reset.repository.js",
+        "FNF": 3,
+        "FNH": 2,
+        "LF": 9,
+        "LH": 5,
+        "BRF": 10,
+        "BRH": 5
+      },
+      {
+        "path": "server/src/modules/auth/profile.controller.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 29,
+        "LH": 25,
+        "BRF": 20,
+        "BRH": 16
+      },
+      {
+        "path": "server/src/modules/auth/profile.routes.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 8,
+        "LH": 8,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/auth/refresh-token.repository.js",
+        "FNF": 6,
+        "FNH": 6,
+        "LF": 7,
+        "LH": 7,
+        "BRF": 8,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/auth/user.repository.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 10,
+        "LH": 9,
+        "BRF": 5,
+        "BRH": 4
+      },
+      {
+        "path": "server/src/modules/materials/comment.repository.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 7,
+        "LH": 7,
+        "BRF": 4,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/materials/comment.service.js",
+        "FNF": 6,
+        "FNH": 4,
+        "LF": 25,
+        "LH": 21,
+        "BRF": 18,
+        "BRH": 10
+      },
+      {
+        "path": "server/src/modules/materials/fileValidation.js",
+        "FNF": 15,
+        "FNH": 15,
+        "LF": 111,
+        "LH": 108,
+        "BRF": 106,
+        "BRH": 82
+      },
+      {
+        "path": "server/src/modules/materials/index.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 2,
+        "LH": 0,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/materials/material.repository.js",
+        "FNF": 7,
+        "FNH": 7,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 5,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/materials/material.routes.js",
+        "FNF": 20,
+        "FNH": 20,
+        "LF": 75,
+        "LH": 74,
+        "BRF": 41,
+        "BRH": 27
+      },
+      {
+        "path": "server/src/modules/materials/material.service.js",
+        "FNF": 38,
+        "FNH": 35,
+        "LF": 257,
+        "LH": 243,
+        "BRF": 229,
+        "BRH": 196
+      },
+      {
+        "path": "server/src/modules/materials/revision.repository.js",
+        "FNF": 5,
+        "FNH": 4,
+        "LF": 8,
+        "LH": 7,
+        "BRF": 4,
+        "BRH": 4
+      },
+      {
+        "path": "server/src/modules/moderation/moderation.routes.js",
+        "FNF": 4,
+        "FNH": 4,
+        "LF": 18,
+        "LH": 18,
+        "BRF": 9,
+        "BRH": 5
+      },
+      {
+        "path": "server/src/modules/moderation/report.repository.js",
+        "FNF": 9,
+        "FNH": 8,
+        "LF": 11,
+        "LH": 10,
+        "BRF": 2,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/moderation/report.service.js",
+        "FNF": 12,
+        "FNH": 11,
+        "LF": 80,
+        "LH": 73,
+        "BRF": 71,
+        "BRH": 58
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.controller.js",
+        "FNF": 8,
+        "FNH": 8,
+        "LF": 10,
+        "LH": 10,
+        "BRF": 1,
+        "BRH": 1
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.model.js",
+        "FNF": 0,
+        "FNH": 0,
+        "LF": 7,
+        "LH": 7,
+        "BRF": 2,
+        "BRH": 2
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.repo.js",
+        "FNF": 5,
+        "FNH": 5,
+        "LF": 9,
+        "LH": 9,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.routes.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 20,
+        "LH": 20,
+        "BRF": 7,
+        "BRH": 6
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.schemas.js",
+        "FNF": 4,
+        "FNH": 4,
+        "LF": 13,
+        "LH": 13,
+        "BRF": 6,
+        "BRH": 6
+      },
+      {
+        "path": "server/src/modules/quizzes/quiz.service.js",
+        "FNF": 20,
+        "FNH": 20,
+        "LF": 60,
+        "LH": 59,
+        "BRF": 54,
+        "BRH": 50
+      },
+      {
+        "path": "server/src/utils/AppError.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 6,
+        "LH": 6,
+        "BRF": 1,
+        "BRH": 1
+      },
+      {
+        "path": "server/src/utils/asyncHandler.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 2,
+        "LH": 2,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "server/src/utils/plainText.js",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 7,
+        "LH": 7,
+        "BRF": 11,
+        "BRH": 11
+      }
+    ],
+    "client": [
+      {
+        "path": "client/src/App.jsx",
+        "FNF": 7,
+        "FNH": 7,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 12,
+        "BRH": 12
+      },
+      {
+        "path": "client/src/AppRoutes.jsx",
+        "FNF": 2,
+        "FNH": 2,
+        "LF": 3,
+        "LH": 3,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "client/src/api/http.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 3,
+        "LH": 3,
+        "BRF": 1,
+        "BRH": 1
+      },
+      {
+        "path": "client/src/components/PlainText.jsx",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 1,
+        "LH": 1,
+        "BRF": 2,
+        "BRH": 2
+      },
+      {
+        "path": "client/src/features/attempts/AttemptPage.jsx",
+        "FNF": 23,
+        "FNH": 23,
+        "LF": 53,
+        "LH": 53,
+        "BRF": 73,
+        "BRH": 70
+      },
+      {
+        "path": "client/src/features/attempts/AttemptResults.jsx",
+        "FNF": 4,
+        "FNH": 4,
+        "LF": 7,
+        "LH": 7,
+        "BRF": 14,
+        "BRH": 13
+      },
+      {
+        "path": "client/src/features/attempts/StudentAttemptPage.jsx",
+        "FNF": 17,
+        "FNH": 16,
+        "LF": 75,
+        "LH": 66,
+        "BRF": 45,
+        "BRH": 39
+      },
+      {
+        "path": "client/src/features/attempts/StudentInsights.jsx",
+        "FNF": 16,
+        "FNH": 15,
+        "LF": 35,
+        "LH": 31,
+        "BRF": 41,
+        "BRH": 33
+      },
+      {
+        "path": "client/src/features/attempts/attemptApi.js",
+        "FNF": 11,
+        "FNH": 8,
+        "LF": 35,
+        "LH": 28,
+        "BRF": 29,
+        "BRH": 26
+      },
+      {
+        "path": "client/src/features/auth/ForgotPasswordPage.jsx",
+        "FNF": 3,
+        "FNH": 0,
+        "LF": 18,
+        "LH": 0,
+        "BRF": 12,
+        "BRH": 0
+      },
+      {
+        "path": "client/src/features/auth/ResetPasswordPage.jsx",
+        "FNF": 4,
+        "FNH": 0,
+        "LF": 31,
+        "LH": 0,
+        "BRF": 23,
+        "BRH": 0
+      },
+      {
+        "path": "client/src/features/auth/auth.js",
+        "FNF": 2,
+        "FNH": 0,
+        "LF": 4,
+        "LH": 0,
+        "BRF": 0,
+        "BRH": 0
+      },
+      {
+        "path": "client/src/features/materials/AdminReportsPage.jsx",
+        "FNF": 10,
+        "FNH": 10,
+        "LF": 39,
+        "LH": 34,
+        "BRF": 35,
+        "BRH": 25
+      },
+      {
+        "path": "client/src/features/materials/MaterialDetailPage.jsx",
+        "FNF": 31,
+        "FNH": 25,
+        "LF": 118,
+        "LH": 99,
+        "BRF": 74,
+        "BRH": 54
+      },
+      {
+        "path": "client/src/features/materials/MaterialForm.jsx",
+        "FNF": 21,
+        "FNH": 21,
+        "LF": 49,
+        "LH": 49,
+        "BRF": 72,
+        "BRH": 69
+      },
+      {
+        "path": "client/src/features/materials/MaterialLibraryPage.jsx",
+        "FNF": 21,
+        "FNH": 13,
+        "LF": 45,
+        "LH": 39,
+        "BRF": 35,
+        "BRH": 29
+      },
+      {
+        "path": "client/src/features/materials/MaterialSession.jsx",
+        "FNF": 6,
+        "FNH": 5,
+        "LF": 14,
+        "LH": 14,
+        "BRF": 2,
+        "BRH": 1
+      },
+      {
+        "path": "client/src/features/materials/MaterialSignIn.jsx",
+        "FNF": 6,
+        "FNH": 6,
+        "LF": 32,
+        "LH": 30,
+        "BRF": 24,
+        "BRH": 20
+      },
+      {
+        "path": "client/src/features/materials/materialApi.js",
+        "FNF": 27,
+        "FNH": 27,
+        "LF": 94,
+        "LH": 91,
+        "BRF": 113,
+        "BRH": 94
+      },
+      {
+        "path": "client/src/features/quizzes/LeaderboardPage.jsx",
+        "FNF": 12,
+        "FNH": 9,
+        "LF": 52,
+        "LH": 44,
+        "BRF": 58,
+        "BRH": 46
+      },
+      {
+        "path": "client/src/features/quizzes/QuizAuthoringPage.jsx",
+        "FNF": 29,
+        "FNH": 15,
+        "LF": 86,
+        "LH": 57,
+        "BRF": 70,
+        "BRH": 40
+      },
+      {
+        "path": "client/src/features/quizzes/QuizEditor.jsx",
+        "FNF": 38,
+        "FNH": 33,
+        "LF": 75,
+        "LH": 71,
+        "BRF": 103,
+        "BRH": 99
+      },
+      {
+        "path": "client/src/features/quizzes/leaderboardApi.js",
+        "FNF": 1,
+        "FNH": 1,
+        "LF": 4,
+        "LH": 4,
+        "BRF": 7,
+        "BRH": 7
+      },
+      {
+        "path": "client/src/features/quizzes/quizApi.js",
+        "FNF": 6,
+        "FNH": 6,
+        "LF": 12,
+        "LH": 12,
+        "BRF": 10,
+        "BRH": 7
+      },
+      {
+        "path": "client/src/utils/formValidation.js",
+        "FNF": 3,
+        "FNH": 3,
+        "LF": 9,
+        "LH": 9,
+        "BRF": 17,
+        "BRH": 13
+      }
+    ]
+  },
+  "importVerification": {
+    "server": {
+      "nativeSha256": "e368563d058d6d364ec20d0164482b0ff308d3c62f41749904048afa36f268b3",
+      "normalizedSha256": "a72398ed3872f7ffc19c562ab37b519f21734c374fe436447c0747aeb5089eee",
+      "nativeMatchesScannerExecutionRecord": true,
+      "onlySourcePathMetadataChanged": true,
+      "allLineFunctionBranchRecordCountsReconciled": true
+    },
+    "client": {
+      "nativeSha256": "1b7eebe4a8b23e5fea870c0fce235630a3da7ccfba69a61214295ab332831a91",
+      "normalizedSha256": "3af3f091593b6abebdaaea6911a196611f962c992a46e1e6d355d369a3b1aaf0",
+      "nativeMatchesScannerExecutionRecord": true,
+      "onlySourcePathMetadataChanged": true,
+      "allLineFunctionBranchRecordCountsReconciled": true
+    }
+  },
+  "testExecution": {
+    "verificationBasis": "Owner-confirmed only; execution log and machine-readable Jest results not supplied",
+    "backendPassedAndReportedTotal": [
+      594,
+      594
+    ],
+    "frontendPassedAndReportedTotal": [
+      122,
+      122
+    ],
+    "reportedTotalPassed": 716,
+    "suiteCounts": null,
+    "skippedCounts": null,
+    "elapsedTimes": null,
+    "executionTimestamps": null
+  }
+}

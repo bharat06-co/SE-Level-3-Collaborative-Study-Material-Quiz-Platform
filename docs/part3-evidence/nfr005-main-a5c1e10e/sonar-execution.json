@@ -1,0 +1,24 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-e",
+    "SONAR_TOKEN",
+    "-e",
+    "SONAR_HOST_URL",
+    "-v",
+    "C:\\Users\\bhara\\Documents\\GitHub\\SE-Level-3-Collaborative-Study-Material-Quiz-Platform:/usr/src:ro",
+    "sonarsource/sonar-scanner-cli@sha256:47956b669bf486bdad919e1cbd0533223515aa0b6d1d31763e5a3754942df6d7",
+    "-Dsonar.working.directory=/tmp/nfr005-scannerwork",
+    "-Dsonar.javascript.lcov.reportPaths=docs/part3-evidence/nfr005-final-main/server-lcov-sonar.info,docs/part3-evidence/nfr005-final-main/client-lcov-sonar.info"
+  ],
+  "startedUtc": "2026-11-03T06:24:39.093164+00:00",
+  "endedUtc": "2026-11-03T06:28:07.651319+00:00",
+  "exitCode": 0,
+  "projectKey": "study-platform-nfr005-local",
+  "nativeLcovSha256": {
+    "server": "e368563d058d6d364ec20d0164482b0ff308d3c62f41749904048afa36f268b3",
+    "client": "1b7eebe4a8b23e5fea870c0fce235630a3da7ccfba69a61214295ab332831a91"
+  }
+}

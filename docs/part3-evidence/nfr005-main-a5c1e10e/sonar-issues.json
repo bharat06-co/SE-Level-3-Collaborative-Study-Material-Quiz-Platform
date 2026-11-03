@@ -1,0 +1,418 @@
+{
+  "total": 9,
+  "issues": [
+    {
+      "key": "ad185b9b-160f-4143-b885-6468406715bf",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:client/src/features/materials/materialApi.js",
+      "project": "study-platform-nfr005-local",
+      "line": 166,
+      "hash": "e5133d89ad831639f734742e578ec9fb",
+      "textRange": {
+        "startLine": 166,
+        "endLine": 166,
+        "startOffset": 13,
+        "endOffset": 21
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "676d5c6c-de13-4979-9058-0341199f57d7",
+      "rule": "javascript:S9383",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:client/src/features/quizzes/LeaderboardPage.jsx",
+      "project": "study-platform-nfr005-local",
+      "line": 84,
+      "hash": "65b0af3b16ffb9c20f9227803917cc31",
+      "textRange": {
+        "startLine": 84,
+        "endLine": 84,
+        "startOffset": 59,
+        "endOffset": 66
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "async",
+        "es2017",
+        "type-dependent",
+        "promise"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": true,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "10a5eece-6101-45fc-95aa-62c5b0868ba4",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:client/src/utils/formValidation.js",
+      "project": "study-platform-nfr005-local",
+      "line": 4,
+      "hash": "bc2d63f70238700cdcef895ff6d8d3db",
+      "textRange": {
+        "startLine": 4,
+        "endLine": 4,
+        "startOffset": 7,
+        "endOffset": 35
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "a7bb8af2-9e54-49e4-a766-0fab33cf49e8",
+      "rule": "javascript:S2259",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:server/src/modules/auth/auth.controller.js",
+      "project": "study-platform-nfr005-local",
+      "line": 60,
+      "hash": "c8157f055bd72238a0a038391b23e4ea",
+      "textRange": {
+        "startLine": 60,
+        "endLine": 60,
+        "startOffset": 26,
+        "endOffset": 32
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "TypeError can be thrown as \"result\" might be null or undefined here.",
+      "effort": "10min",
+      "debt": "10min",
+      "author": "",
+      "tags": [
+        "cwe",
+        "type-dependent"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "14921cbf-4763-4700-96df-e4f961170b5b",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:server/src/modules/auth/auth.service.js",
+      "project": "study-platform-nfr005-local",
+      "line": 77,
+      "hash": "eff81639e5492d9f03dbc10e74199ecb",
+      "textRange": {
+        "startLine": 77,
+        "endLine": 77,
+        "startOffset": 5,
+        "endOffset": 33
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "0c36909d-0903-4690-bf46-8f18308a43c3",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:server/src/modules/auth/auth.service.js",
+      "project": "study-platform-nfr005-local",
+      "line": 185,
+      "hash": "e51a8606f9ef94c142d68b56425e7f57",
+      "textRange": {
+        "startLine": 185,
+        "endLine": 185,
+        "startOffset": 7,
+        "endOffset": 35
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "4720a23e-18ba-4d00-be39-5ad450ba0c70",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:server/src/modules/auth/auth.service.js",
+      "project": "study-platform-nfr005-local",
+      "line": 300,
+      "hash": "a234b04880de6dc9136675f6efeb0b89",
+      "textRange": {
+        "startLine": 300,
+        "endLine": 300,
+        "startOffset": 5,
+        "endOffset": 33
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "da6a18f5-9cf9-4b2a-87ac-1f620ee2785a",
+      "rule": "javascript:S7737",
+      "severity": "MINOR",
+      "component": "study-platform-nfr005-local:server/src/modules/materials/material.repository.js",
+      "project": "study-platform-nfr005-local",
+      "line": 13,
+      "hash": "cb45164f32cd35768366411dc22450a2",
+      "textRange": {
+        "startLine": 13,
+        "endLine": 13,
+        "startOffset": 52,
+        "endOffset": 56
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Do not use an object literal as default for parameter `sort`.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "editable-source",
+        "confusing",
+        "pitfall"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "ef4df447-aae7-4e19-a30b-17825292f6b3",
+      "rule": "javascript:S2245",
+      "severity": "MAJOR",
+      "component": "study-platform-nfr005-local:server/src/modules/materials/material.service.js",
+      "project": "study-platform-nfr005-local",
+      "line": 330,
+      "hash": "a8d94a143150085576f5791d8dda9136",
+      "textRange": {
+        "startLine": 330,
+        "endLine": 330,
+        "startOffset": 45,
+        "endOffset": 58
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Make sure that using this pseudorandom number generator is safe here.",
+      "effort": "10min",
+      "debt": "10min",
+      "author": "",
+      "tags": [
+        "cwe",
+        "cryptography",
+        "former-hotspot"
+      ],
+      "creationDate": "2026-11-03T04:00:16+0000",
+      "updateDate": "2026-11-03T04:00:16+0000",
+      "type": "VULNERABILITY",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TRUSTWORTHY",
+      "cleanCodeAttributeCategory": "RESPONSIBLE",
+      "impacts": [
+        {
+          "softwareQuality": "SECURITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    }
+  ]
+}
