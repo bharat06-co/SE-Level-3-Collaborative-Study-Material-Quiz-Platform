@@ -1,0 +1,66 @@
+[
+  {
+    "browser": "Chrome",
+    "version": "156.0.8078.79",
+    "result": "PASS",
+    "checks": [
+      "home and navigation",
+      "registration API and login validation",
+      "material list/detail/upload/edit",
+      "quiz create/edit/publish",
+      "student attempt and result",
+      "quiz and topic leaderboards",
+      "forgot/reset-password pages",
+      "no page, console or HTTP 5xx errors"
+    ],
+    "screenshot": "chrome.png"
+  },
+  {
+    "browser": "Edge",
+    "version": "156.0.4314.58",
+    "result": "PASS",
+    "checks": [
+      "home and navigation",
+      "registration API and login validation",
+      "material list/detail/upload/edit",
+      "quiz create/edit/publish",
+      "student attempt and result",
+      "quiz and topic leaderboards",
+      "forgot/reset-password pages",
+      "no page, console or HTTP 5xx errors"
+    ],
+    "screenshot": "edge.png"
+  },
+  {
+    "browser": "Firefox",
+    "version": "157.0",
+    "result": "PASS",
+    "checks": [
+      "home and navigation",
+      "registration API and login validation",
+      "material list/detail/upload/edit",
+      "quiz create/edit/publish",
+      "student attempt and result",
+      "quiz and topic leaderboards",
+      "forgot/reset-password pages",
+      "no page, console or HTTP 5xx errors"
+    ],
+    "screenshot": "firefox.png"
+  },
+  {
+    "browser": "WebKit",
+    "version": "27.2",
+    "result": "PASS",
+    "checks": [
+      "home and navigation",
+      "registration API and login validation",
+      "material list/detail/upload/edit",
+      "quiz create/edit/publish",
+      "student attempt and result",
+      "quiz and topic leaderboards",
+      "forgot/reset-password pages",
+      "no page, console or HTTP 5xx errors"
+    ],
+    "screenshot": "webkit.png"
+  }
+]
