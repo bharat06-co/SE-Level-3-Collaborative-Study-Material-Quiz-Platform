@@ -85,3 +85,20 @@ SRS v1.2 prints 28 but enumerates 27 (6 accounts, 9 material, 7 quiz/leaderboard
 - Metadata or file replacement snapshots the material state before the change into `materialrevisions`, numbered per material. Visibility-only changes do not create a revision.
 - File replacement stores the new bytes under a new storage key and keeps the previous file reference in the revision snapshot; the old object is not deleted by this feature.
 - Revision history is owner/admin only. Concurrent edits reuse the material version predicate and retry; failed revision writes are removed rather than leaving an orphan snapshot.
+## NFR-006 — Browser Version Coverage Limitation (Sprint 3)
+
+**Requirement:** SRS v1.2 NFR-006 requires compatibility verification across the latest two versions of Chrome, Edge, Firefox and Safari.
+
+**Testing completed:** Automated compatibility tests passed on Chrome 156.0.8078.80, Edge 156.0.4314.58, Firefox 157.0 and Playwright WebKit 27.2. Manual testing was also completed on real Safari 26.6.2 running on macOS.
+
+Testing covered major application workflows, including material browsing/editing, quiz authoring, quiz attempts, results, leaderboards and password-reset pages.
+
+**Deviation:** Only one release of each specified browser was tested. Previous stable Chrome, Edge and Firefox releases and a second real Safari release were unavailable in the team's testing environment.
+
+**Impact:** Compatibility with these untested versions remains unverified. Playwright WebKit is supplementary evidence and does not substitute for testing a second real Safari version.
+
+**Mitigation:** Automated testing across available browsers and manual Safari verification were performed successfully. Additional browser-version testing may be conducted when suitable environments become available.
+
+**Acceptance status:** Partially verified. Reduced browser-version coverage documented; faculty/reviewer approval pending.
+
+**Traceability:** NFR-006, TC-PORT-01, Issue #38, PRs #87 and #91. Detailed evidence: `docs/NFR006_BROWSER_COMPATIBILITY.md`.
