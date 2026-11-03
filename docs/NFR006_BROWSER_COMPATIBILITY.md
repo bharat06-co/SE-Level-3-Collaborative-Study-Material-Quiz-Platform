@@ -30,7 +30,7 @@ and [workflow run 41008936453](https://github.com/bharat06-co/SE-Level-3-Collabo
 - Playwright-bundled Firefox 157.0 and WebKit 27.2.
 - Real installed Safari 26.6.2 (21624.5.1.11.3).
 - Microsoft Edge was not installed locally. The expanded required-all workflow
-  installs branded Edge and records its exact version in the PR artifact.
+  installed branded Edge 156.0.4314.58.
 - All runs used disposable users, an in-memory MongoDB replica set and local
   loopback HTTP. No production identity, database or deployment was used.
 
@@ -40,22 +40,26 @@ The existing `scripts/nfr006-browser-smoke.cjs` was extended rather than
 replaced. On 3 November it passed locally in Chrome, Firefox and WebKit against
 the commit above.
 
-| Scenario | Chrome 156.0.8078.80 | Firefox 157.0 | WebKit 27.2 |
-| --- | --- | --- | --- |
-| Home health and main navigation | PASS | PASS | PASS |
-| Browser-side registration API and login validation | PASS | PASS | PASS |
-| Material list and detail | PASS | PASS | PASS |
-| Material upload and metadata edit | PASS | PASS | PASS |
-| Quiz create, edit and publish | PASS | PASS | PASS |
-| Student attempt and result display | PASS | PASS | PASS |
-| Quiz and topic leaderboards | PASS | PASS | PASS |
-| Forgot-password response and reset-page validation | PASS | PASS | PASS |
-| Uncaught page/console errors or HTTP 5xx | NONE | NONE | NONE |
+| Scenario | Chrome 156.0.8078.80 local / 156.0.8078.79 CI | Edge 156.0.4314.58 CI | Firefox 157.0 | WebKit 27.2 |
+| --- | --- | --- | --- | --- |
+| Home health and main navigation | PASS | PASS | PASS | PASS |
+| Browser-side registration API and login validation | PASS | PASS | PASS | PASS |
+| Material list and detail | PASS | PASS | PASS | PASS |
+| Material upload and metadata edit | PASS | PASS | PASS | PASS |
+| Quiz create, edit and publish | PASS | PASS | PASS | PASS |
+| Student attempt and result display | PASS | PASS | PASS | PASS |
+| Quiz and topic leaderboards | PASS | PASS | PASS | PASS |
+| Forgot-password response and reset-page validation | PASS | PASS | PASS | PASS |
+| Uncaught page/console errors or HTTP 5xx | NONE | NONE | NONE | NONE |
 
 Machine-readable results and screenshots are retained under
 [`docs/evidence/nfr006`](./evidence/nfr006/). The screenshots show the final
 password-reset page after all preceding workflow assertions passed; the JSON
 file lists every asserted scenario.
+
+The required-all GitHub run passed all four browsers and retained the branded
+Edge screenshot and full JSON matrix: [workflow run
+41576761889](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/41576761889).
 
 ## Real Safari 26.6.2 manual acceptance
 
@@ -101,7 +105,7 @@ browser-farm account is available. Therefore:
 | Browser family | Tested against latest main | Still unavailable |
 | --- | --- | --- |
 | Chrome | 156.0.8078.80 | Previous stable Chrome release |
-| Edge | PR workflow branded Edge run (exact version in artifact) | Previous stable Edge release |
+| Edge | Branded Edge 156.0.4314.58 in the PR workflow | Previous stable Edge release |
 | Firefox | Playwright Firefox 157.0 | Previous stable Firefox release |
 | Safari | Real Safari 26.6.2; WebKit 27.2 supplemental | A second real Safari release |
 
