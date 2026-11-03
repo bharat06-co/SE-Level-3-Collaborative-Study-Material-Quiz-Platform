@@ -10,7 +10,7 @@ const User = require('../src/models/User');
 
 const TEST_JWT_SECRET = 'profile-integration-test-secret-'.repeat(2);
 
-describe('FR-005 profile management', () => {
+describe.each(['/api/v1/users/me', '/api/v1/profile'])('FR-005 profile management via %s', (profilePath) => {
   let mongo;
   let app;
   let originalMongoUri;
@@ -82,7 +82,7 @@ describe('FR-005 profile management', () => {
     const { user, token } = await createTestUser();
 
     const response = await request(app)
-      .get('/api/v1/profile')
+      .get(profilePath)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(200);
@@ -97,44 +97,47 @@ describe('FR-005 profile management', () => {
   });
 
   test('rejects viewing a profile without authentication', async () => {
-    const response = await request(app).get('/api/v1/profile');
+    const response = await request(app).get(profilePath);
 
     expect(response.status).toBe(401);
   });
 
-  test('updates own name and normalizes email', async () => {
+  test('updates own name while preserving email, role and contributor', async () => {
     const { user, token } = await createTestUser();
 
     const response = await request(app)
-      .patch('/api/v1/profile')
+      .patch(profilePath)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        name: 'Updated Student',
-        email: '  UPDATED@example.com  ',
+        name: '  Updated Student  ',
       });
 
     expect(response.status).toBe(200);
     expect(response.body.user.name).toBe('Updated Student');
-    expect(response.body.user.email).toBe('updated@example.com');
+    expect(response.body.user.email).toBe('profile@example.com');
     expect(response.body.user).not.toHaveProperty('passwordHash');
 
     const stored = await User.findById(user._id);
     expect(stored.name).toBe('Updated Student');
-    expect(stored.email).toBe('updated@example.com');
+    expect(stored.email).toBe('profile@example.com');
+    expect(stored.role).toBe('student');
+    expect(stored.contributor).toBe(false);
   });
 
-  test.each(['role', 'contributor', 'passwordHash'])(
+  test.each(['email', 'role', 'contributor', 'passwordHash'])(
     'rejects attempts to update protected field: %s',
     async (field) => {
-      const { token } = await createTestUser();
+      const { user, token } = await createTestUser();
+      const before = await User.findById(user.id).lean();
 
       const response = await request(app)
-        .patch('/api/v1/profile')
+        .patch(profilePath)
         .set('Authorization', `Bearer ${token}`)
         .send({ [field]: field === 'contributor' ? true : 'admin' });
 
       expect(response.status).toBe(400);
       expect(response.body.error.code).toBe('VALIDATION_ERROR');
+      expect(await User.findById(user.id).lean()).toEqual(before);
     },
   );
 
@@ -142,7 +145,7 @@ describe('FR-005 profile management', () => {
     const { token } = await createTestUser();
 
     const response = await request(app)
-      .patch('/api/v1/profile')
+      .patch(profilePath)
       .set('Authorization', `Bearer ${token}`)
       .send({ name: ' ' });
 
@@ -150,8 +153,8 @@ describe('FR-005 profile management', () => {
     expect(response.body.error.code).toBe('VALIDATION_ERROR');
   });
 
-  test('rejects an email address already used by another user', async () => {
-    const { token } = await createTestUser();
+  test('rejects email even when already used by another user', async () => {
+    const { user, token } = await createTestUser();
 
     await createTestUser({
       name: 'Another Student',
@@ -159,11 +162,53 @@ describe('FR-005 profile management', () => {
     });
 
     const response = await request(app)
-      .patch('/api/v1/profile')
+      .patch(profilePath)
       .set('Authorization', `Bearer ${token}`)
       .send({ email: 'another@example.com' });
 
-    expect(response.status).toBe(409);
-    expect(response.body.error.code).toBe('CONFLICT');
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expect((await User.findById(user.id).lean()).email).toBe('profile@example.com');
+  });
+
+  test('mixed name/email update is rejected atomically', async () => {
+    const { user, token } = await createTestUser();
+    const before = await User.findById(user.id).lean();
+    const response = await request(app).patch(profilePath)
+      .set('Authorization', `Bearer ${token}`).send({ name: 'Changed Name', email: 'new@example.com' });
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+    expect(await User.findById(user.id).lean()).toEqual(before);
+  });
+
+  test.each([[1,400], [2,200], [60,200], [61,400]])('name length %i returns %i', async (length, status) => {
+    const { token } = await createTestUser();
+    const response = await request(app).patch(profilePath)
+      .set('Authorization', `Bearer ${token}`).send({ name: 'N'.repeat(length) });
+    expect(response.status).toBe(status);
+  });
+
+  test('empty update and unauthenticated patch leave profile unchanged', async () => {
+    const { user, token } = await createTestUser();
+    const before = await User.findById(user.id).lean();
+    const empty = await request(app).patch(profilePath).set('Authorization', `Bearer ${token}`).send({});
+    expect(empty.status).toBe(400);
+    expect(empty.body.error.code).toBe('VALIDATION_ERROR');
+    const unauthenticated = await request(app).patch(profilePath).send({ name: 'Changed Name' });
+    expect(unauthenticated.status).toBe(401);
+    expect(unauthenticated.body.error.code).toBe('UNAUTHENTICATED');
+    expect(await User.findById(user.id).lean()).toEqual(before);
+  });
+
+  test.each(['expired','tampered','none'])('canonical/alias profile denies %s JWT', async kind => {
+    const { user, token } = await createTestUser();
+    const badToken = kind === 'expired'
+      ? jwt.sign({ sub: user.id }, TEST_JWT_SECRET, { algorithm: 'HS256', expiresIn: -1 })
+      : kind === 'none'
+        ? jwt.sign({ sub: user.id }, null, { algorithm: 'none', expiresIn: '15m' })
+        : token.split('.').slice(0,2).join('.') + '.invalid';
+    const response = await request(app).get(profilePath).set('Authorization', `Bearer ${badToken}`);
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('TOKEN_INVALID');
   });
 });

@@ -8,7 +8,7 @@ const { createLogger } = require('./config/logger');
 const { requestId } = require('./middleware/requestId');
 const { rejectUnsafeKeys } = require('./middleware/rejectUnsafeKeys');
 const { errorHandler } = require('./middleware/errorHandler');
-const authRouter = require('./modules/auth/auth.routes');
+const { createAuthRouter } = require('./modules/auth/auth.routes');
 const { createAuthenticate } = require('./middleware/authenticate');
 const { createMaterialsRouter } = require('./modules/materials/material.routes');
 const { createMaterialRepository } = require('./modules/materials/material.repository');
@@ -32,6 +32,7 @@ function rejectUnconfiguredQuizAuthentication(req, res, next) {
 function createApp({
   origins = ['http://localhost:5173', 'http://127.0.0.1:5173'],
   trustProxyHops = 0,
+  loginRateLimitOptions,
   databaseIsConnected = () => false,
   logger = createLogger('silent'),
   registerRoutes = () => {},
@@ -130,7 +131,7 @@ function createApp({
 
   // Register feature routes before the 404 and error handlers.
   registerRoutes(app);
-  app.use('/api/v1/auth', authRouter);
+  app.use('/api/v1/auth', createAuthRouter({ loginRateLimitOptions }));
   app.use('/api/v1', createAttemptRouter(attempts));
   app.use('/api/v1', createAnalyticsRouter(attempts));
   app.use('/api/v1', createLeaderboardRouter({ authenticate: attempts.authenticate }));

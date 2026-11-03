@@ -8,8 +8,8 @@ const NEW_TEXT_FIELDS = ['title', 'description', 'tags'];
 class MaterialTextIndexMigrationError extends Error {}
 
 function hasFields(index, expectedFields) {
-  const actual = Object.keys(index.weights || {}).sort();
-  const expected = [...expectedFields].sort();
+  const actual = Object.keys(index.weights || {}).sort((left, right) => left.localeCompare(right));
+  const expected = [...expectedFields].sort((left, right) => left.localeCompare(right));
   return actual.length === expected.length && actual.every((field, position) => field === expected[position]);
 }
 

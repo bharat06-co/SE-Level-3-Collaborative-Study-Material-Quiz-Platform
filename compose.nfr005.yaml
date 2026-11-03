@@ -1,0 +1,24 @@
+# Isolated verification service; no application services or shared databases.
+# Start with: docker compose -f compose.nfr005.yaml up -d
+# The runner changes the initial admin password and revokes its temporary token.
+services:
+  sonarqube:
+    image: sonarqube@sha256:f95aaa9016dd4e92c7d70691167a6d96dbb5d8acffd61eba1cb4335d364a7840
+    container_name: study-platform-nfr005-sonarqube
+    ports:
+      - '127.0.0.1:9000:9000'
+    mem_limit: 4g
+    cpus: 4
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: 'true'
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-logs:/opt/sonarqube/logs
+      - sonar-extensions:/opt/sonarqube/extensions
+volumes:
+  sonar-data:
+    name: study-platform-nfr005-data
+  sonar-logs:
+    name: study-platform-nfr005-logs
+  sonar-extensions:
+    name: study-platform-nfr005-extensions

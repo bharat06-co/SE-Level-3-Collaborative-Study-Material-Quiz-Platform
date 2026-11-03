@@ -42,6 +42,9 @@ test('aborts pending request on unmount', async () => {
 test('ignores pending failure after unmount', async () => {
   let reject;
   getHealth.mockImplementation(() => new Promise((_, fail) => { reject = fail; }));
-  renderApp(); cleanup(); reject(new Error('aborted'));
+  renderApp();
+  const signal = getHealth.mock.calls[0][0].signal;
+  cleanup(); reject(new Error('aborted'));
   await Promise.resolve();
+  expect(signal.aborted).toBe(true);
 });

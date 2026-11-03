@@ -15,3 +15,7 @@ playwright-report/
 test-results/
 **/.vite/
 nfr-results/
+.part3-*/
+.nfr005-tools/
+.scannerwork/
+__pycache__/

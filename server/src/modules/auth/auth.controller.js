@@ -77,9 +77,7 @@ async function logout(req, res, next) {
     await logoutUser(rawToken);
     clearRefreshCookie(res);
 
-    return res.status(200).json({
-      message: 'Logged out successfully.',
-    });
+    return res.status(204).end();
   } catch (error) {
     clearRefreshCookie(res);
     return next(error);
