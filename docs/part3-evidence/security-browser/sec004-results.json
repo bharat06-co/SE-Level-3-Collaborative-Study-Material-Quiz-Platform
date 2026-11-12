@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-11-03T02:35:34.920Z",
+  "status": "PASS",
+  "checks": [
+    {
+      "label": "Login rejects top-level NoSQL $gt object",
+      "result": "PASS"
+    },
+    {
+      "label": "Login rejects nested NoSQL $ne operator",
+      "result": "PASS"
+    },
+    {
+      "label": "Registration rejects operator email",
+      "result": "PASS"
+    },
+    {
+      "label": "Password-reset request rejects operator email",
+      "result": "PASS"
+    },
+    {
+      "label": "Ordinary real authentication remains functional",
+      "result": "PASS"
+    },
+    {
+      "label": "Comment rejects a NoSQL operator",
+      "result": "PASS"
+    },
+    {
+      "label": "Comment rejects nested operator objects",
+      "result": "PASS"
+    },
+    {
+      "label": "Comment rejects prototype-pollution keys",
+      "result": "PASS"
+    },
+    {
+      "label": "Comment rejects dotted field names",
+      "result": "PASS"
+    },
+    {
+      "label": "Rating rejects a NoSQL operator",
+      "result": "PASS"
+    },
+    {
+      "label": "Report rejects a NoSQL operator",
+      "result": "PASS"
+    },
+    {
+      "label": "Material metadata update rejects NoSQL operator",
+      "result": "PASS"
+    },
+    {
+      "label": "Rejected injection leaves comments and material metadata unchanged",
+      "result": "PASS"
+    },
+    {
+      "label": "Real Chromium signs in and loads the material detail page",
+      "result": "PASS"
+    },
+    {
+      "label": "Actual Chromium comments display inert text: 1/5",
+      "result": "PASS"
+    },
+    {
+      "label": "Actual Chromium comments display inert text: 2/5",
+      "result": "PASS"
+    },
+    {
+      "label": "Actual Chromium comments display inert text: 3/5",
+      "result": "PASS"
+    },
+    {
+      "label": "Actual Chromium comments display inert text: 4/5",
+      "result": "PASS"
+    },
+    {
+      "label": "Actual Chromium comments display inert text: 5/5",
+      "result": "PASS"
+    },
+    {
+      "label": "Five hostile comments round-trip literally through actual MongoDB-backed API",
+      "result": "PASS"
+    }
+  ],
+  "failures": [],
+  "environment": {
+    "node": "v24.22.0",
+    "browser": "Playwright Chromium",
+    "api": "actual Express routes + disposable MongoDB replica set",
+    "frontend": "actual React via Vite; loopback only"
+  },
+  "limitations": "This is TC-SEC-04 test coverage, not a comprehensive security/penetration audit."
+}

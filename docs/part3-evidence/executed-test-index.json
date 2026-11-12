@@ -1,0 +1,5014 @@
+[
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 111
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 95
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 70
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 55
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.read: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 96
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 82
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 213
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 75
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 74
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 84
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 91
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 80
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.read: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 82
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.download: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 61
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: missing and invalid authentication are 401, without stored changes",
+    "status": "passed",
+    "durationMs": 76
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: student",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: contributor",
+    "status": "passed",
+    "durationMs": 56
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: educator",
+    "status": "passed",
+    "durationMs": 47
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: otherEducator",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.list: admin",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: student",
+    "status": "passed",
+    "durationMs": 65
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: contributor",
+    "status": "passed",
+    "durationMs": 77
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: educator",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: otherEducator",
+    "status": "passed",
+    "durationMs": 52
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix admin.update: admin",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: student",
+    "status": "passed",
+    "durationMs": 52
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: contributor",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: educator",
+    "status": "passed",
+    "durationMs": 56
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: otherEducator",
+    "status": "passed",
+    "durationMs": 59
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.create: admin",
+    "status": "passed",
+    "durationMs": 52
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list and published read: student",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list and published read: contributor",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list and published read: educator",
+    "status": "passed",
+    "durationMs": 49
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list and published read: otherEducator",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.list and published read: admin",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz draft list/read: student",
+    "status": "passed",
+    "durationMs": 61
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz draft list/read: contributor",
+    "status": "passed",
+    "durationMs": 54
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz draft list/read: educator",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz draft list/read: otherEducator",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz draft list/read: admin",
+    "status": "passed",
+    "durationMs": 74
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=student owner=educator",
+    "status": "passed",
+    "durationMs": 63
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=student owner=contributor",
+    "status": "passed",
+    "durationMs": 58
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=contributor owner=educator",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=contributor owner=contributor",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=educator owner=educator",
+    "status": "passed",
+    "durationMs": 44
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=educator owner=contributor",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=otherEducator owner=educator",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=otherEducator owner=contributor",
+    "status": "passed",
+    "durationMs": 47
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=admin owner=educator",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.edit actor=admin owner=contributor",
+    "status": "passed",
+    "durationMs": 69
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=student owner=educator",
+    "status": "passed",
+    "durationMs": 76
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=student owner=contributor",
+    "status": "passed",
+    "durationMs": 69
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=contributor owner=educator",
+    "status": "passed",
+    "durationMs": 64
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=contributor owner=contributor",
+    "status": "passed",
+    "durationMs": 68
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=educator owner=educator",
+    "status": "passed",
+    "durationMs": 72
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=educator owner=contributor",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=otherEducator owner=educator",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=otherEducator owner=contributor",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=admin owner=educator",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.publish actor=admin owner=contributor",
+    "status": "passed",
+    "durationMs": 58
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=student owner=educator",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=student owner=contributor",
+    "status": "passed",
+    "durationMs": 56
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=contributor owner=educator",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=contributor owner=contributor",
+    "status": "passed",
+    "durationMs": 68
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=educator owner=educator",
+    "status": "passed",
+    "durationMs": 66
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=educator owner=contributor",
+    "status": "passed",
+    "durationMs": 65
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=otherEducator owner=educator",
+    "status": "passed",
+    "durationMs": 54
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=otherEducator owner=contributor",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=admin owner=educator",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.unpublish actor=admin owner=contributor",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=student owner=educator",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=student owner=contributor",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=contributor owner=educator",
+    "status": "passed",
+    "durationMs": 47
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=contributor owner=contributor",
+    "status": "passed",
+    "durationMs": 41
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=educator owner=educator",
+    "status": "passed",
+    "durationMs": 39
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=educator owner=contributor",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=otherEducator owner=educator",
+    "status": "passed",
+    "durationMs": 41
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=otherEducator owner=contributor",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=admin owner=educator",
+    "status": "passed",
+    "durationMs": 49
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix quiz.delete actor=admin owner=contributor",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: student",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: contributor",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: educator",
+    "status": "passed",
+    "durationMs": 45
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: otherEducator",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix attempt.submit: admin",
+    "status": "passed",
+    "durationMs": 35
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: student",
+    "status": "passed",
+    "durationMs": 47
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: contributor",
+    "status": "passed",
+    "durationMs": 47
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: educator",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: otherEducator",
+    "status": "passed",
+    "durationMs": 37
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.upload: admin",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=private actor=student",
+    "status": "passed",
+    "durationMs": 60
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=private actor=contributor",
+    "status": "passed",
+    "durationMs": 55
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=private actor=educator",
+    "status": "passed",
+    "durationMs": 48
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=private actor=otherEducator",
+    "status": "passed",
+    "durationMs": 68
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=private actor=admin",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=shared actor=student",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=shared actor=contributor",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=shared actor=educator",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=shared actor=otherEducator",
+    "status": "passed",
+    "durationMs": 67
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=shared actor=admin",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=public actor=student",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=public actor=contributor",
+    "status": "passed",
+    "durationMs": 60
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=public actor=educator",
+    "status": "passed",
+    "durationMs": 63
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=public actor=otherEducator",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=public actor=admin",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=hidden actor=student",
+    "status": "passed",
+    "durationMs": 53
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=hidden actor=contributor",
+    "status": "passed",
+    "durationMs": 88
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=hidden actor=educator",
+    "status": "passed",
+    "durationMs": 61
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=hidden actor=otherEducator",
+    "status": "passed",
+    "durationMs": 59
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material detail/download visibility=hidden actor=admin",
+    "status": "passed",
+    "durationMs": 48
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=private actor=student",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=private actor=contributor",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=private actor=educator",
+    "status": "passed",
+    "durationMs": 44
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=private actor=otherEducator",
+    "status": "passed",
+    "durationMs": 35
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=private actor=admin",
+    "status": "passed",
+    "durationMs": 33
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=shared actor=student",
+    "status": "passed",
+    "durationMs": 32
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=shared actor=contributor",
+    "status": "passed",
+    "durationMs": 36
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=shared actor=educator",
+    "status": "passed",
+    "durationMs": 36
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=shared actor=otherEducator",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=shared actor=admin",
+    "status": "passed",
+    "durationMs": 44
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=public actor=student",
+    "status": "passed",
+    "durationMs": 41
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=public actor=contributor",
+    "status": "passed",
+    "durationMs": 41
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=public actor=educator",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=public actor=otherEducator",
+    "status": "passed",
+    "durationMs": 37
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=public actor=admin",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=hidden actor=student",
+    "status": "passed",
+    "durationMs": 37
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=hidden actor=contributor",
+    "status": "passed",
+    "durationMs": 36
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=hidden actor=educator",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=hidden actor=otherEducator",
+    "status": "passed",
+    "durationMs": 34
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.list visibility=hidden actor=admin",
+    "status": "passed",
+    "durationMs": 32
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.general: student",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.general: contributor",
+    "status": "passed",
+    "durationMs": 35
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.general: educator",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.general: otherEducator",
+    "status": "passed",
+    "durationMs": 43
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.general: admin",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: student",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: contributor",
+    "status": "passed",
+    "durationMs": 44
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: educator",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: otherEducator",
+    "status": "passed",
+    "durationMs": 40
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix material.visibility.alias: admin",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/role.permission.matrix.integration.test.js",
+    "test": "SEC-003 implemented-endpoint permission matrix same JWT: admin grant/revoke controls upload and quiz authoring; demoted admin loses access",
+    "status": "passed",
+    "durationMs": 113
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Reporting material (FR-016) report is saved open, hides material from other users, and blocks a duplicate",
+    "status": "passed",
+    "durationMs": 770
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Reporting material (FR-016) contributor and educator can both report the same hidden public material",
+    "status": "passed",
+    "durationMs": 1024
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Reporting material (FR-016) missing reason returns 400 and creates no report",
+    "status": "passed",
+    "durationMs": 570
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Reporting material (FR-016) invalid reason returns 400 and creates no report",
+    "status": "passed",
+    "durationMs": 574
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Reporting material (FR-016) admin cannot report and unknown/private material is hidden as 404",
+    "status": "passed",
+    "durationMs": 766
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) queue is admin-only and lists open reports oldest first",
+    "status": "passed",
+    "durationMs": 1299
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) dismiss restores material only after the last open report is resolved",
+    "status": "passed",
+    "durationMs": 1361
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) dismiss does not restore material when another report was upheld",
+    "status": "passed",
+    "durationMs": 1323
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) uphold keeps material hidden",
+    "status": "passed",
+    "durationMs": 1265
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) non-admin, invalid decision, unknown report and re-decision are rejected",
+    "status": "passed",
+    "durationMs": 1292
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/moderation.integration.test.js",
+    "test": "Admin report review (FR-017) a user can report the same material again after a dismissal",
+    "status": "passed",
+    "durationMs": 1013
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.auth.integration.test.js",
+    "test": "FR-030–032 with production auth/quiz wiring and real MongoDB register/login → public quiz → submit → authoritative stored score and feedback",
+    "status": "passed",
+    "durationMs": 1583
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.auth.integration.test.js",
+    "test": "FR-030–032 with production auth/quiz wiring and real MongoDB concurrent no-retake submissions across production-configured apps persist once",
+    "status": "passed",
+    "durationMs": 1394
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.auth.integration.test.js",
+    "test": "FR-030–032 with production auth/quiz wiring and real MongoDB missing/invalid auth, educator role, unknown answers and unpublished quizzes write nothing",
+    "status": "passed",
+    "durationMs": 1529
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.auth.integration.test.js",
+    "test": "FR-030–032 with production auth/quiz wiring and real MongoDB same JWT follows current database role and student contributors can attempt",
+    "status": "passed",
+    "durationMs": 1448
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.history.progress.integration.test.js",
+    "test": "FR-033/034: authenticated attempts history, ownership and progress TC-ATT-08/10: own history newest-first; own detail, another student 403, educator 403",
+    "status": "passed",
+    "durationMs": 2022
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.history.progress.integration.test.js",
+    "test": "FR-033/034: authenticated attempts history, ownership and progress TC-ATT-11/12: empty history, 401 auth, malformed 400, unknown 404, score stable after quiz edit",
+    "status": "passed",
+    "durationMs": 841
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.history.progress.integration.test.js",
+    "test": "FR-033/034: authenticated attempts history, ownership and progress TC-ANL-01–04: per-quiz best score by topic, timeline and student isolation",
+    "status": "passed",
+    "durationMs": 2112
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.history.progress.integration.test.js",
+    "test": "FR-033/034: authenticated attempts history, ownership and progress TC-ANL-06: a real POST submission appears in history and progress",
+    "status": "passed",
+    "durationMs": 666
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.history.progress.integration.test.js",
+    "test": "FR-033/034: authenticated attempts history, ownership and progress TC-ANL-02: empty progress for new student",
+    "status": "passed",
+    "durationMs": 661
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration registers a user, normalizes email, and stores a safe password hash",
+    "status": "passed",
+    "durationMs": 749
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration rejects duplicate email regardless of case",
+    "status": "passed",
+    "durationMs": 739
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration allows exactly one concurrent registration for the same email",
+    "status": "passed",
+    "durationMs": 1545
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration rejects invalid password: too-short",
+    "status": "passed",
+    "durationMs": 15
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration rejects invalid password: missing-digit",
+    "status": "passed",
+    "durationMs": 18
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration rejects invalid password: too-long-ascii",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-001 registration rejects invalid password: too-long-multibyte",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login returns a verifiable JWT, safe user details, and secure refresh cookie",
+    "status": "passed",
+    "durationMs": 231
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login rejects an over-72-byte password: ascii suffix",
+    "status": "passed",
+    "durationMs": 103
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login rejects an over-72-byte password: multibyte suffix",
+    "status": "passed",
+    "durationMs": 104
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login accepts the correct password at exactly 72 UTF-8 bytes",
+    "status": "passed",
+    "durationMs": 183
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login returns the same generic error for a wrong password and unknown email",
+    "status": "passed",
+    "durationMs": 253
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 login rejects invalid login input",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration TC-AUTH-13: ten wrong logins, 429 on eleventh, correct login after 15-minute clock expiry",
+    "status": "passed",
+    "durationMs": 1206
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 refresh tokens rotates a valid refresh token and invalidates the old token",
+    "status": "passed",
+    "durationMs": 256
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 refresh tokens rejects a missing or unknown refresh token",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 refresh tokens rejects an expired refresh token",
+    "status": "passed",
+    "durationMs": 115
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 refresh tokens rejects a revoked refresh token",
+    "status": "passed",
+    "durationMs": 201
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-002 refresh tokens does not allow two refresh requests to reuse the same token",
+    "status": "passed",
+    "durationMs": 206
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-003 logout revokes the active refresh token and clears the cookie",
+    "status": "passed",
+    "durationMs": 225
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-003 logout rejects reuse of a refresh token after logout",
+    "status": "passed",
+    "durationMs": 193
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-003 logout rejects logout without a refresh token",
+    "status": "passed",
+    "durationMs": 11
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.integration.test.js",
+    "test": "Authentication integration FR-003 logout rejects logout with an unknown refresh token",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware a contributor logs in, uploads, and reads only their own file",
+    "status": "passed",
+    "durationMs": 262
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware a signed-in plain student cannot upload and nothing is persisted",
+    "status": "passed",
+    "durationMs": 232
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware admin grants and revokes contributor access for the same JWT",
+    "status": "passed",
+    "durationMs": 440
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware another signed-in user gets 404 for private detail and download",
+    "status": "passed",
+    "durationMs": 387
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware shared and public visibility are enforced with real identities",
+    "status": "passed",
+    "durationMs": 622
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware hidden material is visible to its owner and an admin only",
+    "status": "passed",
+    "durationMs": 637
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware missing or invalid tokens are rejected before material handling",
+    "status": "passed",
+    "durationMs": 282
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: missing authorization is rejected with 401 UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 209
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: malformed authorization header is rejected with 401 UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 208
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: invalid access token is rejected with 401 TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 221
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: expired access token is rejected with 401 TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 232
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: access token missing exp is rejected with 401 TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 249
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware contract: upload without an access token is rejected with 401 UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 11
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware multipart upload containing operator or prototype fields is rejected with 400 VALIDATION_ERROR",
+    "status": "passed",
+    "durationMs": 194
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware authenticated detail rejects malformed and unknown IDs",
+    "status": "passed",
+    "durationMs": 204
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.auth.integration.test.js",
+    "test": "Materials with the shared authentication middleware end-to-end: owner uploads private material, updates to shared, then to public",
+    "status": "passed",
+    "durationMs": 691
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/password-reset.integration.test.js",
+    "test": "FR-006 password reset integration returns the same generic response for existing and unknown emails",
+    "status": "passed",
+    "durationMs": 155
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/password-reset.integration.test.js",
+    "test": "FR-006 password reset integration stores only a token hash and sets a 30-minute expiry",
+    "status": "passed",
+    "durationMs": 101
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/password-reset.integration.test.js",
+    "test": "FR-006 password reset integration resets the password, revokes refresh tokens, and rejects token reuse",
+    "status": "passed",
+    "durationMs": 1748
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/password-reset.integration.test.js",
+    "test": "FR-006 password reset integration rejects an expired reset token",
+    "status": "passed",
+    "durationMs": 490
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/password-reset.integration.test.js",
+    "test": "FR-006 password reset integration invalidates the reset token when email delivery fails",
+    "status": "passed",
+    "durationMs": 165
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) re-rating replaces the user rating and updates the average",
+    "status": "passed",
+    "durationMs": 733
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) average is rounded to two decimals and re-rating updates it",
+    "status": "passed",
+    "durationMs": 1023
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) invalid rating 0 returns 400 and stores nothing",
+    "status": "passed",
+    "durationMs": 451
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) invalid rating 6 returns 400 and stores nothing",
+    "status": "passed",
+    "durationMs": 501
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) invalid rating 3.5 returns 400 and stores nothing",
+    "status": "passed",
+    "durationMs": 551
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) invalid rating \"four\" returns 400 and stores nothing",
+    "status": "passed",
+    "durationMs": 582
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Ratings (FR-014) cannot rate inaccessible private material",
+    "status": "passed",
+    "durationMs": 583
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) adds and lists comments with author names, oldest first",
+    "status": "passed",
+    "durationMs": 669
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) rejects comment length \"\" with 400",
+    "status": "passed",
+    "durationMs": 359
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) rejects comment length \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" with 400",
+    "status": "passed",
+    "durationMs": 362
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) accepts 1 and 1000 character comments",
+    "status": "passed",
+    "durationMs": 430
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) hostile markup is stored literally and returned as plain text",
+    "status": "passed",
+    "durationMs": 403
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.rating.comment.integration.test.js",
+    "test": "Comments (FR-014, SEC-004) cannot comment on inaccessible private material",
+    "status": "passed",
+    "durationMs": 659
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 quiz pagination returns every tied-timestamp record exactly once",
+    "status": "passed",
+    "durationMs": 176
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 material pagination with tied timestamps and text search=false",
+    "status": "passed",
+    "durationMs": 127
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 material pagination with tied timestamps and text search=true",
+    "status": "passed",
+    "durationMs": 120
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 quizzes preserves descending creation date before the ID tie-breaker",
+    "status": "passed",
+    "durationMs": 29
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 materials preserves descending creation date before the ID tie-breaker",
+    "status": "passed",
+    "durationMs": 31
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D1 text relevance precedes date, with newer dates breaking equal scores",
+    "status": "passed",
+    "durationMs": 34
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 simultaneous shared to private and recipient-only changes preserve persisted invariants",
+    "status": "passed",
+    "durationMs": 790
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 simultaneous shared to public and recipient-only changes preserve persisted invariants",
+    "status": "passed",
+    "durationMs": 768
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 simultaneous private to shared and recipient-only changes preserve persisted invariants",
+    "status": "passed",
+    "durationMs": 628
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 rejected requests leave MongoDB and files unchanged via alias ",
+    "status": "passed",
+    "durationMs": 162
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 rejected requests leave MongoDB and files unchanged via alias /visibility",
+    "status": "passed",
+    "durationMs": 141
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 concurrent repository writes reject the stale version without changing persisted state or files",
+    "status": "passed",
+    "durationMs": 67
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/sprint1.audit.integration.test.js",
+    "test": "D2 bounded concurrent request waves acknowledge only valid persisted sharing updates",
+    "status": "passed",
+    "durationMs": 330
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) owner edit returns 200 and creates a revision holding the previous state",
+    "status": "passed",
+    "durationMs": 379
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) sequential edits produce version numbers 1, 2, 3 and list newest first",
+    "status": "passed",
+    "durationMs": 350
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) admin can edit any material and the revision records the admin editor",
+    "status": "passed",
+    "durationMs": 518
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) a non-owner contributor receives 403 for edit/delete and leaves record, reference and file unchanged",
+    "status": "passed",
+    "durationMs": 565
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) owner deletion removes both the material record and stored file",
+    "status": "passed",
+    "durationMs": 317
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) admin deletion removes both the material record and stored file",
+    "status": "passed",
+    "durationMs": 611
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) overlapping HTTP deletions remove the record and file only once",
+    "status": "passed",
+    "durationMs": 602
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) material deletion returns the standard authentication, validation and missing-resource errors",
+    "status": "passed",
+    "durationMs": 278
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) only owner or admin can read revisions",
+    "status": "passed",
+    "durationMs": 523
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) invalid metadata is rejected without changing the material or writing a revision",
+    "status": "passed",
+    "durationMs": 256
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.revisions.integration.test.js",
+    "test": "Material revision history (FR-015) and metadata edit (FR-018) file replacement updates the file and preserves the old fileUrl in the revision",
+    "status": "passed",
+    "durationMs": 322
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-MAT-01: contributor uploads a tagged material; 201 private with normalised tags and persisted file",
+    "status": "passed",
+    "durationMs": 145
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-MAT-02: a plain student receives 403 and nothing is stored",
+    "status": "passed",
+    "durationMs": 42
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-MAT-09: an educator uploads without contributor privilege; ownerId is the educator",
+    "status": "passed",
+    "durationMs": 39
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-MAT-03: blank or too-short title is rejected naming field title, nothing stored",
+    "status": "passed",
+    "durationMs": 41
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-MAT-10: missing or false rightsConfirmed returns 400 naming rightsConfirmed, nothing stored, BR-5",
+    "status": "passed",
+    "durationMs": 32
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a 20 MB PDF is accepted at the exact limit, 20 MB + 1 byte returns 413",
+    "status": "passed",
+    "durationMs": 310
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: an executable renamed to .pdf returns 415",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: an unsupported extension (.svg) returns 415",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a valid docx OOXML package is accepted",
+    "status": "passed",
+    "durationMs": 27
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a valid pptx OOXML package is accepted",
+    "status": "passed",
+    "durationMs": 23
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: an arbitrary ZIP renamed .docx returns 415 and stores nothing",
+    "status": "passed",
+    "durationMs": 17
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: an arbitrary ZIP renamed .pptx returns 415 and stores nothing",
+    "status": "passed",
+    "durationMs": 13
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a docx package renamed .pptx returns 415",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a pptx package renamed .docx returns 415",
+    "status": "passed",
+    "durationMs": 18
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a truncated DOCX package returns 415",
+    "status": "passed",
+    "durationMs": 18
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) TC-SEC-06: a four-byte PNG prefix returns 415",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) malformed multipart returns 400 VALIDATION_ERROR and stores nothing",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) malformed multipart returns 400 VALIDATION_ERROR and stores nothing",
+    "status": "passed",
+    "durationMs": 38
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) responses use the central error envelope with a server-owned request id",
+    "status": "passed",
+    "durationMs": 18
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "POST /api/v1/materials (FR-010, FR-011, SEC-006 integration) multipart upload with unsafe keys is rejected after multipart parsing",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) TC-MAT-17: private material is visible only to its owner for detail and download",
+    "status": "passed",
+    "durationMs": 89
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) TC-MAT-05: shared material is visible only to owner and listed users",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) TC-MAT-05: public material is visible to any authenticated user",
+    "status": "passed",
+    "durationMs": 87
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) hidden material is visible to the owner and admin, but not other users",
+    "status": "passed",
+    "durationMs": 102
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) detail and download require auth and reject malformed or unknown IDs",
+    "status": "passed",
+    "durationMs": 63
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials/:id and /file (FR-012, FR-013 integration) a missing stored file returns a generic 500 without leaking the storage path",
+    "status": "passed",
+    "durationMs": 49
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) filters materials by category case-insensitively",
+    "status": "passed",
+    "durationMs": 75
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) filters materials by topic",
+    "status": "passed",
+    "durationMs": 86
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) filters materials by tag",
+    "status": "passed",
+    "durationMs": 61
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) full-text search matches keyword in title or tags",
+    "status": "passed",
+    "durationMs": 105
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) visibility-safe scoping: private material is only returned for owner and admin",
+    "status": "passed",
+    "durationMs": 108
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) shared material appears only for listed users",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) pagination parameters are respected",
+    "status": "passed",
+    "durationMs": 80
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "GET /api/v1/materials - Search and Filter (FR-011, FR-013, Issue #10) invalid pagination parameters return 400 VALIDATION_ERROR",
+    "status": "passed",
+    "durationMs": 95
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) owner can update visibility to shared with valid sharedWith user IDs",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) rejects shared visibility when only the owner ID is supplied in uppercase",
+    "status": "passed",
+    "durationMs": 34
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) normalizes uppercase sharedWith IDs and excludes the owner",
+    "status": "passed",
+    "durationMs": 72
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) owner can update visibility to public, clearing sharedWith",
+    "status": "passed",
+    "durationMs": 59
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) owner can update visibility to private, clearing sharedWith",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) /visibility endpoint alias works equivalently",
+    "status": "passed",
+    "durationMs": 31
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) non-owner cannot modify visibility and receives 403 FORBIDDEN",
+    "status": "passed",
+    "durationMs": 26
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) admin can modify visibility of any material",
+    "status": "passed",
+    "durationMs": 39
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) setting visibility to shared without sharedWith returns 400 VALIDATION_ERROR",
+    "status": "passed",
+    "durationMs": 26
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) invalid visibility value returns 400 VALIDATION_ERROR",
+    "status": "passed",
+    "durationMs": 26
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) unknown material returns 404 NOT_FOUND",
+    "status": "passed",
+    "durationMs": 25
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.routes.test.js",
+    "test": "PATCH /api/v1/materials/:id - Visibility and Sharing (FR-012, Issue #12) malformed material ID returns 400 VALIDATION_ERROR",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management rejects unauthenticated and non-admin access",
+    "status": "passed",
+    "durationMs": 277
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management admin lists users without exposing password hashes or passwords",
+    "status": "passed",
+    "durationMs": 210
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management admin grants contributor privilege and the database reflects it",
+    "status": "passed",
+    "durationMs": 231
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management validates role, contributor type, and user ID",
+    "status": "passed",
+    "durationMs": 203
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management returns not found when updating a nonexistent user",
+    "status": "passed",
+    "durationMs": 240
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/admin.test.js",
+    "test": "Admin user management admin updates role and contributor together",
+    "status": "passed",
+    "durationMs": 178
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "ten failures allowed, eleventh blocked with central error and Retry-After; exact expiry recovers",
+    "status": "passed",
+    "durationMs": 65
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "successful, invalid-input and service-error requests do not consume credential-failure quota",
+    "status": "passed",
+    "durationMs": 86
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "untrusted X-Forwarded-For changes cannot bypass the direct-connection bucket",
+    "status": "passed",
+    "durationMs": 21
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "explicitly trusted proxy separates IP buckets and expired entries free capacity",
+    "status": "passed",
+    "durationMs": 28
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "limiter instances do not share failures between application instances",
+    "status": "passed",
+    "durationMs": 20
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/loginRateLimit.test.js",
+    "test": "in-flight credential checks reserve quota against concurrent bypass",
+    "status": "passed",
+    "durationMs": 23
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.auth.db.integration.test.js",
+    "test": "authenticated quiz flow with MongoDB login token follows current contributor permissions and never exposes answer keys",
+    "status": "passed",
+    "durationMs": 325
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.auth.db.integration.test.js",
+    "test": "authenticated quiz flow with MongoDB another educator cannot change an author quiz, while an administrator can moderate it",
+    "status": "passed",
+    "durationMs": 474
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.auth.db.integration.test.js",
+    "test": "authenticated quiz flow with MongoDB topic filtering links only published quizzes, regardless of topic case",
+    "status": "passed",
+    "durationMs": 336
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/leaderboard.integration.test.js",
+    "test": "competition ranking skips the positions after ties",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/leaderboard.integration.test.js",
+    "test": "FR-035 leaderboard with persisted attempts and verified login quiz ranks each student by best score, keeps ties, and paginates global ranks",
+    "status": "passed",
+    "durationMs": 157
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/leaderboard.integration.test.js",
+    "test": "FR-035 leaderboard with persisted attempts and verified login topic sums each best percentage across published quizzes with case-insensitive scope",
+    "status": "passed",
+    "durationMs": 196
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/leaderboard.integration.test.js",
+    "test": "FR-035 leaderboard with persisted attempts and verified login empty, invalid and unpublished quiz scopes follow the HTTP contract",
+    "status": "passed",
+    "durationMs": 133
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/leaderboard.integration.test.js",
+    "test": "FR-035 leaderboard with persisted attempts and verified login all roles see the same leaderboard, while no token is rejected",
+    "status": "passed",
+    "durationMs": 514
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.auth.integration.test.js",
+    "test": "actual login rejects operator/prototype input before querying users",
+    "status": "passed",
+    "durationMs": 50
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.auth.integration.test.js",
+    "test": "actual login rejects operator/prototype input before querying users",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.auth.integration.test.js",
+    "test": "actual login rejects operator/prototype input before querying users",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.auth.integration.test.js",
+    "test": "registration operator input creates no user and ordinary real login remains functional",
+    "status": "passed",
+    "durationMs": 155
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration creates a student with normalized email and a bcrypt password hash",
+    "status": "passed",
+    "durationMs": 665
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects invalid registration input",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects invalid registration input",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects invalid registration input",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects invalid registration input",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration accepts a password of exactly 72 UTF-8 bytes",
+    "status": "passed",
+    "durationMs": 318
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects a password exceeding 72 UTF-8 bytes before hashing or saving",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration rejects multibyte passwords exceeding 72 UTF-8 bytes",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration real User schema accepts the agreed roles",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration real User schema rejects an unsupported role",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-001 registration returns 409 when the email already exists",
+    "status": "passed",
+    "durationMs": 316
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login logs in with valid credentials and returns a signed JWT and safe user details",
+    "status": "passed",
+    "durationMs": 164
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects an incorrect password with a generic credentials error",
+    "status": "passed",
+    "durationMs": 161
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects an unknown email with the same generic credentials error",
+    "status": "passed",
+    "durationMs": 80
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login refuses to issue a token when the JWT secret is missing",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects invalid login input",
+    "status": "passed",
+    "durationMs": 80
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects invalid login input",
+    "status": "passed",
+    "durationMs": 81
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects invalid login input",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.service.test.js",
+    "test": "FR-002 login rejects invalid login input",
+    "status": "passed",
+    "durationMs": 79
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.auth.integration.test.js",
+    "test": "quiz routes with merged authentication middleware Bearer token uses current database permissions for quiz authoring",
+    "status": "passed",
+    "durationMs": 49
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.auth.integration.test.js",
+    "test": "quiz routes with merged authentication middleware quiz routes return authentication errors before authorisation or validation",
+    "status": "passed",
+    "durationMs": 63
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me views own profile without exposing password hash",
+    "status": "passed",
+    "durationMs": 70
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects viewing a profile without authentication",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me updates own name while preserving email, role and contributor",
+    "status": "passed",
+    "durationMs": 36
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects attempts to update protected field: email",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects attempts to update protected field: role",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects attempts to update protected field: contributor",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects attempts to update protected field: passwordHash",
+    "status": "passed",
+    "durationMs": 26
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects an invalid name",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me rejects email even when already used by another user",
+    "status": "passed",
+    "durationMs": 21
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me mixed name/email update is rejected atomically",
+    "status": "passed",
+    "durationMs": 20
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me name length 1 returns 400",
+    "status": "passed",
+    "durationMs": 16
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me name length 2 returns 200",
+    "status": "passed",
+    "durationMs": 24
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me name length 60 returns 200",
+    "status": "passed",
+    "durationMs": 27
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me name length 61 returns 400",
+    "status": "passed",
+    "durationMs": 17
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me empty update and unauthenticated patch leave profile unchanged",
+    "status": "passed",
+    "durationMs": 23
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me canonical/alias profile denies expired JWT",
+    "status": "passed",
+    "durationMs": 11
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me canonical/alias profile denies tampered JWT",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/users/me canonical/alias profile denies none JWT",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile views own profile without exposing password hash",
+    "status": "passed",
+    "durationMs": 64
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects viewing a profile without authentication",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile updates own name while preserving email, role and contributor",
+    "status": "passed",
+    "durationMs": 20
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects attempts to update protected field: email",
+    "status": "passed",
+    "durationMs": 16
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects attempts to update protected field: role",
+    "status": "passed",
+    "durationMs": 21
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects attempts to update protected field: contributor",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects attempts to update protected field: passwordHash",
+    "status": "passed",
+    "durationMs": 19
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects an invalid name",
+    "status": "passed",
+    "durationMs": 9
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile rejects email even when already used by another user",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile mixed name/email update is rejected atomically",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile name length 1 returns 400",
+    "status": "passed",
+    "durationMs": 9
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile name length 2 returns 200",
+    "status": "passed",
+    "durationMs": 13
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile name length 60 returns 200",
+    "status": "passed",
+    "durationMs": 13
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile name length 61 returns 400",
+    "status": "passed",
+    "durationMs": 9
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile empty update and unauthenticated patch leave profile unchanged",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile canonical/alias profile denies expired JWT",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile canonical/alias profile denies tampered JWT",
+    "status": "passed",
+    "durationMs": 9
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/profile.integration.test.js",
+    "test": "FR-005 profile management via /api/v1/profile canonical/alias profile denies none JWT",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware uses database permissions rather than JWT role claims",
+    "status": "passed",
+    "durationMs": 24
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects missing authorization with UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects unsupported authorization scheme with UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects malformed bearer header with UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects empty bearer token with UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects extra authorization fields with UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects malformed token with TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects invalid signature with TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects an expired token with TOKEN_INVALID",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects a token with a missing exp claim",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects a token with a nonnumeric exp claim",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects a token with an invalid subject",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects a user who no longer exists",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware rejects a user with an invalid identity",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware loads current permissions on every request",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/auth.middleware.test.js",
+    "test": "FR-004 authentication middleware returns 503 SERVICE_UNAVAILABLE when the JWT secret is missing",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects unsafe JSON without executing a handler: {\"email\":{\"$gt\":\"\"}}",
+    "status": "passed",
+    "durationMs": 20
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects unsafe JSON without executing a handler: {\"items\":[{\"$where\":\"return true\"}]}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects unsafe JSON without executing a handler: {\"nested\":{\"user.name\":\"x\"}}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects unsafe JSON without executing a handler: {\"__proto__\":{\"polluted\":true}}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects unsafe JSON without executing a handler: {\"nested\":{\"constructor\":{\"prototype\":{\"polluted\":true}}}}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects decoded query operators/dotted keys: email%5B%24gt%5D=",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects decoded query operators/dotted keys: %24where=x",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects decoded query operators/dotted keys: name.first=x",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects decoded query operators/dotted keys: nested%5Ba.b%5D=x",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary can be mounted again after a route-specific parser",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary bounds traversal and does not overflow the stack",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary preserves legitimate strings without interpreting operators or HTML",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary validates comment text without HTML-encoding the stored value",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/inputSecurity.test.js",
+    "test": "SEC-004 shared input boundary rejects invalid plain text",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.textIndexMigration.test.js",
+    "test": "upgrades the #59 text index in place, preserves records and reruns safely",
+    "status": "passed",
+    "durationMs": 119
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.textIndexMigration.test.js",
+    "test": "creates the new text index on a fresh database",
+    "status": "passed",
+    "durationMs": 32
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.textIndexMigration.test.js",
+    "test": "refuses to drop an unrelated text index",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) 201 includes persisted ID and SAD result shape, with no storage internals",
+    "status": "passed",
+    "durationMs": 29
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) contributors can submit as students",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) educator cannot submit",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) administrator cannot submit",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) admin cannot submit",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) missing auth context is 401",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid server identity is 401",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) default application fails closed even with forged bearer/header/body identities",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) missing/draft/unpublished lookup returns 404 and inserts nothing",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) previous attempt with retakes disabled returns 409",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) retakes enabled skips existing-attempt restriction and omits guard",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) database unique guard collision returns 409",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) write errors never return false success or secrets",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) write errors never return false success or secrets",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) write errors never return false success or secrets",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) waits for the actual save before returning",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) client score, identity and results do not influence storage",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"not-in-quiz\",\"response\":0}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":0},{\"questionId\":\"q1\",\"response\":1}]}",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q2\",\"response\":3}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":true}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":3}]}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":-1}]}",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":1.2}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":\"2\"}]}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":{\"$gt\":\"\"}}]}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"q1\",\"response\":[],\"isCorrect\":true}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":[{\"questionId\":\"\"}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {\"answers\":\"bad\"}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: {}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: null",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid body is 400 with no write: []",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) invalid quiz ID fails validation before database access",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) uppercase route/identity IDs are normalized for guard keys",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-030 submission HTTP module (auth context injected in tests only) broken server quiz policy fails closed",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) five questions: 3 correct, 1 incorrect, 1 omitted => 3/5",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) all correct, including false and index zero",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) empty answers, missing responses and explicit null are all unanswered",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) does not mutate caller data and snapshots survive a changed answer key",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: undefined",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: []",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [null]",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [{\"type\":\"mcq\"}]",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [{\"_id\":\"\",\"type\":\"true_false\",\"answerKey\":true}]",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [{\"_id\":\"a\",\"type\":\"essay\",\"answerKey\":\"x\"}]",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [{\"_id\":\"a\",\"type\":\"mcq\",\"options\":[\"one\"],\"answerKey\":0}]",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Pure scoring required by submission (FR-031 supporting code) corrupt server quiz rejects rather than fabricate results: [{\"_id\":\"a\",\"type\":\"true_false\",\"answerKey\":true},{\"_id\":\"a\",\"type\":\"true_false\",\"answerKey\":false}]",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Attempt persistence contract schema uses SAD collection/indexes and rejects unknown fields",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Attempt persistence contract repository queries fixed collection/IDs, awaits indexes and returns saved values",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "Attempt persistence contract failed index setup is propagated and can retry, never silently skipped",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-031 five-question boundaries and private quiz adapter five blank answers score 0/5; five correct answers score 5/5",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/attempt.test.js",
+    "test": "FR-031 five-question boundaries and private quiz adapter optional private lookup delegates to reviewed quiz service without a second Quiz model",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) health checks process and injected DB connectivity",
+    "status": "passed",
+    "durationMs": 46
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) health is 503 when DB is disconnected",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) unknown routes share the documented error envelope",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) does not trust incoming request ID text",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) allows exact configured CORS origins, with credentials",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects unapproved CORS origins",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) handles CORS preflight",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects malformed JSON through error handler",
+    "status": "passed",
+    "durationMs": 15
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) enforces JSON body size cap",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects nested unsafe object keys: {\"password\":{\"$gt\":\"\"}}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects nested unsafe object keys: {\"profile\":{\"nested.key\":\"value\"}}",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects nested unsafe object keys: {\"values\":[{\"$where\":\"x\"}]}",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) rejects unsafe query keys",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) preserves safe bodies and string values",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) forwards async typed errors and field details",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) hides unexpected errors from clients",
+    "status": "passed",
+    "durationMs": 10
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) logs sanitized unexpected-error stack, not its message",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Foundation HTTP checks (not completed feature/STP cases) unsafe key detector accepts primitive roots",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation validates MongoDB URI and provides defaults without opening a connection",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an invalid MongoDB URI without exposing its value",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an invalid port",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an invalid trust proxy count",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects a missing MongoDB URI",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an empty JWT access secret",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects a JWT access secret shorter than 64 characters",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an unsafe CORS origin configuration",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation rejects an invalid JWT access-token lifetime",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/app.test.js",
+    "test": "Environment validation does not expose secret values in configuration errors",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security application quiz mount fails closed and accepts only injected authentication",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security question boundaries and answer keys reject invalid data",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security draft creation, publication gate and answer-key redaction",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security ownership and authoring privileges are enforced for edits and deletion",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security creation obeys the RBAC matrix",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security revoked contributor cannot mutate an owned quiz, while admin may moderate it",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security concurrent edit and publish: publish-first never stores an empty published quiz",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security concurrent edit and publish: edit-first never stores an empty published quiz",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security model validates persisted question shape and indexed fields",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/quiz.test.js",
+    "test": "quiz authoring and security HTTP guards return central errors and never return nested keys",
+    "status": "passed",
+    "durationMs": 22
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/report.service.test.js",
+    "test": "rate limit stops report creation before persistence",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/report.service.test.js",
+    "test": "hiding failure removes the newly created report",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/report.service.test.js",
+    "test": "overlong notes are rejected without persisting",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) TC-MAT-01: contributor upload with duplicate and case-variant tags is normalised, lowercased and de-duplicated",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) educator without contributor privilege may upload (TC-MAT-09 authorisation)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) plain student receives 403 and nothing is stored (TC-MAT-02)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) admin receives 403 (admins cannot author), nothing stored",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) missing auth receives 401 UNAUTHENTICATED",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) TC-MAT-10: missing or false rightsConfirmed is rejected naming the field, nothing stored",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) TC-MAT-03: title \"\" and \"ab\" are rejected, naming field title",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) TC-MAT-12: title of 120 characters is valid, of 121 is invalid; missing category and empty topic are rejected",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) TC-MAT-11: tag boundaries 0, 1, 10, 11 tags and 30, 31 chars (BVA)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) repository failure cleans up the stored file and returns 500, no half-written material",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) schema guardrails: visibility default private, hidden default false, title bounds",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) model rejects direct writers that bypass tag normalisation",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) service requires injected dependencies",
+    "status": "passed",
+    "durationMs": 15
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) missing file is rejected before storage",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) owner can retrieve a private material (TC-MAT-17)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) other users receive 404 for a private material (TC-MAT-17)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) shared material is visible only to owner and listed users (TC-MAT-05)",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) public material is visible to any authenticated user (TC-MAT-05)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) hidden material is visible to owner and admin only",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) detail requires authentication, a valid ID and an existing material",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) file retrieval returns stored bytes only after access is granted",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) file retrieval hides storage failures and invalid buffers",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) searchMaterials requires authentication",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) searchMaterials builds visibility-safe filter for non-admin user",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) searchMaterials admin searches without $or visibility constraint",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) searchMaterials rejects invalid limit or page",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility requires authentication and valid material ID",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rejects non-owner modification with 403 FORBIDDEN",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility owner can update to shared with sharedWith user array",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rejects shared visibility when only the owner ID is supplied, including uppercase",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rejects shared visibility when existing sharedWith contains only the owner in another case",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility normalizes and deduplicates sharedWith, excluding the owner in any case",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility updating to public or private clears sharedWith",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility admin can update visibility on another user material",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility recomputes a recipient-only update after a stale shared snapshot becomes private",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility recomputes a recipient-only update after a stale private snapshot becomes shared",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility revalidates empty recipients against the current shared state after a stale write",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rechecks existence and ownership after a stale write (null)",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rechecks existence and ownership after a stale write ({\n  _id: '64ff31e5fe2f1f25a49f4b76',\n  ownerId: '64ff31e5fe2f1f25a49f4b74',\n  visibility: 'private',\n  sharedWith: [],\n  hidden: false,\n  __v: 1,\n  storageKey: '64ff31e5fe2f1f25a49f4b76.pdf'\n})",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility returns a bounded conflict instead of acknowledging repeated stale updates",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) updateVisibility rejects shared visibility with empty sharedWith array",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial owner commits the database delete before removing the stored file",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial admin can delete another user material",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial non-owner receives 403 before storage or database mutation",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial requires authentication, valid ID and an existing material",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial database failure leaves the existing file untouched",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial stale database version retries without touching a file until deletion commits",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial storage cleanup failure restores the old record and exact original bytes",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial failed cleanup compensation explicitly reports when record cannot be restored",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial two overlapping deletions: one winner, one 404, no file restoration",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.service.test.js",
+    "test": "Material service (unit, mocked repository/storage) deleteMaterial missing stored bytes prevent database deletion",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: report.pdf",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: notes.docx",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: slides.pptx",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: stored.docx",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: figure.png",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: signature-only.png",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts matching extension and signature: photo.jpg",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects signature mismatches and unsupported types: executable.pdf",
+    "status": "passed",
+    "durationMs": 12
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects signature mismatches and unsupported types: malware.PDF",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects signature mismatches and unsupported types: wrong-ext.svg",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects signature mismatches and unsupported types: no-ext",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects signature mismatches and unsupported types: trailing-dot.pdf.",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) jpg named png is rejected (signature priority)",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) a truncated four-byte PNG prefix is rejected",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) a PNG with an invalid trailing signature is rejected",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a ZIP that is not the declared Office format: arbitrary.docx",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a ZIP that is not the declared Office format: arbitrary.pptx",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a ZIP that is not the declared Office format: renamed.docx",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a ZIP that is not the declared Office format: renamed.pptx",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a truncated DOCX package",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a DOCX package with no content-types declaration",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a DOCX package with the wrong main-part content type",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) OOXML package inspection rejects a four-byte ZIP signature with no archive structure",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) accepts a file of exactly 20971520 bytes",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) rejects a file of exactly 20971521 bytes",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) empty or missing content is rejected",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\"a.b.c.pdf\") -> \"pdf\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\"A.PDF\") -> \"pdf\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\"noext\") -> \"\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\".hidden\") -> \"\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\"endsdot.\") -> \"\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(\"\") -> \"\"",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/material.fileValidation.test.js",
+    "test": "SEC-006 file validation (unit) extractExtension .name=(undefined) -> \"\"",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/storage.test.js",
+    "test": "Storage adapter (C-STO) put/get/remove round trip persists bytes on the volume",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/storage.test.js",
+    "test": "Storage adapter (C-STO) keys are sanitised against traversal and invalid forms",
+    "status": "passed",
+    "durationMs": 8
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/storage.test.js",
+    "test": "Storage adapter (C-STO) remove on missing key is idempotent",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/progress.service.test.js",
+    "test": "FR-034 pure topic progress (TC-ANL-01–05) empty progress",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/progress.service.test.js",
+    "test": "FR-034 pure topic progress (TC-ANL-01–05) only highest percentage for each quiz contributes; timeline retains every attempt",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/progress.service.test.js",
+    "test": "FR-034 pure topic progress (TC-ANL-01–05) 2/3 and 1/3 in different quizzes yield 50.0 average",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/progress.service.test.js",
+    "test": "FR-034 pure topic progress (TC-ANL-01–05) unsorted input yields time-ordered timeline",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "server",
+    "file": "server/tests/progress.service.test.js",
+    "test": "FR-034 pure topic progress (TC-ANL-01–05) rejects broken stored score, instead of producing fake progress",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/material.fullstack.test.jsx",
+    "test": "library session continues into detail and persists rating and comment",
+    "status": "passed",
+    "durationMs": 2097
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/material.fullstack.test.jsx",
+    "test": "owner edit through the UI creates a revision newest first",
+    "status": "passed",
+    "durationMs": 1679
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/material.fullstack.test.jsx",
+    "test": "admin uphold followed by dismiss keeps material hidden through the real API",
+    "status": "passed",
+    "durationMs": 1447
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "creates a draft with MCQ and true/false answer keys",
+    "status": "passed",
+    "durationMs": 1662
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "shows inline validation and keeps invalid drafts local",
+    "status": "passed",
+    "durationMs": 115
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "edits metadata without replacing hidden answer keys, publishes and unpublishes",
+    "status": "passed",
+    "durationMs": 520
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "clearing an MCQ answer remains missing; explicit option zero is valid",
+    "status": "passed",
+    "durationMs": 1273
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "option removal preserves a missing key and clears a removed correct option",
+    "status": "passed",
+    "durationMs": 1882
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "clearing true or false remains missing; explicitly choosing false is valid",
+    "status": "passed",
+    "durationMs": 1074
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "switching quiz identity resets every editor field and save target",
+    "status": "passed",
+    "durationMs": 251
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "publication waits for unsaved edits",
+    "status": "passed",
+    "durationMs": 240
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizEditor.test.jsx",
+    "test": "editing is disabled until an in-flight save completes",
+    "status": "passed",
+    "durationMs": 564
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/LeaderboardPage.test.jsx",
+    "test": "student switches quiz and topic rankings without reloading the page",
+    "status": "passed",
+    "durationMs": 1321
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/LeaderboardPage.test.jsx",
+    "test": "ignores an outdated quiz response after switching to a topic leaderboard",
+    "status": "passed",
+    "durationMs": 1343
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/LeaderboardPage.test.jsx",
+    "test": "rejecting a query clears prior results and leaves a helpful error",
+    "status": "passed",
+    "durationMs": 1564
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/LeaderboardPage.test.jsx",
+    "test": "invalid submission supersedes an older pending leaderboard request",
+    "status": "passed",
+    "durationMs": 1453
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialDetailPage.test.jsx",
+    "test": "student views, rates, comments and reports material without seeing revisions",
+    "status": "passed",
+    "durationMs": 1613
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialDetailPage.test.jsx",
+    "test": "owner edits metadata, sees revisions and downloads the file",
+    "status": "passed",
+    "durationMs": 1108
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialDetailPage.test.jsx",
+    "test": "validation errors stay local and failed loads are announced",
+    "status": "passed",
+    "durationMs": 622
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialDetailPage.test.jsx",
+    "test": "material detail links published quizzes with the same topic",
+    "status": "passed",
+    "durationMs": 605
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialDetailPage.test.jsx",
+    "test": "editing a material topic replaces quizzes from the previous topic",
+    "status": "passed",
+    "durationMs": 770
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "requires real login, forwards token and renders server feedback after submission",
+    "status": "passed",
+    "durationMs": 866
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "student can open a published quiz by ID from the entry route",
+    "status": "passed",
+    "durationMs": 1365
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "empty sign-in fields show inline validation and do not call the API",
+    "status": "passed",
+    "durationMs": 49
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "educator login cannot enter the attempt screen",
+    "status": "passed",
+    "durationMs": 621
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "401 clears the in-memory session and asks for sign-in",
+    "status": "passed",
+    "durationMs": 630
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentAttemptPage.test.jsx",
+    "test": "logout unmounts the attempt and a late result cannot restore feedback",
+    "status": "passed",
+    "durationMs": 658
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "loads only public quiz content with accessible blank choices and no correct-answer feedback",
+    "status": "passed",
+    "durationMs": 51
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "TC-ATT-07: submits 0 and false, displays server feedback immediately without route navigation",
+    "status": "passed",
+    "durationMs": 267
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "incorrect answer shows correct option text rather than an unexplained index",
+    "status": "passed",
+    "durationMs": 82
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "clear answer returns to unanswered and all blanks can be submitted",
+    "status": "passed",
+    "durationMs": 85
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "freezes editable controls while pending and guards duplicate submit events",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "load failure 401 has no form or false success and can retry",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "load failure 403 has no form or false success and can retry",
+    "status": "passed",
+    "durationMs": 63
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "load failure 404 has no form or false success and can retry",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "load failure 400 has no form or false success and can retry",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "load failure 500 has no form or false success and can retry",
+    "status": "passed",
+    "durationMs": 62
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "submission failure 401 preserves answers and never renders results",
+    "status": "passed",
+    "durationMs": 112
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "submission failure 403 preserves answers and never renders results",
+    "status": "passed",
+    "durationMs": 96
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "submission failure 404 preserves answers and never renders results",
+    "status": "passed",
+    "durationMs": 92
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "submission failure 400 preserves answers and never renders results",
+    "status": "passed",
+    "durationMs": 92
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "submission failure 500 preserves answers and never renders results",
+    "status": "passed",
+    "durationMs": 92
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "409 blocks another submission rather than retrying silently",
+    "status": "passed",
+    "durationMs": 65
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "malformed success response is not presented as saved results",
+    "status": "passed",
+    "durationMs": 60
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "retake refreshes the quiz and resets answers; no-retake hides retake action",
+    "status": "passed",
+    "durationMs": 172
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "changing quiz identity resets state and ignores an old pending submission",
+    "status": "passed",
+    "durationMs": 64
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AttemptPage.test.jsx",
+    "test": "ignores a loading response after unmount",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialLibraryPage.test.jsx",
+    "test": "signs in, lists materials, filters and pages",
+    "status": "passed",
+    "durationMs": 946
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialLibraryPage.test.jsx",
+    "test": "contributor can upload and the list refreshes; sign out clears the session",
+    "status": "passed",
+    "durationMs": 1559
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialLibraryPage.test.jsx",
+    "test": "handles load failures without losing the ability to sign in again",
+    "status": "passed",
+    "durationMs": 597
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "FR-033: renders empty history and then stored entries with own attempt details",
+    "status": "passed",
+    "durationMs": 181
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "FR-034: displays topic aggregation and attempt timeline",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "401 signals session expiry instead of exposing student data",
+    "status": "passed",
+    "durationMs": 78
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: loaded history switches to progress with populated=false",
+    "status": "passed",
+    "durationMs": 162
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: loaded progress switches to history with populated=false",
+    "status": "passed",
+    "durationMs": 142
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: loaded history switches to progress with populated=true",
+    "status": "passed",
+    "durationMs": 156
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: loaded progress switches to history with populated=true",
+    "status": "passed",
+    "durationMs": 145
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: rapid history -> progress -> original ignores out-of-order responses",
+    "status": "passed",
+    "durationMs": 201
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: rapid progress -> history -> original ignores out-of-order responses",
+    "status": "passed",
+    "durationMs": 205
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: cancelled history errors do not expire the selected progress view",
+    "status": "passed",
+    "durationMs": 141
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/StudentInsights.test.jsx",
+    "test": "D-001: cancelled progress errors do not expire the selected history view",
+    "status": "passed",
+    "durationMs": 140
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialForm.test.jsx",
+    "test": "upload form shows inline validation and does not submit invalid data",
+    "status": "passed",
+    "durationMs": 364
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialForm.test.jsx",
+    "test": "submits a trimmed upload and clears after success",
+    "status": "passed",
+    "durationMs": 1402
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialForm.test.jsx",
+    "test": "edit mode validates shared IDs and maps server field errors",
+    "status": "passed",
+    "durationMs": 883
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizAuthoringPage.test.jsx",
+    "test": "author signs in and sends the access token to quiz creation",
+    "status": "passed",
+    "durationMs": 1047
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/QuizAuthoringPage.test.jsx",
+    "test": "sign-in and quiz-ID forms show inline validation before requests",
+    "status": "passed",
+    "durationMs": 910
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AdminReportsPage.test.jsx",
+    "test": "non-admin cannot load the moderation queue",
+    "status": "passed",
+    "durationMs": 610
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AdminReportsPage.test.jsx",
+    "test": "admin reviews queue, renders notes as plain text, and decides reports",
+    "status": "passed",
+    "durationMs": 814
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialSession.test.jsx",
+    "test": "shares the material session when navigating from the library to detail",
+    "status": "passed",
+    "durationMs": 719
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "renders honest foundation page and connected health state",
+    "status": "passed",
+    "durationMs": 57
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "shows checking and disables retry while waiting",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "shows unavailable state on connection failure and can retry",
+    "status": "passed",
+    "durationMs": 113
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "does not show a false healthy result for {\"status\":\"ok\"}",
+    "status": "passed",
+    "durationMs": 31
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "does not show a false healthy result for {\"status\":\"not_ready\",\"checks\":{\"database\":\"connected\"}}",
+    "status": "passed",
+    "durationMs": 30
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "aborts pending request on unmount",
+    "status": "passed",
+    "durationMs": 14
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/App.test.jsx",
+    "test": "ignores pending failure after unmount",
+    "status": "passed",
+    "durationMs": 5
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "loads real quiz endpoint, forwards abort signal, strips answer keys",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects invalid/private/unavailable quiz responses",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects invalid/private/unavailable quiz responses",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects invalid/private/unavailable quiz responses",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects invalid/private/unavailable quiz responses",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "invalid route ID makes no request",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "posts only answers, uses signal, returns server data without automatic retry",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "accepts a complete result only after submission",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "forwards the in-memory Bearer token to quiz reads and attempt submission",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/attemptApi.test.js",
+    "test": "rejects incomplete or inconsistent feedback",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/MaterialSignIn.test.jsx",
+    "test": "shows inline field validation before calling the login endpoint",
+    "status": "passed",
+    "durationMs": 316
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/materialApi.test.js",
+    "test": "normalises tags and validates material metadata inline",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/materialApi.test.js",
+    "test": "validates comment and rating boundaries",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/materialApi.test.js",
+    "test": "download filenames preserve the server file extension",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/materialApi.test.js",
+    "test": "material reads send the bearer token and filters",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/materialApi.test.js",
+    "test": "writes send payloads and require a token",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/quizApi.test.js",
+    "test": "quiz writes require and send a Bearer token",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/quizApi.test.js",
+    "test": "draft listing and quiz detail send the same Bearer credential",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /attempt",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /quizzes",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /leaderboard",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /quizzes/aaaaaaaaaaaaaaaaaaaaaaaa/attempt",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /materials",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /materials/aaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "passed",
+    "durationMs": 3
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /admin/reports",
+    "status": "passed",
+    "durationMs": 4
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/AppRoutes.test.jsx",
+    "test": "routes /not-a-page",
+    "status": "passed",
+    "durationMs": 6
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/leaderboardApi.test.js",
+    "test": "leaderboard reads require a Bearer token and send one scope",
+    "status": "passed",
+    "durationMs": 7
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "renders untrusted content only as text: <script>window.__xss = true</script>",
+    "status": "passed",
+    "durationMs": 2
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "renders untrusted content only as text: <img src=x onerror=\"window.__xss=true\">",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "renders untrusted content only as text: <svg onload=\"window.__xss=true\"></svg>",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "renders untrusted content only as text: <a href=\"javascript:alert(1)\">click</a>",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "renders untrusted content only as text: &lt;script&gt;alert(1)&lt;/script&gt;",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/PlainText.test.jsx",
+    "test": "handles missing or non-string values without interpreting objects",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/formValidation.test.js",
+    "test": "validates email fields",
+    "status": "passed",
+    "durationMs": 1
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/formValidation.test.js",
+    "test": "validates password presence",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/formValidation.test.js",
+    "test": "validates MongoDB object IDs",
+    "status": "passed",
+    "durationMs": 0
+  },
+  {
+    "workspace": "client",
+    "file": "client/tests/http.test.js",
+    "test": "uses documented API base and returns response data",
+    "status": "passed",
+    "durationMs": 1
+  }
+]

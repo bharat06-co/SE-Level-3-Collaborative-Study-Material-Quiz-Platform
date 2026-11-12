@@ -1,0 +1,70 @@
+{
+  "startedUtc": "2026-11-03T02:36:02.003Z",
+  "endedUtc": "2026-11-03T02:36:14.275Z",
+  "browser": "141.0.7390.37",
+  "results": [
+    {
+      "id": "TC-MAT-15",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:07.867Z",
+      "detail": "No-match search returned an empty list and visible empty-state message (current wording: No materials match these filters.).",
+      "screenshot": "TC-MAT-15.png"
+    },
+    {
+      "id": "TC-MAT-19",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:08.535Z",
+      "detail": "Keyword+dbms tag search opened detail; rating/comments visible; downloaded PDF bytes verified.",
+      "screenshot": "TC-MAT-19.png"
+    },
+    {
+      "id": "TC-MAT-25",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:08.834Z",
+      "detail": "Rating 4 saved; comment appeared without navigation; empty comment showed inline error.",
+      "screenshot": "TC-MAT-25.png"
+    },
+    {
+      "id": "TC-MOD-11",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:10.044Z",
+      "detail": "Student report confirmed; second student library excluded reported material.",
+      "screenshot": "TC-MOD-11.png"
+    },
+    {
+      "id": "TC-MOD-16",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:10.878Z",
+      "detail": "Admin UI dismissed report; report left open queue and student library displayed material again.",
+      "screenshot": "TC-MOD-16.png"
+    },
+    {
+      "id": "TC-SEC-08",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:12.027Z",
+      "detail": "Captured actual successful student quiz GET network responses before submission; neither answerKey nor correctAnswer appeared anywhere in JSON.",
+      "screenshot": "TC-SEC-08.png"
+    },
+    {
+      "id": "TC-ATT-07",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:12.447Z",
+      "detail": "2/3 feedback, two Correct/one Incorrect and all correct answers displayed without navigation.",
+      "screenshot": "TC-ATT-07.png"
+    },
+    {
+      "id": "TC-ANL-06",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:12.628Z",
+      "detail": "Starting from one baseline quiz attempt, another quiz updated the visible dashboard to two quizzes and two timeline points.",
+      "screenshot": "TC-ANL-06.png"
+    },
+    {
+      "id": "TC-QZ-05",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:14.275Z",
+      "detail": "Author UI published a valid draft; student opened it; author UI unpublished it; student submission returned 404 QUIZ_NOT_AVAILABLE. Equivalent authorized contributor used as author.",
+      "screenshot": "TC-QZ-05.png"
+    }
+  ]
+}

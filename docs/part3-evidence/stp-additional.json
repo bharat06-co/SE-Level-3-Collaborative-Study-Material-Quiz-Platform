@@ -1,0 +1,120 @@
+{
+  "startedUtc": "2026-11-03T02:36:26.244Z",
+  "endedUtc": "2026-11-03T02:36:29.201Z",
+  "results": [
+    {
+      "id": "TC-AUTH-15",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:27.706Z",
+      "actual": {
+        "lengths": [
+          1,
+          2,
+          60,
+          61
+        ],
+        "statuses": [
+          400,
+          200,
+          200,
+          400
+        ],
+        "note": "Same profile validation tested via implemented API boundary rather than a separate exported schema."
+      }
+    },
+    {
+      "id": "TC-MAT-04",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:27.733Z",
+      "actual": {
+        "status": 200,
+        "total": 1,
+        "limit": 20,
+        "privateHiddenAndNonmatchingExcluded": true
+      }
+    },
+    {
+      "id": "TC-MAT-13",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:27.757Z",
+      "actual": {
+        "status": 200,
+        "notesReturned": 5,
+        "seeded": 8
+      }
+    },
+    {
+      "id": "TC-MAT-14",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:27.854Z",
+      "actual": {
+        "sizes": [
+          20,
+          20,
+          5,
+          0
+        ],
+        "totals": [
+          45,
+          45,
+          45,
+          45
+        ],
+        "uniqueIds": 45
+      }
+    },
+    {
+      "id": "TC-MAT-16",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:27.858Z",
+      "actual": {
+        "status": 400,
+        "code": "VALIDATION_ERROR",
+        "noItemsReturned": true
+      }
+    },
+    {
+      "id": "TC-MOD-10",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:28.062Z",
+      "actual": {
+        "statuses": [
+          201,
+          201,
+          201,
+          201,
+          201,
+          201,
+          201,
+          201,
+          201,
+          201,
+          429
+        ],
+        "limit": 10
+      }
+    },
+    {
+      "id": "TC-MOD-15",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:28.103Z",
+      "actual": {
+        "status": 200,
+        "event": "report.decision",
+        "decision": "dismiss",
+        "reportIdAndAdminUserIdVerified": true
+      }
+    },
+    {
+      "id": "TC-SEC-01",
+      "status": "Pass",
+      "observedUtc": "2026-11-03T02:36:28.948Z",
+      "actual": {
+        "registrationStatus": 201,
+        "bcryptPrefix": "$2b$12$",
+        "knownPasswordAndAccessTokenAbsentFromCapturedAppLogs": true,
+        "scope": "Real isolated Express request logs captured in memory; not a deployment-wide log audit."
+      }
+    }
+  ]
+}
