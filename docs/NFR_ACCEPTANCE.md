@@ -92,4 +92,4 @@ npm run nfr004:session:verify
 npm run nfr004:validation
 ```
 
-The #35B usability session with five real participants has **not** been conducted. Do not close #35 on automated validation checks alone. Complete the participant and form-observation tables in the session kit at the recorded commit before closure.
+**NFR-004 / TC-UX-01 update (12 November 2026):** Five first-time participants are recorded as completing the materials → related-quiz → result workflow **without assistance (5/5; required >=4/5)**. Session elapsed times were 4, 4, 3, 5, and 3 minutes; exact clock times for P3–P5 were not recorded. The observer separately confirmed inline required-field errors on material sign-in, and the saved automated inline-validation suite was reported as **10/10 passed**. Evidence: [anonymized observation sheet](NFR004_PARTICIPANT_OBSERVATION_SHEET.md), [final usability report](NFR004_FINAL_USABILITY_REPORT.md) and [updated session kit](NFR004_USABILITY.md). GitHub issue #35 is administratively closed; the genuine participant results are distinct from the automated tests. The raw automated JSON was not re-supplied with the final human records.

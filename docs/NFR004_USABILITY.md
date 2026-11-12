@@ -9,10 +9,7 @@ TC-UX-01:
 - every form with a user-reachable invalid state shows inline validation;
 - completion results and form-validation evidence are recorded.
 
-**The human session has not been conducted.** The automated checks in this kit
-are #35A evidence only. Do not close #35 until the section
-[Participant results](#participant-results) is completed from a real moderated
-session and at least 4 of 5 participants succeed unaided.
+**Execution addendum (12 November 2026):** The five first-time human sessions have now been observer-recorded as **5/5 unaided completions**, meeting the 4/5 threshold. See the [completed observation sheet](NFR004_PARTICIPANT_OBSERVATION_SHEET.md) and [final NFR-004 report](NFR004_FINAL_USABILITY_REPORT.md). The automated browser evidence was reported as 10/10 groups passing. The underlying human observations are owner/observer supplied and include missing exact clock times for P3–P5. The instructions below remain as the original session protocol.
 
 ## Traceability
 
@@ -198,33 +195,21 @@ valid scoring case, not a malformed form.
 | Observer | |
 | Environment JSON path | `test-results/nfr004/session-environment.json` |
 
-### Participant results
+### Participant results — completed 12 November 2026
 
-| ID | Started | Finished | Result screen reached | Assistance required? | Assistance detail | Inline errors seen | Outcome |
+| ID | Started (IST) | Finished (IST) | Result screen reached | Assistance required? | Assistance detail | Inline errors seen | Outcome |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| P1 | | | | | | | |
-| P2 | | | | | | | |
-| P3 | | | | | | | |
-| P4 | | | | | | | |
-| P5 | | | | | | | |
+| P1 | 5:25 (AM/PM unreported) | 5:29 (AM/PM unreported) | Yes; 3/3 | No | None recorded | Unreported | Unaided pass; 4 min |
+| P2 | 6:00 (AM/PM unreported) | 6:04 (AM/PM unreported) | Yes; 2/3 | No | None recorded | Unreported | Unaided pass; 4 min |
+| P3 | Unreported | Unreported | Yes; 3/3 | No | None recorded | Unreported | Unaided pass; 3 min |
+| P4 | Unreported | Unreported | Yes; 2/3 | No | None recorded | Unreported | Unaided pass; 5 min |
+| P5 | Unreported | Unreported | Yes; 3/3 | No | None recorded | Unreported | Unaided pass; 3 min |
 
-Success count: __ / 5. NFR-004 passes only when this is at least 4 and no
-participant required substantive help.
+**Success count: 5/5.** Data transcribed from the [observer sheet](NFR004_PARTICIPANT_OBSERVATION_SHEET.md); missing time-of-day details have not been filled in retrospectively. Participant-level inline-error observations were not reported; manual validation was checked separately.
 
-### Validation observations
+### Validation observations — execution addendum
 
-| Form audited | Build/commit | Inline message observed | Pass? | Notes |
-| --- | --- | --- | --- | --- |
-| Material sign-in | | | | |
-| Material upload | | | | |
-| Material edit | | | | |
-| Material comment | | | | |
-| Quiz-author sign-in | | | | |
-| Quiz-author open-by-ID | | | | |
-| Quiz editor | | | | |
-| Leaderboard query | | | | |
-| Student sign-in | | | | |
-| Student quiz-ID entry | | | | |
+A separate manual check on 12 November at 6:09 IST verified the material sign-in form: blank email displayed `Email is required.` below Email, and blank password displayed `Password is required.` below Password. The saved automated run is **reported** to have passed 10/10 evidence groups on 9 November using Playwright Chromium; its raw JSON was not included in the two-file participant handoff. See [final report](NFR004_FINAL_USABILITY_REPORT.md). No claim is made that the observer manually checked every form.
 
 ### Observer notes
 
@@ -238,13 +223,13 @@ phone numbers, signatures or screenshots containing personal data.
 
 ## Closure checklist
 
-- [ ] Five first-time participants completed the session; consent stored outside Git.
-- [ ] Participant table completed and at least 4/5 succeeded unaided.
-- [ ] Automated `npm run nfr004:validation` passed at the recorded commit.
-- [ ] Manual inline-validation observations recorded for the forms used.
-- [ ] Evidence JSON/screenshot paths or attachment links added, without PII.
-- [ ] `docs/NFR_ACCEPTANCE.md` updated with actual results and links.
-- [ ] Issue #35 checklist completed and closure approved.
+- [x] Five first-time participant completions are recorded; consent storage is not independently verified by these two documents.
+- [x] Five observation rows record unaided completion; three exact clock-time pairs are unreported.
+- [x] Saved automated validation reported 10/10 groups passed; raw JSON was not supplied in this handoff.
+- [x] Manual inline validation recorded for the material sign-in form; other form coverage is reported from automation.
+- [x] Links to anonymized observer sheet and final human-testing report included; no screenshots requested for the submission package.
+- [x] `docs/NFR_ACCEPTANCE.md` updated in this documentation package.
+- [ ] GitHub issue #35 is administratively closed; its original checklist and formal closure approval were not separately verified.
 
 If fewer than 4/5 succeed, do not close #35. Record the failures and raise
 usability fixes as separate work before repeating the session.

@@ -1,0 +1,113 @@
+{
+  "startedUtc": "2026-11-03T02:34:43.491Z",
+  "endedUtc": "2026-11-03T02:34:49.142Z",
+  "results": [
+    {
+      "id": "TC-AUTH-06",
+      "expected": "Logout 204 and revoked refresh 401 TOKEN_INVALID",
+      "actual": {
+        "logoutStatus": 204,
+        "refreshStatus": 401,
+        "refreshCode": "TOKEN_INVALID"
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-AUTH-16",
+      "expected": "Email/contributor updates 400 VALIDATION_ERROR; email and contributor unchanged",
+      "actual": {
+        "status": 400,
+        "emailChanged": false,
+        "contributorStatus": 400
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "P3-PROFILE-EMAIL-01",
+      "originalCase": "TC-AUTH-16",
+      "expected": "At implemented profile route, email update rejected and email unchanged",
+      "actual": {
+        "status": 400,
+        "emailChanged": false
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-AUTH-13",
+      "expected": "First 10 wrong logins 401; eleventh 429 RATE_LIMITED; correct login after window 200",
+      "actual": {
+        "statuses": [
+          401,
+          401,
+          401,
+          401,
+          401,
+          401,
+          401,
+          401,
+          401,
+          401,
+          429
+        ],
+        "recoveryStatus": 200
+      },
+      "status": "Pass",
+      "clock": "Injected wall-clock function advanced exactly 15 minutes; no 15-minute elapsed-time observation claimed."
+    },
+    {
+      "id": "TC-AUTH-14",
+      "expected": "200 with name/email/role/contributor; no credential fields",
+      "actual": {
+        "status": 200,
+        "safeFieldsOnly": true
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-AUTH-09",
+      "expected": "Name update 200; role update 400; stored name updated and role student",
+      "actual": {
+        "nameStatus": 200,
+        "roleStatus": 400,
+        "nameUpdated": true,
+        "role": "student"
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-AUTH-17",
+      "expected": "Unauthenticated GET/PATCH both 401, no mutation",
+      "actual": {
+        "get": 401,
+        "patch": 401,
+        "unchanged": true
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-AUTH-19",
+      "expected": "Empty PATCH 400 VALIDATION_ERROR; unchanged",
+      "actual": {
+        "status": 400,
+        "unchanged": true
+      },
+      "status": "Pass"
+    },
+    {
+      "id": "TC-SEC-02",
+      "expected": "Missing/expired/tampered/alg-none JWTs each 401 at submitted endpoint",
+      "actual": {
+        "statuses": [
+          401,
+          401,
+          401,
+          401
+        ]
+      },
+      "status": "Pass"
+    }
+  ],
+  "total": 9,
+  "passed": 9,
+  "failed": 0
+}
