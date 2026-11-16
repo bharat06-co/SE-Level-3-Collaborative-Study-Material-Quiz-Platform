@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { http } from '../../api/http';
 import QuizEditor from './QuizEditor';
+import { MaterialSessionProvider, useMaterialSession, useOptionalMaterialSession } from '../materials/MaterialSession';
 import { getQuiz, listDraftQuizzes, saveQuiz, setQuizPublication } from './quizApi';
 import { validateEmail, validateObjectId, validatePassword } from '../../utils/formValidation';
 import './quizAuthoring.css';
 
 export default function QuizAuthoringPage() {
+  const sessionContext = useOptionalMaterialSession();
+  const page = <QuizAuthoringView />;
+  return sessionContext ? page : <MaterialSessionProvider>{page}</MaterialSessionProvider>;
+}
+
+function QuizAuthoringView() {
+  const { session: auth, signIn: storeSession, clearSession, logout } = useMaterialSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [auth, setAuth] = useState(null);
   const [drafts, setDrafts] = useState({ items: [], page: 1, total: 0, limit: 20 });
   const [selected, setSelected] = useState(null);
   const [quizId, setQuizId] = useState('');
@@ -29,7 +36,7 @@ export default function QuizAuthoringPage() {
       return await action();
     } catch (error) {
       if (error.response?.status === 401) {
-        setAuth(null);
+        clearSession(auth?.token);
         setSelected(null);
         setNotice('Your session has expired. Sign in again.');
       }
@@ -65,15 +72,8 @@ export default function QuizAuthoringPage() {
       const response = await http.post('/auth/login', { email, password });
       const { accessToken, user } = response.data;
       if (typeof accessToken !== 'string' || !user) throw new Error('Incomplete login response.');
-      setAuth({ token: accessToken, user });
+      storeSession({ token: accessToken, user });
       setPassword('');
-      if (user.role === 'educator' || user.role === 'admin' || user.contributor === true) {
-        try {
-          await loadDrafts(accessToken);
-        } catch {
-          setNotice('Signed in, but drafts could not be loaded. Try refreshing the list.');
-        }
-      }
     } catch (error) {
       setNotice(error.response?.data?.error?.message || 'Sign in failed. Check your details and try again.');
     } finally {
@@ -82,11 +82,10 @@ export default function QuizAuthoringPage() {
   }
 
   async function signOut() {
-    setAuth(null);
     setSelected(null);
     setDrafts({ items: [], page: 1, total: 0, limit: 20 });
     setNotice('Signed out.');
-    try { await http.post('/auth/logout'); } catch { /* Local access token is already cleared. */ }
+    await logout();
   }
 
   async function refreshDrafts(page = drafts.page) {
@@ -120,7 +119,25 @@ export default function QuizAuthoringPage() {
   }
 
   const canAuthor = auth && (auth.user.role === 'educator' || auth.user.contributor === true);
-  const canManage = auth && (canAuthor || auth.user.role === 'admin');
+  const canManage = Boolean(auth && (canAuthor || auth.user.role === 'admin'));
+  const token = auth?.token;
+
+  useEffect(() => {
+    if (!canManage) return undefined;
+    let current = true;
+    listDraftQuizzes(token, 1).then((result) => {
+      if (current) setDrafts(result);
+    }).catch((error) => {
+      if (!current) return;
+      if (error.response?.status === 401) {
+        clearSession(token);
+        setNotice('Your session has expired. Sign in again.');
+      } else {
+        setNotice('Signed in, but drafts could not be loaded. Try refreshing the list.');
+      }
+    });
+    return () => { current = false; };
+  }, [canManage, token, clearSession]);
 
   return (
     <main className="quiz-authoring-page">

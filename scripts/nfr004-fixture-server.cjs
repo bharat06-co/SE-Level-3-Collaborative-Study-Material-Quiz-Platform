@@ -8,7 +8,7 @@ const os = require('node:os');
 const path = require('node:path');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('../server/tests/helpers/testMongo');
 const { createApp } = require('../server/src/app');
 const { createAuthenticatedFeatures } = require('../server/src/config/features');
 const User = require('../server/src/models/User');
@@ -53,7 +53,7 @@ async function seed() {
     throw new Error('NFR004_PASSWORD must be at least 8 characters and contain a letter and a digit.');
   }
 
-  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+  mongo = await startTestReplicaSet();
   process.env.NODE_ENV = 'test';
   process.env.MONGODB_URI = mongo.getUri();
   process.env.JWT_ACCESS_SECRET = 'nfr004-disposable-browser-test-secret-'.repeat(3);

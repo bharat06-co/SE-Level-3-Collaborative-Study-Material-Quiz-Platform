@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MaterialSessionProvider, useMaterialSession } from '../src/features/materials/MaterialSession';
 import StudentAttemptPage from '../src/features/attempts/StudentAttemptPage';
 import { http } from '../src/api/http';
 import { loadAttemptQuiz, submitAttempt } from '../src/features/attempts/attemptApi';
@@ -87,5 +89,33 @@ test('logout unmounts the attempt and a late result cannot restore feedback', as
   await act(async () => resolve(result()));
   expect(screen.queryByText('Your results')).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Sign in to attempt a quiz' })).toBeInTheDocument();
+  expect(http.post).toHaveBeenCalledWith('/auth/logout');
+});
+test('uses the shared session when opening a related quiz and clears it on logout', async () => {
+  function Materials() {
+    const { session, signIn } = useMaterialSession();
+    return <>
+      {session ? <p>Materials signed in</p> : <button type="button" onClick={() => signIn({ token: 'shared-student-token', user: { name: 'Student', role: 'student' } })}>Sign in to materials</button>}
+      <Link to="/attempt">Open related quiz</Link>
+    </>;
+  }
+
+  render(<MemoryRouter><MaterialSessionProvider><Routes>
+    <Route path="/" element={<Materials />} />
+    <Route path="/attempt" element={<StudentAttemptPage quizId={quizId} />} />
+  </Routes></MaterialSessionProvider></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'Sign in to materials' }));
+  fireEvent.click(screen.getByRole('link', { name: 'Open related quiz' }));
+  expect(await screen.findByText('Database basics')).toBeInTheDocument();
+  expect(loadAttemptQuiz).toHaveBeenCalledWith(quizId, expect.objectContaining({ token: 'shared-student-token' }));
+  expect(http.post).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('link', { name: 'Platform home' }));
+  expect(screen.getByText('Materials signed in')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('link', { name: 'Open related quiz' }));
+  await screen.findByText('Database basics');
+  fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+  await screen.findByText('Signed out.');
+  fireEvent.click(screen.getByRole('link', { name: 'Platform home' }));
+  expect(screen.getByRole('button', { name: 'Sign in to materials' })).toBeInTheDocument();
   expect(http.post).toHaveBeenCalledWith('/auth/logout');
 });

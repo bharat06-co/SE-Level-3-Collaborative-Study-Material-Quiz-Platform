@@ -7,7 +7,7 @@ const { randomBytes, createHash } = require('node:crypto');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const request = require('supertest');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const User = require('../src/models/User');
 const { Material } = require('../src/models/Material');
 const { Quiz } = require('../src/modules/quizzes/quiz.model');
@@ -55,7 +55,7 @@ async function verifyFile(id) {
 
 beforeAll(async () => {
   // Always start our own server on a random loopback port; never use .env or an external URI.
-  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1, ip: '127.0.0.1' } });
+  mongo = await startTestReplicaSet({ ip: '127.0.0.1' });
   const uri = mongo.getUri(`sprint1_audit_${randomBytes(8).toString('hex')}`);
   await mongoose.connect(uri);
   await Promise.all([User.init(), Material.init(), Quiz.init()]);

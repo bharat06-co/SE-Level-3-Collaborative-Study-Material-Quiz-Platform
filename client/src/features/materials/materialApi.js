@@ -103,6 +103,10 @@ export async function updateMaterial(id, payload, token) {
   return response.data;
 }
 
+export async function deleteMaterial(id, token) {
+  await http.delete(`/materials/${encodeURIComponent(id)}`, authorized(token));
+}
+
 export async function fetchRevisions(id, token) {
   const response = await http.get(`/materials/${id}/revisions`, authorized(token));
   return response.data;

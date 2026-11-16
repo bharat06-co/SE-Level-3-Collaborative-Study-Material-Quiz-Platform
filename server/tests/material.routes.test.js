@@ -3,7 +3,7 @@ const path = require('node:path');
 const fsp = require('node:fs/promises');
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { startTestMongo } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const { Material } = require('../src/models/Material');
 const { createStorage } = require('../src/adapters/storage');
@@ -84,7 +84,7 @@ const validFile = { name: 'notes.pdf', contentType: 'application/pdf', bytes: Bu
 const validFields = { title: 'ER Diagrams', description: 'Entity relationship notes', category: 'Notes', topic: 'dbms', tags: 'ER, dbms, ER', rightsConfirmed: 'true' };
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create();
+  mongod = await startTestMongo({ ip: '127.0.0.1' });
   await mongoose.connect(mongod.getUri('team1_materials_test'));
   storageDir = path.join(os.tmpdir(), `t1-storage-integration-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   storage = createStorage({ storageDir });

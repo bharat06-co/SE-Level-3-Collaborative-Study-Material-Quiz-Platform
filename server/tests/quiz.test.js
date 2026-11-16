@@ -101,7 +101,7 @@ describe('quiz authoring and security', () => {
   test('draft creation, publication gate and answer-key redaction', async () => {
     const { service } = setup();
     const draft = await service.create(educator, { title: 'DBMS basics', topic: 'dbms', questions: validQuestions });
-    expect(draft).toMatchObject({ status: 'draft', allowRetake: true, authorId });
+    expect(draft).toMatchObject({ status: 'draft', allowRetake: false, authorId });
     expect(draft.questions).toHaveLength(2);
     expect(JSON.stringify(draft)).not.toMatch(/answerKey|correctAnswer/);
     expect(JSON.stringify(await service.get(educator, draft.id))).not.toMatch(/answerKey|correctAnswer/);

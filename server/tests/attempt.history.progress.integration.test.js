@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const { createAuthenticatedFeatures } = require('../src/config/features');
 const User = require('../src/models/User');
@@ -16,7 +16,7 @@ describe('FR-033/034: authenticated attempts history, ownership and progress', (
   const envNames = ['MONGODB_URI', 'JWT_ACCESS_SECRET', 'JWT_ACCESS_TTL'];
   const oldEnv = Object.fromEntries(envNames.map((key) => [key, process.env[key]]));
   beforeAll(async () => {
-    repl = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+    repl = await startTestReplicaSet();
     process.env.MONGODB_URI = repl.getUri();
     process.env.JWT_ACCESS_SECRET = 'sprint2-isolated-integration-test-'.repeat(4);
     process.env.JWT_ACCESS_TTL = '15m';

@@ -1,17 +1,24 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Link, useInRouterContext } from 'react-router-dom';
 import { http } from '../../api/http';
+import { MaterialSessionProvider, useMaterialSession, useOptionalMaterialSession } from '../materials/MaterialSession';
 import AttemptPage from './AttemptPage';
 import StudentInsights from './StudentInsights';
 import { loadAttemptQuiz, submitAttempt } from './attemptApi';
 import { validateEmail, validateObjectId, validatePassword } from '../../utils/formValidation';
 import './attempts.css';
 
-// Temporary feature entry point until the shared client auth context is available.
-// Tokens remain in memory, never in localStorage, sessionStorage or URLs.
-export default function StudentAttemptPage({ quizId: routeQuizId }) {
+export default function StudentAttemptPage(props) {
+  const sessionContext = useOptionalMaterialSession();
+  const page = <StudentAttemptView {...props} />;
+  return sessionContext ? page : <MaterialSessionProvider>{page}</MaterialSessionProvider>;
+}
+
+function StudentAttemptView({ quizId: routeQuizId }) {
+  const inRouter = useInRouterContext();
+  const { session: auth, signIn: storeSession, clearSession, logout } = useMaterialSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [auth, setAuth] = useState(null);
   const [quizId, setQuizId] = useState(routeQuizId || '');
   const [openedId, setOpenedId] = useState(routeQuizId || '');
   const [busy, setBusy] = useState(false);
@@ -19,20 +26,18 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
   const [notice, setNotice] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [quizIdError, setQuizIdError] = useState('');
-  const activeToken = useRef(null);
   const token = auth?.token;
 
   const guardedRequest = useCallback(async (action) => {
     try { return await action(); }
     catch (error) {
-      if (error.response?.status === 401 && activeToken.current === token) {
-        activeToken.current = null;
-        setAuth(null);
+      if (error.response?.status === 401 && token) {
+        clearSession(token);
         setNotice('Your session has expired. Sign in again.');
       }
       throw error;
     }
-  }, [token]);
+  }, [token, clearSession]);
   const loadQuiz = useCallback((id, options) =>
     guardedRequest(() => loadAttemptQuiz(id, { ...options, token })), [guardedRequest, token]);
   const sendAttempt = useCallback((id, answers, options) =>
@@ -72,29 +77,24 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
         setNotice('Only students, including student contributors, can submit attempts.');
         return;
       }
-      activeToken.current = data.accessToken;
-      setAuth({ token: data.accessToken, user: data.user });
+      storeSession({ token: data.accessToken, user: data.user });
     } catch (error) {
       setNotice(error.response?.data?.error?.message || 'Sign in failed. Try again.');
     } finally { setBusy(false); }
   }
 
   async function signOut() {
-    activeToken.current = null;
-    setAuth(null);
     setBusy(true);
     setNotice('Signing out…');
-    try {
-      await http.post('/auth/logout');
-      setNotice('Signed out.');
-    } catch {
-      setNotice('Signed out locally, but server session revocation could not be confirmed.');
-    } finally { setBusy(false); }
+    const revoked = await logout();
+    setNotice(revoked ? 'Signed out.' : 'Signed out locally, but server session revocation could not be confirmed.');
+    setBusy(false);
   }
 
   if (!auth) return <main className="attempt-shell">
-    <a href="/">Platform home</a>
+    {inRouter ? <Link to="/">Platform home</Link> : <a href="/">Platform home</a>}
     <h1>Sign in to attempt a quiz</h1>
+    <p>New student? <a href="/register">Create an account</a></p>
     {notice && <p role="status">{notice}</p>}
     <form onSubmit={signIn} noValidate>
       <fieldset disabled={busy}>
@@ -109,13 +109,19 @@ export default function StudentAttemptPage({ quizId: routeQuizId }) {
   </main>;
 
   const expireSession = () => {
-    activeToken.current = null;
-    setAuth(null);
+    clearSession(token);
     setNotice('Your session has expired. Sign in again.');
   };
 
+  if (auth.user.role !== 'student') return <main className="attempt-shell">
+    {inRouter && <Link to="/">Platform home</Link>}
+    <p role="alert">Only students, including student contributors, can submit attempts.</p>
+    <button type="button" onClick={signOut}>Sign out</button>
+  </main>;
+
   return <>
     <section className="attempt-shell" aria-label="Student session">
+      {inRouter && !openedId && <Link to="/">Platform home</Link>}
       <p>Signed in as {auth.user.name}</p>
       <button type="button" onClick={signOut}>Sign out</button>
       <form onSubmit={event => {

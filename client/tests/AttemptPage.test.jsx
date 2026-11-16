@@ -48,7 +48,7 @@ test.each([401,403,404,400,500])('submission failure %s preserves answers and ne
  await screen.findByRole('alert');expect(screen.queryByText('Your results')).not.toBeInTheDocument();expect(screen.getByRole('radio',{name:'False'})).toBeChecked();expect(sendAttempt).toHaveBeenCalledTimes(1);
 });
 test('409 blocks another submission rather than retrying silently',async()=>{
- const {sendAttempt}=setup({sendError:httpError(409)});await screen.findByText('Database basics');fireEvent.click(screen.getByRole('button',{name:'Submit attempt'}));await screen.findByRole('alert');expect(screen.getByRole('button',{name:'Submit attempt'})).toBeDisabled();expect(sendAttempt).toHaveBeenCalledTimes(1);
+ const {sendAttempt}=setup({sendError:httpError(409)});await screen.findByText('Database basics');await act(async()=>{fireEvent.click(screen.getByRole('button',{name:'Submit attempt'}));});expect(screen.getByRole('alert')).toBeInTheDocument();expect(screen.getByRole('button',{name:'Submit attempt'})).toBeDisabled();expect(sendAttempt).toHaveBeenCalledTimes(1);
 });
 test('malformed success response is not presented as saved results',async()=>{
  setup({saved:{score:99}});await screen.findByText('Database basics');fireEvent.click(screen.getByRole('button',{name:'Submit attempt'}));expect(await screen.findByRole('alert')).toHaveTextContent('could not be confirmed');expect(screen.queryByText('Your results')).not.toBeInTheDocument();

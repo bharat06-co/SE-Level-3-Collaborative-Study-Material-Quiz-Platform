@@ -1,3 +1,4 @@
+import { Link, useInRouterContext } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { loadAttemptQuiz, submitAttempt, parseQuiz, parseAttemptResult } from './attemptApi';
 import AttemptResults from './AttemptResults';
@@ -13,6 +14,7 @@ function errorMessage(error, submitting = false) {
   return submitting ? 'The submission could not be confirmed. It may already have been saved. Do not repeatedly resubmit; check with the team before retrying.' : 'The quiz could not be loaded. Please try again.';
 }
 function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = submitAttempt, token, onSaved }) {
+  const inRouter = useInRouterContext();
   const [quiz, setQuiz] = useState(null);
   const [responses, setResponses] = useState({});
   const [result, setResult] = useState(null);
@@ -59,7 +61,7 @@ function AttemptSession({ quizId, loadQuiz = loadAttemptQuiz, sendAttempt = subm
   }
   const answered = Object.values(responses).filter(value => value !== null && value !== undefined).length;
   return <main className="attempt-shell">
-    <a href="/" className="attempt-back">Platform home</a>
+    {inRouter ? <Link className="attempt-back" to="/">Platform home</Link> : <a href="/" className="attempt-back">Platform home</a>}
     <p className="eyebrow">QUIZ · ATTEMPT & FEEDBACK</p>
     <h1>{quiz ? quiz.title : 'Attempt quiz'}</h1>
     {loading && <p role="status">Loading published quiz…</p>}

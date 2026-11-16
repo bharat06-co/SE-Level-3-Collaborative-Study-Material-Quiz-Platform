@@ -2,7 +2,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 
 const { createApp } = require('../src/app');
 const { createAuthenticatedFeatures } = require('../src/config/features');
@@ -10,53 +10,43 @@ const User = require('../src/models/User');
 
 const TEST_JWT_SECRET = 'profile-integration-test-secret-'.repeat(2);
 
+let mongo;
+let app;
+let originalMongoUri;
+let originalJwtSecret;
+
+beforeAll(async () => {
+  originalMongoUri = process.env.MONGODB_URI;
+  originalJwtSecret = process.env.JWT_ACCESS_SECRET;
+
+  mongo = await startTestReplicaSet();
+  process.env.MONGODB_URI = mongo.getUri();
+  process.env.JWT_ACCESS_SECRET = TEST_JWT_SECRET;
+
+  await mongoose.connect(mongo.getUri());
+  await User.init();
+  app = createApp(createAuthenticatedFeatures());
+}, 45_000);
+
+afterAll(async () => {
+  try {
+    if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
+  } finally {
+    try {
+      if (mongo) await mongo.stop();
+    } finally {
+      if (originalMongoUri === undefined) delete process.env.MONGODB_URI;
+      else process.env.MONGODB_URI = originalMongoUri;
+
+      if (originalJwtSecret === undefined) delete process.env.JWT_ACCESS_SECRET;
+      else process.env.JWT_ACCESS_SECRET = originalJwtSecret;
+    }
+  }
+}, 45_000);
+
 describe.each(['/api/v1/users/me', '/api/v1/profile'])('FR-005 profile management via %s', (profilePath) => {
-  let mongo;
-  let app;
-  let originalMongoUri;
-  let originalJwtSecret;
-
-  beforeAll(async () => {
-    originalMongoUri = process.env.MONGODB_URI;
-    originalJwtSecret = process.env.JWT_ACCESS_SECRET;
-
-    mongo = await MongoMemoryReplSet.create({
-      replSet: { count: 1 },
-    });
-
-    process.env.MONGODB_URI = mongo.getUri();
-    process.env.JWT_ACCESS_SECRET = TEST_JWT_SECRET;
-
-    await mongoose.connect(mongo.getUri());
-    await User.init();
-
-    app = createApp(createAuthenticatedFeatures());
-  });
-
   afterEach(async () => {
     await User.deleteMany({});
-  });
-
-  afterAll(async () => {
-    if (mongoose.connection.readyState !== 0) {
-      await mongoose.disconnect();
-    }
-
-    if (mongo) {
-      await mongo.stop();
-    }
-
-    if (originalMongoUri === undefined) {
-      delete process.env.MONGODB_URI;
-    } else {
-      process.env.MONGODB_URI = originalMongoUri;
-    }
-
-    if (originalJwtSecret === undefined) {
-      delete process.env.JWT_ACCESS_SECRET;
-    } else {
-      process.env.JWT_ACCESS_SECRET = originalJwtSecret;
-    }
   });
 
   async function createTestUser(overrides = {}) {

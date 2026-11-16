@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { startTestMongo } = require('./helpers/testMongo');
 const {
   COLLECTION_NAME,
   OLD_INDEX_NAME,
@@ -18,7 +18,7 @@ let mongod;
 let baseUri;
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create();
+  mongod = await startTestMongo({ ip: '127.0.0.1' });
   baseUri = mongod.getUri();
 });
 
