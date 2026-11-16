@@ -1,17 +1,17 @@
 # Part 3 — Updated Test Case Document
 
 **Project:** Collaborative Study Material & Quiz Platform · UE24CS341A · Team 1  
-**Update:** 12 November 2026 · Based on original SRS v1.2 / STP v1.0, 121 cases.
+**Update:** 16 November 2026 (post-PR #99 evidence reconciliation) · Original SRS v1.2 / STP v1.0, 121 cases. Original criteria unchanged.
 
 ## Reconciliation and scope
 
 | Original STP cases | Pass | Fail | Blocked / partially verified | Not run |
 |---:|---:|---:|---:|---:|
-| **121** | **111** | **0** | **7** | **3** |
+| **121** | **114** | **0** | **7** | **0** |
 
-This register preserves the original test IDs, preconditions, inputs, procedures and expected outcomes. Historical local baseline results come from the previously generated Part 3 register and are not new executions. The Nov 12 update changes only TC-MNT-01 (Sonar), TC-UX-01 (five-person usability), TC-AVL-01 (genuine 24-hour data with explicit technical/administrative limitation), and the descriptive qualification for TC-PORT-01. The 121-case total and original criteria are unchanged.
+This register preserves the original test IDs, preconditions, inputs, procedures and expected outcomes. Historical local baseline results come from the previously generated Part 3 register and are not new executions. The 12 November update changed TC-MNT-01, TC-UX-01, TC-AVL-01 and the description of TC-PORT-01. The 16 November update additionally reconciles the ten historically outstanding cases against the new execution logs from `TEAM1-FINAL-REVIEW.zip` and PR #99. **Three cases change to Pass (TC-PERF-02, TC-REL-01, TC-SEC-05); the other seven retain Partial/Blocked, including four previously Not Run, now partially exercised.** The 121-case total and original criteria are unchanged. The 121-case total and original criteria are unchanged.
 
-**Interpretation:** 'Pass' means the cited evidence supports the listed test at its stated scope; it is not a blanket production or faculty sign-off. TC-AVL-01 is kept in **Blocked / partially verified** because the canonical monitor result is FAIL and faculty agreement was not obtained, even though all numeric availability measurements passed. TC-PORT-01 also remains partly verified. Other blocked/not-run procedures are not silently upgraded. This file covers the required test-case updates; the supplementary P3-PROFILE-EMAIL-01 is not counted in 121.
+**Interpretation:** 'Pass' means the cited evidence supports the listed test at its stated scope; it is not a blanket production or faculty sign-off. TC-AVL-01 is kept in **Blocked / partially verified** because the canonical monitor result is FAIL and faculty agreement was not obtained, even though all numeric availability measurements passed. TC-PORT-01 also remains partly verified. Other partially verified procedures are not silently upgraded; all originally Not Run cases now have limited execution evidence, but no claim of full original acceptance. This file covers the required test-case updates; the supplementary P3-PROFILE-EMAIL-01 is not counted in 121.
 
 ## Tests updated after the historical baseline
 
@@ -21,6 +21,19 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | TC-UX-01 | **Pass** (5/5 observer-recorded human completions; 10/10 reported automated validation groups) | [Observation sheet](NFR004_PARTICIPANT_OBSERVATION_SHEET.md), [usability report](NFR004_FINAL_USABILITY_REPORT.md) |
 | TC-AVL-01 | **Partially verified / Blocked** (2,880/2,880; monitor FAIL on clock safeguard; faculty acceptance pending) | [Final evaluation](NFR003_24H_FINAL_REPORT.md), [audit](NFR003_INDEPENDENT_AUDIT.md) |
 | TC-PORT-01 | **Partially verified / Blocked** (full browser matrix outstanding) | [Browser report](NFR006_BROWSER_COMPATIBILITY.md) |
+
+## 16 November 2026 — Post-merge execution reconciliation
+
+**Source:** the provided `TEAM1-FINAL-REVIEW.zip`, with recorded executable logs and browser scripts, plus the four green GitHub Actions checks on PR #99 commit `d4afa40` (subsequently merged as `0267e50`). The audit ZIP is review evidence, not a claim that these procedures were rerun on this documentation branch. See [the detailed reconciliation](PART3_NOV16_EXECUTION_RECONCILIATION.md).
+
+| Disposition | Case IDs | Reason |
+|---|---|---|
+| **Pass newly supported** | TC-PERF-02, TC-REL-01, TC-SEC-05 | Original numerical/behavioral oracles supported by new real-Compose test logs and/or final GitHub Actions verification |
+| **Partially verified, procedure still incomplete** | TC-AUTH-08, TC-AUTH-11, TC-AUTH-18, TC-AUTH-20, TC-PERF-01, TC-PORT-01, TC-AVL-01 | Real tests now cover substantial behavior but not every original input, UI/oracle, environment, vendor/version, or approval condition |
+
+**New totals:** **114 Pass · 0 Fail · 7 Partially Verified / Blocked · 0 Not Run**, from **121 original cases**. "0 Not Run" means all ten previously pending cases now have *some* genuine execution evidence; it does not mean all 121 original procedures completed to full acceptance.
+
+**Important historical qualifications:** 2,880/2,880 availability probes were healthy but the canonical monitor FAIL and faculty-agreement gap remain. The browser matrix remains incomplete. The performance run used HTTP resource p95 rather than complete browser page paint and did not establish exact reference-hardware parity. Prior statements, source revisions and original oracles remain as historical context; see case-level updated actual-result entries below.
 
 ## Full original STP case-by-case register
 
@@ -162,8 +175,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Admin sets contributor = true → student uploads a PDF |
 | Expected result (unchanged) | Grant 200; upload 201 (was 403 before grant) |
 | Implementation | server/src/modules/auth |
-| Actual result | API grant/upload lifecycle passed in material.auth and permission-matrix suites; no admin role-management UI route exists for the original system procedure. |
-| Status | Not Run |
+| Actual result | 16 Nov 2026: Actual Edge + Compose browser audit: admin PATCH /admin/users/{id}/role returned 200 and the newly granted contributor uploaded a PDF via POST /materials (201). Student/non-admin denial (403) was tested separately. The browser audit used an audit PDF fixture rather than documenting the original 1 MB PDF input, so keep partial until the exact original input/procedure is recorded. Source: TEAM1-FINAL-REVIEW.zip / gateway-final-edge.log. |
+| Status | Partially verified |
 | Executable files | server/tests/auth.integration.test.js; server/tests/auth.service.test.js; server/tests/material.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js; server/tests/material.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js |
 | Evidence | [part3-evidence/executed-test-index.json](part3-evidence/executed-test-index.json) |
 | Sprint / Part 3 change | Sprint 1 auth/RBAC; Sprint 2 profile/reset integration. Preserve endpoint, rate-limit and status discrepancies. |
@@ -216,8 +229,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Admin sets contributor = false → student uploads a PDF with the same (still unexpired) token |
 | Expected result (unchanged) | Revoke 200; upload 403 FORBIDDEN; nothing stored (no DB record, no file on volume) |
 | Implementation | server/src/modules/auth |
-| Actual result | API revocation with the same JWT passed; original system procedure is not independently demonstrated in a role-management UI. |
-| Status | Not Run |
+| Actual result | 16 Nov 2026: Actual Edge + Compose audit: admin revoke PATCH returned 200 and the same signed-in student browser upload returned 403. The audit did not separately log database-record and stored-file absence after that denied request, both explicit original oracles. Source: TEAM1-FINAL-REVIEW.zip / gateway-final-edge.log. |
+| Status | Partially verified |
 | Executable files | server/tests/auth.integration.test.js; server/tests/auth.service.test.js; server/tests/material.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js; server/tests/material.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js; server/tests/material.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js |
 | Evidence | [part3-evidence/executed-test-index.json](part3-evidence/executed-test-index.json) |
 | Sprint / Part 3 change | Sprint 1 auth/RBAC; Sprint 2 profile/reset integration. Preserve endpoint, rate-limit and status discrepancies. |
@@ -342,8 +355,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | PATCH /users/me twice; open profile page |
 | Expected result (unchanged) | Object → 400 VALIDATION_ERROR; script name shown as plain text, no script runs |
 | Implementation | server/src/modules/auth |
-| Actual result | Canonical API path is restored; complete profile-page script-name rendering procedure remains Not Run because no profile UI route is implemented. |
-| Status | Not Run |
+| Actual result | 16 Nov 2026: Profile page was shown rendering literal markup harmlessly (Audit <b>Student</b>, with no <b> node), and backend input security tests were part of the passing 594-test run. This is NOT the original exact pair {"name":{"$gt":""}} and <script>alert(1)</script> through PATCH /users/me and profile browser; record that exact combination as outstanding. Source: browser-account-check.cjs, gateway-final-edge.log, redacted-full-check.log. |
+| Status | Partially verified |
 | Executable files | server/tests/profile.integration.test.js |
 | Evidence | [part3-evidence/executed-test-index.json](part3-evidence/executed-test-index.json) |
 | Sprint / Part 3 change | Sprint 1 auth/RBAC; Sprint 2 profile/reset integration. Preserve endpoint, rate-limit and status discrepancies. |
@@ -378,8 +391,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Profile page → type 1-char name → then valid name → save → reload |
 | Expected result (unchanged) | Inline error before submit for "R"; after save and reload header shows "Riya Sharma" |
 | Implementation | server/src/modules/auth |
-| Actual result | Profile-edit UI route is absent from AppRoutes.jsx; API implementation alone cannot execute this system case. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Actual Edge profile UI rejected a 1-character display name, accepted a valid replacement, and retained it after sign-out/sign-in and reload (PATCH 200, GET 200). The browser audit displays the value in the profile input; it did not independently assert the original STP oracle that a page header shows precisely "Riya Sharma" after reload, and the invalid-name feedback was observed after clicking Save rather than before submission. Source: browser-account-check.cjs, gateway-final-edge.log. |
+| Status | Partially verified |
 | Executable files | server/tests/profile.integration.test.js |
 | Evidence | [part3-evidence/executed-test-index.json](part3-evidence/executed-test-index.json) |
 | Sprint / Part 3 change | Sprint 1 auth/RBAC; Sprint 2 profile/reset integration. Preserve endpoint, rate-limit and status discrepancies. |
@@ -1926,8 +1939,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | k6: 100 VUs, 10 min, mix browse/search/attempt |
 | Expected result (unchanged) | p95 page ≤ 3 s; p95 POST attempt ≤ 2 s |
 | Implementation | scripts |
-| Actual result | Docker daemon unavailable; no isolated nginx/API/MongoDB7/k6 100-VU ten-minute run. Required hardware/staging parity not established. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Actual isolated Compose nginx/API/MongoDB k6 run, 100 virtual users for 10 minutes: HTTP page-resource p95 14 ms and authenticated attempt POST p95 262.37 ms, both numerically below 3 s / 2 s. This is HTTP-resource timing (NOT full browser-render/page-paint timing). Staging/reference-hardware parity was not established (Docker Desktop VM 4 vCPUs, ~3.95 GB RAM). Keep partial for the original staging/page-response acceptance. Source: compose-nfr-evidence/load.log and stp-summary.json. |
+| Status | Partially verified |
 | Executable files | Acceptance tooling in System Validation Report |
 | Evidence | [PART3_SYSTEM_VALIDATION_REPORT.md](PART3_SYSTEM_VALIDATION_REPORT.md) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |
@@ -1944,8 +1957,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Check k6 thresholds |
 | Expected result (unchanged) | 0 % 5xx; 100 % checks pass |
 | Implementation | scripts |
-| Actual result | Depends on TC-PERF-01; no current zero-5xx/100%-checks measurement. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Original same 10-minute/100-VU k6 run: 49,802/49,802 explicit scenario checks succeeded; HTTP request failures 0/106,817 and zero 5xx, satisfying original 0% 5xx and 100% checks under the tested Compose environment. Exit 0. Staging/reference-hardware differences are documented alongside TC-PERF-01. Source: compose-nfr-evidence/load.log, stp-summary.json. |
+| Status | Pass |
 | Executable files | Acceptance tooling in System Validation Report |
 | Evidence | [PART3_SYSTEM_VALIDATION_REPORT.md](PART3_SYSTEM_VALIDATION_REPORT.md) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |
@@ -1962,8 +1975,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Uptime probe on /health every 30 s for 24 h |
 | Expected result (unchanged) | ≥ 2,852 successful probes (≥ 99 %) |
 | Implementation | scripts |
-| Actual result | Team-initiated same-host evaluation: 2,880/2,880 genuinely recorded HTTPS application/database health probes healthy; zero missed or late slots; sampled availability 100%. Monotonic 30-second schedule and both end deadlines verified. Canonical monitor output is FAIL (clock anomaly / complete_window false) under a supplementary 1-second safeguard; faculty-agreed start time and formal acceptance absent. Numerical availability demonstrated but original full acceptance remains pending. |
-| Status | Blocked |
+| Actual result | No new 24-hour run. Preserve original independent audit: 2,880/2,880 healthy measurements and 100% sampled availability. Canonical supplemental monitor verdict FAIL due to clock safeguard, with faculty-agreed start/acceptance not recorded. Original evidence unmodified. Source: NFR003_24H_FINAL_REPORT.md and NFR003_INDEPENDENT_AUDIT.md. |
+| Status | Partially verified |
 | Executable files | Acceptance tooling in System Validation Report |
 | Evidence | [NFR003_24H_FINAL_REPORT.md](NFR003_24H_FINAL_REPORT.md); [NFR003_INDEPENDENT_AUDIT.md](NFR003_INDEPENDENT_AUDIT.md); [raw evidence ZIP](part3-evidence/NFR003_24H_FINAL_EVIDENCE.zip) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |
@@ -2016,8 +2029,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Playwright login → search → attempt; then manual smoke on real Safari |
 | Expected result (unchanged) | All automated runs pass; Safari smoke passes, or is recorded as not available with WebKit as proxy |
 | Implementation | scripts |
-| Actual result | Existing automated and manual browser evidence is documented, including some branded browsers and real Safari initial smoke. Full original latest-two-version vendor matrix and/or full required login-search-attempt pathways have not been shown for all targets. Status stays partially verified with documented deviation, faculty acceptance pending. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Compose login -> search -> attempt workflow passed Edge 157, Brave 157, Playwright Firefox 153 and WebKit 26.5. Portable Chrome for Testing launch failed (spawn UNKNOWN); real Safari and latest-two-version branded browser matrix remain unverified. GitHub NFR-006 workflow passed after PR #99, but that workflow passing does not supply the missing full manual matrix. Source: compose-portability-stp-retry.log and PR #99 GitHub Actions. |
+| Status | Partially verified |
 | Executable files | Acceptance tooling in System Validation Report |
 | Evidence | [NFR006_BROWSER_COMPATIBILITY.md](NFR006_BROWSER_COMPATIBILITY.md); [DEVIATIONS.md](DEVIATIONS.md) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |
@@ -2034,8 +2047,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | Submit → get 201 → restart api container → query; 100 parallel submits by 100 students |
 | Expected result (unchanged) | Attempt present after restart; exactly 100 records |
 | Implementation | scripts |
-| Actual result | Docker daemon unavailable; no API-container restart plus 100-student concurrent durability run. Fresh-connection and no-retake race tests do not replace this. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Isolated Compose reliability probe demonstrated first HTTP 201 attempt persisted after API container restart; 100 distinct students created exactly 100 additional unique HTTP 201 records concurrently, preserved after restart. The separate baseline attempt makes 101 total; the original 100 parallel-submit batch has exactly 100. Exit 0. Source: compose-nfr-evidence/reliability-before.log and reliability-after.log. |
+| Status | Pass |
 | Executable files | Acceptance tooling in System Validation Report |
 | Evidence | [PART3_SYSTEM_VALIDATION_REPORT.md](PART3_SYSTEM_VALIDATION_REPORT.md) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |
@@ -2142,8 +2155,8 @@ This register preserves the original test IDs, preconditions, inputs, procedures
 | Execution steps | curl http://; testssl.sh / sslscan |
 | Expected result (unchanged) | HTTP → 301 HTTPS; only TLS 1.2/1.3 accepted; HSTS header present |
 | Implementation | server/src/middleware |
-| Actual result | No running Docker TLS stack. Static discrepancy P3-D05: STP expects 301, profile/tests specify 308. TLS1.0/1.1 rejection, TLS1.2/1.3 and HSTS not measured now. |
-| Status | Blocked |
+| Actual result | 16 Nov 2026: Real isolated Compose TLS endpoint returned HTTP 301 preserving path/query, validated HTTPS certificate, HSTS on success/error, accepted TLS 1.2 and TLS 1.3, rejected TLS 1.0 and TLS 1.1. Exit 0. SEC-005 GitHub Actions workflow also passed on PR #99. Note the original procedure named testssl.sh/sslscan; the runtime probe used curl/openssl-equivalent protocol negotiation, not a recorded testssl.sh/sslscan run. Source: gateway-final-tls-check.log and SEC-005 Actions run. |
+| Status | Pass |
 | Executable files | server/tests/auth.middleware.test.js; server/tests/inputSecurity.auth.integration.test.js; server/tests/role.permission.matrix.integration.test.js |
 | Evidence | [part3-evidence/executed-test-index.json](part3-evidence/executed-test-index.json) |
 | Sprint / Part 3 change | Sprint 2 acceptance tooling; preserve original thresholds and external acceptance obligations. |

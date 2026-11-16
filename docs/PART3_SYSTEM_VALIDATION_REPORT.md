@@ -64,3 +64,26 @@ This aggregate is the historical 121-case register reconciled only for TC-MNT-01
 The completed system tests substantiate **100% sampled API/database health (2,880/2,880)** and the human-usability threshold (**5/5 unaided**, as recorded), plus passing Sonar and strong code/branch coverage. The project does **not** have unconditional sign-off against all 121 original STP cases; blocked or not-run cases and documented deviations remain. These are disclosed rather than silently recorded as passes.
 
 **Supporting documents:** [Updated Test Case Document](PART3_UPDATED_TEST_CASES.md) · [NFR-003 report](NFR003_24H_FINAL_REPORT.md) · [NFR-003 independent audit](NFR003_INDEPENDENT_AUDIT.md) · [NFR-004 observations](NFR004_PARTICIPANT_OBSERVATION_SHEET.md) · [NFR-004 final report](NFR004_FINAL_USABILITY_REPORT.md) · [NFR-005 Sonar verification](NFR005_SONARQUBE_VERIFICATION.md) · [NFR-006 browser status](NFR006_BROWSER_COMPATIBILITY.md).
+
+---
+
+## Addendum — 16 November 2026 (PR #99 post-implementation evidence)
+
+This is a *new evidence reconciliation*. The preceding sections describe the 12 November historical baseline and have deliberately not been rewritten as if the new runs took place earlier. Source: the supplied `TEAM1-FINAL-REVIEW.zip` with `gateway-final-edge.log`, `gateway-final-tls-check.log`, `compose-nfr-evidence/`, `compose-portability-stp-retry.log`, and `redacted-full-check.log`. GitHub PR #99 subsequently merged to `main` as `0267e50`, after all four checks passed on its final head `d4afa40`.
+
+| Test | New recorded outcome | Final 121-case disposition |
+|---|---|---|
+| TC-AUTH-08 | Admin grant 200 followed by student-browser upload 201 | Partially verified: original 1 MB PDF test input not logged |
+| TC-AUTH-11 | Admin revoke 200; signed-in student upload denied 403 | Partially verified: absence of DB record/file after denial not separately inspected |
+| TC-AUTH-18 | Malicious object input guards and literal nonexecuting markup behavior observed separately | Partially verified: exact original `$gt` and `<script>` pair on PATCH/profile not demonstrated end to end |
+| TC-AUTH-20 | Profile short-name error; valid change retained after sign-out/relogin | Partially verified: original pre-submit inline error and post-reload header text oracle not separately demonstrated |
+| TC-PERF-01 | Ten-minute, 100-VU k6 run: HTTP resource p95 14 ms; attempt POST p95 262.37 ms | Partially verified: page paint/reference staging parity not demonstrated |
+| **TC-PERF-02** | 49,802/49,802 scenario checks; zero 5xx, 0/106,817 HTTP request failures | **Pass**, in tested Compose environment |
+| TC-AVL-01 | 2,880/2,880 existing probes retained; no new 24-hour run | Partially verified: canonical clock monitor FAIL/faculty-agreement limitation |
+| TC-PORT-01 | Edge, Brave, Firefox, WebKit flow passed; portable Chrome could not launch | Partially verified: real Safari/latest-two-version matrix outstanding |
+| **TC-REL-01** | HTTP 201 persisted across API restart; 100/100 distinct parallel attempts retained after restart | **Pass** |
+| **TC-SEC-05** | Real TLS Compose: HTTP 301, certificate-validated HTTPS, HSTS, TLS 1.2/1.3 allowed, TLS 1.0/1.1 rejected | **Pass** |
+
+**Updated dispositions:** 121 total · **114 Pass · 0 Fail · 7 Partial/Blocked · 0 Not Run**. The complete case-by-case updates are in [the updated test register](PART3_UPDATED_TEST_CASES.md) and [the evidence reconciliation](PART3_NOV16_EXECUTION_RECONCILIATION.md). These classifications are intentionally stricter than a blanket "all browser tests passed" statement.
+
+GitHub Actions on the final PR head: [CI](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256681) · [SEC-004 browser](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256797) · [SEC-005 TLS](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256650) · [NFR-006 compatibility](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256663). All four concluded SUCCESS.
