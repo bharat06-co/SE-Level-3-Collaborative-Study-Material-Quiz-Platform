@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const request = require('supertest');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const { createAuthenticate } = require('../src/middleware/authenticate');
 const User = require('../src/models/User');
@@ -26,7 +26,7 @@ describe('FR-035 leaderboard with persisted attempts and verified login', () => 
   const oldTtl = process.env.JWT_ACCESS_TTL;
 
   beforeAll(async () => {
-    mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+    mongo = await startTestReplicaSet();
     process.env.MONGODB_URI = mongo.getUri();
     process.env.JWT_ACCESS_SECRET = 'leaderboard-test-secret-'.repeat(4);
     process.env.JWT_ACCESS_TTL = '15m';

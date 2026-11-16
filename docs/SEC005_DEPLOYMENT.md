@@ -16,7 +16,7 @@ This increment adds an **isolated HTTPS deployment profile and automated TC-SEC-
 1. Create a branch and add the five files in this kit, preserving paths.
 2. Open a PR into `main` (write `Related to #45`, not `Closes #45`).
 3. GitHub Actions `SEC-005 TLS and HTTPS acceptance` generates temporary localhost test certificate and JWT secret, starts an isolated Compose project (`se-sec005-${{ github.run_id }}`), tests actual nginx/UI/API/TLS and uploads the evidence.
-4. `scripts/sec005/verify-tls.sh` checks HTTPS health with **certificate validation**, HTTPS React entrypoint, exact `308` redirect, HSTS on success/error, acceptance of TLS 1.2/1.3 and refusal of TLS 1.0/1.1.
+4. `scripts/sec005/verify-tls.sh` checks HTTPS health with **certificate validation**, HTTPS React entrypoint, exact `301` redirect, HSTS on success/error, acceptance of TLS 1.2/1.3 and refusal of TLS 1.0/1.1.
 5. Review workflow, evidence and CI. Never claim acceptance if GitHub Actions did not complete successfully. The workflow removes **only its uniquely named temporary project and volumes**.
 
 ## Optional standalone local/staging demo
@@ -53,7 +53,7 @@ For normal operations with data you want to retain, use `docker compose down` **
 
 - [ ] CI runs `SEC-005 TLS and HTTPS acceptance` with success and uploaded evidence.
 - [ ] HTTPS serves UI and API, using a trusted **test CA/certificate chain** for local verification.
-- [ ] HTTP redirects to HTTPS (308).
+- [ ] HTTP redirects to HTTPS (301).
 - [ ] TLS 1.0/1.1 refused; TLS 1.2+ accepted.
 - [ ] HTTPS responses contain HSTS.
 - [ ] For production-compliance claims, public deployment, valid CA certificate, DNS and real-domain verification are independently completed.

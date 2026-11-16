@@ -9,11 +9,14 @@ import MaterialDetailPage from './features/materials/MaterialDetailPage';
 import AdminReportsPage from './features/materials/AdminReportsPage';
 import ForgotPasswordPage from './features/auth/ForgotPasswordPage';
 import ResetPasswordPage from './features/auth/ResetPasswordPage';
+import RegisterPage from './features/auth/RegisterPage';
+import ProfilePage from './features/auth/ProfilePage';
+import AdminUsersPage from './features/auth/AdminUsersPage';
 import { MaterialSessionProvider } from './features/materials/MaterialSession';
 
 function AttemptRoute() {
   const { quizId } = useParams();
-  return <StudentAttemptPage quizId={quizId} />;
+  return <StudentAttemptPage key={quizId} quizId={quizId} />;
 }
 
 export default function AppRoutes() {
@@ -21,6 +24,7 @@ export default function AppRoutes() {
     <MaterialSessionProvider>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/attempt" element={<StudentAttemptPage />} />
         <Route path="/quizzes" element={<QuizAuthoringPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
@@ -28,6 +32,8 @@ export default function AppRoutes() {
         <Route path="/materials" element={<MaterialLibraryPage />} />
         <Route path="/materials/:id" element={<MaterialDetailPage />} />
         <Route path="/admin/reports" element={<AdminReportsPage />} />
+        <Route path="/admin/users" element={<AdminUsersPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         {/* FR-006: Password reset */}
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

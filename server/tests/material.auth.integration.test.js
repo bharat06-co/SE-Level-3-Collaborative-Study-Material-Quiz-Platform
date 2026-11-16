@@ -6,7 +6,7 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const User = require('../src/models/User');
 const RefreshToken = require('../src/models/RefreshToken');
@@ -112,7 +112,7 @@ beforeAll(async () => {
   originalJwtTtl = process.env.JWT_ACCESS_TTL;
   originalMongoUri = process.env.MONGODB_URI;
 
-  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+  mongo = await startTestReplicaSet();
   process.env.MONGODB_URI = mongo.getUri();
   process.env.JWT_ACCESS_SECRET = TEST_JWT_SECRET;
   process.env.JWT_ACCESS_TTL = '15m';

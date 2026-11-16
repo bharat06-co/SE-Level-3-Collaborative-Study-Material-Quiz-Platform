@@ -5,7 +5,7 @@ const crypto = require('node:crypto');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const request = require('supertest');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const { createAuthenticatedFeatures } = require('../src/config/features');
 const User = require('../src/models/User');
@@ -39,7 +39,7 @@ describe('SEC-003 implemented-endpoint permission matrix', () => {
   };
 
   beforeAll(async () => {
-    mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+    mongo = await startTestReplicaSet();
     process.env.MONGODB_URI = mongo.getUri();
     process.env.JWT_ACCESS_SECRET = 'isolated-sec003-matrix-secret-'.repeat(4);
     process.env.JWT_ACCESS_TTL = '1h';

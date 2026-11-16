@@ -7,13 +7,16 @@ export function MaterialSessionProvider({ children }) {
   const [session, setSession] = useState(null);
 
   const signIn = useCallback((nextSession) => setSession(nextSession), []);
-  const clearSession = useCallback(() => setSession(null), []);
+  const clearSession = useCallback((token) => {
+    setSession((current) => !token || current?.token === token ? null : current);
+  }, []);
   const logout = useCallback(async () => {
     setSession(null);
     try {
       await http.post('/auth/logout');
+      return true;
     } catch {
-      // The local session is already cleared even if the server logout fails.
+      return false;
     }
   }, []);
 
@@ -29,8 +32,12 @@ export function MaterialSessionProvider({ children }) {
   );
 }
 
+export function useOptionalMaterialSession() {
+  return useContext(MaterialSessionContext);
+}
+
 export function useMaterialSession() {
-  const context = useContext(MaterialSessionContext);
+  const context = useOptionalMaterialSession();
   if (!context) throw new Error('useMaterialSession must be used within MaterialSessionProvider.');
   return context;
 }

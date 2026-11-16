@@ -54,7 +54,7 @@ function createQuizService(repo = quizRepo) {
     async create(auth, body) {
       requireAuthor(auth, false);
       const data = parse(createSchema, body);
-      const quiz = await repo.create({ ...data, authorId: auth.userId, status: 'draft' });
+      const quiz = await repo.create({ ...data, allowRetake: data.allowRetake ?? false, authorId: auth.userId, status: 'draft' });
       return publicView(quiz);
     },
     async get(auth, id) {

@@ -3,7 +3,7 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('node:crypto');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 
 jest.mock('../src/modules/auth/password-reset.email', () => ({
   sendPasswordResetEmail: jest.fn(),
@@ -48,9 +48,7 @@ describe('FR-006 password reset integration', () => {
       PASSWORD_RESET_URL: process.env.PASSWORD_RESET_URL,
     };
 
-    mongo = await MongoMemoryReplSet.create({
-      replSet: { count: 1 },
-    });
+    mongo = await startTestReplicaSet();
 
     process.env.MONGODB_URI = mongo.getUri();
     process.env.JWT_ACCESS_SECRET = TEST_JWT_SECRET;

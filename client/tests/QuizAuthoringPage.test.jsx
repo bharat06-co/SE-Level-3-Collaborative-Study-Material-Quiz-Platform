@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import QuizAuthoringPage from '../src/features/quizzes/QuizAuthoringPage';
@@ -29,10 +29,10 @@ test('author signs in and sends the access token to quiz creation', async () => 
   expect(post).toHaveBeenCalledWith('/auth/login', { email: 'author@example.com', password: 'Study1234' });
   expect(listDraftQuizzes).toHaveBeenCalledWith('test-access-token', 1);
 
-  await user.type(screen.getByLabelText('Title'), 'DBMS basics');
-  await user.type(screen.getByLabelText('Topic'), 'dbms');
+  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'DBMS basics' } });
+  fireEvent.change(screen.getByLabelText('Topic'), { target: { value: 'dbms' } });
   await user.click(screen.getByRole('button', { name: 'Save draft' }));
-  expect(saveQuiz).toHaveBeenCalledWith(null, { title: 'DBMS basics', topic: 'dbms', allowRetake: true, questions: [] }, 'test-access-token');
+  expect(saveQuiz).toHaveBeenCalledWith(null, { title: 'DBMS basics', topic: 'dbms', allowRetake: false, questions: [] }, 'test-access-token');
   post.mockRestore();
 });
 

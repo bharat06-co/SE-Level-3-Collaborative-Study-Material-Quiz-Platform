@@ -42,7 +42,7 @@ pass 'HSTS also set on HTTPS error responses'
 redirect_headers="$results/http-redirect-headers.txt"
 redirect_status="$(curl --silent --show-error --noproxy '*' --max-time 20 \
     -D "$redirect_headers" -o /dev/null -w '%{http_code}' "$http/api/v1/health")"
-[[ "$redirect_status" == 308 ]] || fail "HTTP should return 308, got $redirect_status"
+[[ "$redirect_status" == 301 ]] || fail "HTTP should return 301, got $redirect_status"
 grep -Fqi "location: $https/api/v1/health" "$redirect_headers" || fail 'HTTP redirect does not point at intended HTTPS API URL'
 pass 'HTTP /api redirect points to HTTPS with original path'
 

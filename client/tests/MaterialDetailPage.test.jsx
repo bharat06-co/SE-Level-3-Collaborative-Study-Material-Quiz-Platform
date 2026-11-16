@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { http } from '../src/api/http';
@@ -7,6 +7,7 @@ import MaterialDetailPage from '../src/features/materials/MaterialDetailPage';
 import { MaterialSessionProvider } from '../src/features/materials/MaterialSession';
 import {
   addComment,
+  deleteMaterial,
   downloadMaterial,
   fetchComments,
   fetchRevisions,
@@ -23,6 +24,7 @@ jest.mock('../src/features/quizzes/quizApi', () => ({
 jest.mock('../src/features/materials/materialApi', () => ({
   ...jest.requireActual('../src/features/materials/materialApi'),
   addComment: jest.fn(),
+  deleteMaterial: jest.fn(),
   downloadMaterial: jest.fn(),
   fetchComments: jest.fn(),
   fetchRevisions: jest.fn(),
@@ -50,7 +52,7 @@ function renderPage() {
   return render(
     <MemoryRouter initialEntries={['/materials/m1']}>
       <MaterialSessionProvider>
-        <Routes><Route path="/materials/:id" element={<MaterialDetailPage />} /></Routes>
+        <Routes><Route path="/materials/:id" element={<MaterialDetailPage />} /><Route path="/materials" element={<h1>Study materials</h1>} /></Routes>
       </MaterialSessionProvider>
     </MemoryRouter>,
   );
@@ -80,6 +82,7 @@ test('student views, rates, comments and reports material without seeing revisio
   expect(screen.getByText('<b>hostile</b>')).toBeInTheDocument();
   expect(screen.queryByText('Revision history')).not.toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'Edit material' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Delete material' })).not.toBeInTheDocument();
 
   await user.selectOptions(screen.getByLabelText('Rating'), '5');
   await user.click(screen.getByRole('button', { name: 'Save rating' }));
@@ -202,4 +205,23 @@ test('editing a material topic replaces quizzes from the previous topic', async 
   expect(screen.queryByRole('link', { name: 'Old DBMS quiz' })).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Quizzes for networks' })).toBeInTheDocument();
   expect(listPublishedQuizzesByTopic).toHaveBeenNthCalledWith(2, 'networks', 'owner-token');
+});
+
+test('requires confirmation before the owner can delete material', async () => {
+  http.post.mockResolvedValue({ data: { accessToken: 'owner-token', user: { id: 'u2', role: 'student' } } });
+  getMaterial.mockResolvedValue(material);
+  fetchComments.mockResolvedValue({ items: [] });
+  fetchRevisions.mockResolvedValue({ items: [] });
+  deleteMaterial.mockResolvedValue(undefined);
+  renderPage();
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'owner@example.test' } });
+  fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'Fixture123' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Delete material' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel deletion' }));
+  expect(deleteMaterial).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Delete material' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Confirm deletion' }));
+  expect(await screen.findByRole('heading', { name: 'Study materials' })).toBeInTheDocument();
+  expect(deleteMaterial).toHaveBeenCalledWith('m1', 'owner-token');
 });

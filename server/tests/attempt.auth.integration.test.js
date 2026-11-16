@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('./helpers/testMongo');
 const { createApp } = require('../src/app');
 const { createAuthenticatedFeatures } = require('../src/config/features');
 const User = require('../src/models/User');
@@ -27,7 +27,7 @@ describe('FR-030–032 with production auth/quiz wiring and real MongoDB', () =>
   };
 
   beforeAll(async () => {
-    mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+    mongo = await startTestReplicaSet();
     process.env.MONGODB_URI = mongo.getUri();
     process.env.JWT_ACCESS_SECRET = 'isolated-attempt-integration-'.repeat(4);
     process.env.JWT_ACCESS_TTL = '15m';

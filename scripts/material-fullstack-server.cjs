@@ -3,7 +3,7 @@ const path = require('node:path');
 const fsp = require('node:fs/promises');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const { MongoMemoryReplSet } = require('mongodb-memory-server');
+const { startTestReplicaSet } = require('../server/tests/helpers/testMongo');
 const { createApp } = require('../server/src/app');
 const User = require('../server/src/models/User');
 const { Material } = require('../server/src/models/Material');
@@ -65,7 +65,7 @@ async function shutdown(code = 0) {
 }
 
 async function main() {
-  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+  mongo = await startTestReplicaSet();
   process.env.NODE_ENV = 'test';
   process.env.MONGODB_URI = mongo.getUri();
   process.env.JWT_ACCESS_SECRET = 'material-fullstack-secret-'.repeat(3);

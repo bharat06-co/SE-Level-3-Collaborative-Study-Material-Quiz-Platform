@@ -17,26 +17,24 @@ export default function App() {
   }, [retry]);
   return (
     <main className="shell">
-      <p className="eyebrow">TEAM 1 · SHARED FOUNDATION</p>
+      <p className="eyebrow">TEAM 1 · SOFTWARE ENGINEERING PROJECT</p>
       <h1>Collaborative Study Material &amp; Quiz Platform</h1>
-      <p className="intro">The shared React, Express and MongoDB foundation is ready for feature development. This page is a connection check, not a completed product demo.</p>
+      <p className="intro">A platform for sharing study materials, creating quizzes, tracking progress and learning together.</p>
       <p>
+  <Link to="/register">Register</Link> ·{' '}
   <Link to="/materials">Browse study materials</Link> ·{' '}
   <Link to="/quizzes">Open quiz authoring</Link> ·{' '}
   <Link to="/attempt">Sign in and attempt a quiz</Link> ·{' '}
   <Link to="/leaderboard">View leaderboards</Link> ·{' '}
   <Link to="/admin/reports">Review reports</Link> ·{' '}
+  <Link to="/admin/users">Manage contributors</Link> ·{' '}
+  <Link to="/profile">My profile</Link> ·{' '}
   <Link to="/forgot-password">Forgot password?</Link>
 </p>
       <section className="status-panel" aria-labelledby="status-title">
         <h2 id="status-title">Connection status</h2>
         <p role="status" aria-live="polite">{status === 'checking' ? 'Checking the API and database…' : status === 'ready' ? 'API and MongoDB are connected.' : 'API or database unavailable. Check the setup instructions and local services.'}</p>
         <button type="button" disabled={status === 'checking'} onClick={() => setRetry((value) => value + 1)}>Check again</button>
-      </section>
-      <section aria-labelledby="next-title">
-        <h2 id="next-title">Next: build together</h2>
-        <p>Pull the latest main branch, create a task branch, then implement your assigned issue against the SRS, SAD and STP.</p>
-        <ul><li>Anisha: accounts and authentication.</li><li>Aryaroop: material and moderation.</li><li>Ayush: quizzes and leaderboard.</li><li>Bharat: attempts, scoring and progress.</li></ul>
       </section>
       <p className="note">Study materials, ratings, comments, reports, moderation review, quiz authoring and student attempts are available.</p>
     </main>

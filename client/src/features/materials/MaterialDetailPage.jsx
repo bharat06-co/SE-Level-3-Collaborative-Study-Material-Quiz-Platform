@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import PlainText from '../../components/PlainText';
 import { listPublishedQuizzesByTopic } from '../quizzes/quizApi';
 import MaterialForm from './MaterialForm';
@@ -8,6 +8,7 @@ import { useMaterialSession } from './MaterialSession';
 import {
   REPORT_REASONS,
   addComment,
+  deleteMaterial,
   downloadMaterial,
   materialDownloadName,
   fetchComments,
@@ -29,6 +30,7 @@ function formatDate(value) {
 
 export default function MaterialDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { session: auth, signIn, clearSession, logout } = useMaterialSession();
   const [material, setMaterial] = useState(null);
   const [comments, setComments] = useState({ items: [], page: 1, limit: 20, total: 0 });
@@ -38,6 +40,8 @@ export default function MaterialDetailPage() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
   const [editing, setEditing] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const [rating, setRating] = useState(5);
   const [ratingError, setRatingError] = useState('');
   const [comment, setComment] = useState('');
@@ -45,6 +49,7 @@ export default function MaterialDetailPage() {
   const [reason, setReason] = useState('copyright');
   const [reportNote, setReportNote] = useState('');
 
+  const confirmDelete = deleteTarget !== null && deleteTarget.id === id && deleteTarget.token === auth?.token;
   const canManage = useMemo(() => Boolean(material && auth
     && (auth.user.role === 'admin' || auth.user.id === material.ownerId)), [material, auth]);
 
@@ -122,6 +127,20 @@ export default function MaterialDetailPage() {
       setRelatedError('Related quizzes could not be loaded.');
     }
     return updated;
+  }
+
+  async function removeMaterial() {
+    if (!canManage || !confirmDelete || deleting) return;
+    setDeleting(true);
+    setNotice('');
+    try {
+      await deleteMaterial(id, auth.token);
+      navigate('/materials', { replace: true });
+    } catch (error) {
+      handleError(error, 'Material could not be deleted.');
+    } finally {
+      setDeleting(false);
+    }
   }
 
   async function download() {
@@ -208,10 +227,19 @@ export default function MaterialDetailPage() {
                   <div><dt>Updated</dt><dd>{formatDate(material.updatedAt)}</dd></div>
                 </dl>
                 <button type="button" onClick={download}>Download file</button>
-                {canManage && <button type="button" onClick={() => setEditing((value) => !value)}>{editing ? 'Close editor' : 'Edit material'}</button>}
+                {canManage && <button type="button" disabled={deleting} onClick={() => setEditing((value) => !value)}>{editing ? 'Close editor' : 'Edit material'}</button>}
+                {canManage && !confirmDelete && <button type="button" onClick={() => setDeleteTarget({ id, token: auth.token })}>Delete material</button>}
               </article>
 
-              {editing && canManage && (
+              {canManage && confirmDelete && (
+                <section aria-label="Confirm material deletion">
+                  <p>Delete this material permanently?</p>
+                  <button type="button" disabled={deleting} onClick={removeMaterial}>{deleting ? 'Deleting…' : 'Confirm deletion'}</button>
+                  <button type="button" disabled={deleting} onClick={() => setDeleteTarget(null)}>Cancel deletion</button>
+                </section>
+              )}
+
+              {editing && canManage && !confirmDelete && (
                 <MaterialForm
                   mode="edit"
                   initialMaterial={material}
