@@ -46,3 +46,16 @@ Backend native SHA256: `e368563d058d6d364ec20d0164482b0ff308d3c62f41749904048afa
 Fresh Sonar analysis **a5c1e10e-2804-49f7-801b-4dc55722eaf0** has overall **89.7% line**, **82.3% branch**, **86.7% combined** coverage. Different executable-line/combined-condition definitions explain the difference from LCOV/Jest workspace metrics. Sonar new-code combined coverage remains **75%**, with the disclosed small-change exemption; it is not an 80% achievement.
 
 Commit **942cf9ed65099441b30c704a388fd882f0a1d876** is supported by the supplied Git record and owner-associated run, related PR #93. SCM publishing was disabled; no scan-time source-hash attestation or embedded revision is supplied. These limits and the owner-confirmed test totals are preserved in [provenance assessment](part3-evidence/nfr005-main-a5c1e10e/provenance-assessment.json). No prior local scan or source snapshot is substituted.
+
+---
+
+## Addendum — 16 November 2026: later Jest coverage summary
+
+The original native LCOV and SonarQube import above remain historical and unmodified. The final review package's successful `redacted-full-check.log` records the following **later Jest aggregate summary**, which uses its own instrumentation and cannot be retroactively attributed to the earlier Sonar analysis:
+
+| Workspace | Jest tests passed | Statements | Branches | Functions | Lines |
+|---|---:|---:|---:|---:|---:|
+| Backend | 594 | 93.62% | 83.95% | 95.57% | 95.67% |
+| Frontend | 132 | 82.82% | 78.59% | 84.10% | 84.18% |
+
+These are Jest's printed aggregate percentages from the supplied final review log—not newly computed LCOV counters and not an updated SonarQube quality gate. The earlier native-LCOV counts, service-by-service coverage and the original Sonar gate remain valid **for their original recorded run**. For the current project's PR #99, the independent GitHub Actions [CI run passed](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256681).

@@ -46,3 +46,11 @@ The owner confirms 594/594 backend and 122/122 frontend passes. The original Pow
 For stronger final provenance, attach the original test execution log with its revision/command context and, if required by review, a contemporaneous Git/worktree/source-hash attestation. No original repository or GitHub access was performed for this package.
 
 See the [code coverage report](PART3_CODE_COVERAGE_REPORT.md) and [branch report](PART3_BRANCH_COVERAGE_REPORT.md) for native-derived metrics. The original execution log, when provided, can strengthen the test-count evidence without inventing new results.
+
+---
+
+## Addendum — 16 November 2026: recorded execution on updated frontend
+
+Following the original 594-backend/122-frontend baseline, the final review's `redacted-full-check.log` records a successful root `npm run check` on Node 24 / npm 11: **30/30 backend suites, 594/594 backend tests**, **24/24 frontend suites, 132/132 frontend tests**, and production build success. **726 total Jest tests** were recorded in this later run. This is *not* a replacement or re-dating of the original Sonar scan, and the run is attributed to the review package, not fabricated as a new run of this documentation branch. GitHub Actions [CI](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256681) also passed on the final PR #99 commit.
+
+The ten additional frontend tests relative to the baseline address account pages and related regression behavior. Counts represent all Jest tests (unit/component/integration as configured), **not exclusively pure unit tests**. Some recorded intermediate retries had timeouts; the successful final execution is the one being cited. Source: `TEAM1-FINAL-REVIEW.zip` / `redacted-full-check.log`, and PR #99.

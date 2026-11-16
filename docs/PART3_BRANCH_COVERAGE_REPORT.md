@@ -32,3 +32,11 @@ Native backend LCOV covers 62 files and frontend 25. Exact unhit outcomes remain
 Fresh Sonar analysis **a5c1e10e-2804-49f7-801b-4dc55722eaf0** completed **2026-11-03 06:28:03 UTC / 11:58:03 IST** and reports **82.3% overall branch coverage** under its own definitions. The actual gate is PASS with **75% new-code combined coverage**, **0% new duplication**, and `ignoredConditions=true`; the owner-confirmed small-change exemption remains fully disclosed. No claim of reaching the 80% combined new-code threshold is made.
 
 Commit **942cf9ed65099441b30c704a388fd882f0a1d876** is copied in the supplied Git record, with only untracked evidence in supplied Git status; SCM publishing was disabled during the scan. The owner confirms 594/594 backend and 122/122 frontend passes, but the execution log/machine-readable test results have not been supplied. No test suite counts, durations or skip counts are fabricated. See [verification](NFR005_SONARQUBE_VERIFICATION.md) and [provenance](part3-evidence/nfr005-main-a5c1e10e/provenance-assessment.json) for those independent-review qualifications.
+
+---
+
+## Addendum — 16 November 2026: later instrumented branch coverage
+
+The final review's successful `redacted-full-check.log` shows **83.95% backend** and **78.59% frontend** branch coverage in the later 594-backend/132-frontend Jest run. These are *printed Jest summary percentages*, not recomputed BRDA counters from the historical native LCOV. The earlier **83.92% backend / 80.27% frontend** counters and Sonar results above belong to the previous scan and must not be silently replaced.
+
+The latest GitHub [CI run on PR #99 passed](https://github.com/bharat06-co/SE-Level-3-Collaborative-Study-Material-Quiz-Platform/actions/runs/43916256681). No revised Sonar scan or exact latest-run per-file branch outcome ledger is claimed. See [the updated case register](PART3_UPDATED_TEST_CASES.md) for original STP dispositions.
