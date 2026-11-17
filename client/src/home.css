@@ -1,0 +1,36 @@
+/* Homepage-only presentation. All rules are scoped under .home-page. */
+.home-page { width: min(1240px, 100%); padding-top: 42px; padding-bottom: 64px; }
+.home-page .home-hero { max-width: 1020px; }
+.home-page .home-hero .eyebrow { margin: 0 0 18px; color: #3e6078; font-size: .76rem; font-weight: 750; letter-spacing: .15em; }
+.home-page .home-hero h1 { max-width: 900px; margin: 0; font-size: clamp(2.25rem, 4.3vw, 3.55rem); line-height: 1.12; letter-spacing: -.035em; }
+.home-page .home-hero .intro { max-width: 760px; margin: 18px 0 0; color: #506579; font-size: clamp(1rem, 1.5vw, 1.15rem); line-height: 1.7; }
+.home-page .home-account-nav { display: flex; flex-wrap: wrap; gap: 9px 20px; margin-top: 23px; }
+.home-page .home-account-nav a { color: #11617a; text-decoration: none; font-size: .94rem; font-weight: 650; }
+.home-page .home-account-nav a:hover { text-decoration: underline; }
+.home-page .home-features { margin-top: 49px; }
+.home-page .home-section-heading { margin-bottom: 19px; }
+.home-page .home-section-kicker { margin: 0 0 7px; color: #658095; font-size: .72rem; letter-spacing: .12em; font-weight: 800; }
+.home-page h2 { margin: 0; color: #182e41; font-size: clamp(1.17rem, 1.8vw, 1.5rem); letter-spacing: -.015em; }
+.home-page .home-feature-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; }
+.home-page .home-feature-card { display: flex; align-items: center; gap: 18px; min-width: 0; min-height: 116px; padding: 21px 23px; border: 1px solid #dce5ed; background: #fff; border-radius: 18px; color: inherit; text-decoration: none; box-shadow: 0 8px 24px rgba(20,47,66,.045); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+.home-page .home-feature-card:hover { border-color: #adcad5; box-shadow: 0 12px 30px rgba(20,47,66,.09); transform: translateY(-2px); }
+.home-page .home-feature-card:focus-visible, .home-page a:focus-visible { outline: 3px solid #e89221; outline-offset: 3px; }
+.home-page .home-feature-icon { display: grid; place-items: center; width: 54px; height: 54px; flex: 0 0 54px; color: #126781; background: #eaf4f7; border-radius: 14px; font-size: 1.5rem; font-weight: 700; }
+.home-page .home-feature-info { display: flex; flex: 1; flex-direction: column; gap: 3px; min-width: 0; }
+.home-page .home-feature-info strong { font-size: 1.07rem; color: #193346; }
+.home-page .home-feature-info span { font-size: .91rem; line-height: 1.45; color: #62778a; }
+.home-page .home-feature-arrow { align-self: flex-start; color: #7a98aa; font-size: 1.2rem; }
+.home-page .home-bottom-grid { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,.8fr); gap: 15px; margin-top: 19px; }
+.home-page .home-admin-card, .home-page .home-health-card { background: #fff; border: 1px solid #dce5ed; border-radius: 18px; padding: 24px; box-shadow: 0 8px 24px rgba(20,47,66,.04); min-width: 0; }
+.home-page .home-admin-card > p:not(.home-section-kicker), .home-page .home-health-card > p:not(.home-section-kicker) { margin: 10px 0 18px; color: #596e80; font-size: .94rem; }
+.home-page .home-admin-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.home-page .home-admin-links a { text-decoration: none; color: #12627c; background: #edf5f8; border: 1px solid #dbeaf0; border-radius: 9px; padding: 9px 13px; font-weight: 650; font-size: .9rem; }
+.home-page .home-admin-links a:hover { background: #e0f0f5; }
+.home-page .home-health-heading { display: flex; justify-content: space-between; gap: 14px; align-items: center; }
+.home-page .home-health-dot { height: 11px; width: 11px; flex: 0 0 11px; border-radius: 50%; background: #d29b27; box-shadow: 0 0 0 5px #faf1db; }
+.home-page .home-health-dot--ready { background: #269568; box-shadow: 0 0 0 5px #e3f4eb; }
+.home-page .home-health-dot--unavailable { background: #c74747; box-shadow: 0 0 0 5px #fce9e9; }
+.home-page .home-health-card button { padding: 9px 14px; font-weight: 650; border-radius: 9px; font-size: .9rem; }
+.home-page .home-footnote { margin: 22px 0 0; font-size: .82rem; color: #6b8090; }
+@media (max-width: 760px) { .home-page { padding: 27px 18px 45px; } .home-page .home-features { margin-top: 32px; } .home-page .home-feature-grid, .home-page .home-bottom-grid { grid-template-columns: 1fr; } .home-page .home-feature-card { min-height: 94px; padding: 17px; } .home-page .home-admin-card, .home-page .home-health-card { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { .home-page .home-feature-card { transition: none; } .home-page .home-feature-card:hover { transform: none; } }

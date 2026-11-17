@@ -28,3 +28,19 @@
 .attempt-history-list { display: grid; gap: 12px; padding-left: 24px; }
 .attempt-history-list li button { margin-left: 12px; }
 .attempt-topic-progress { display: grid; gap: 10px; }
+/* UI refinement: quiz-taking surfaces, score and history. */
+.attempt-shell { max-width: 980px; padding: 42px 32px 84px; }
+.attempt-shell h1 { font-size: clamp(1.9rem, 3.3vw, 2.65rem); }
+.attempt-topic { color: var(--ui-muted); }
+.attempt-question, .attempt-feedback { border-color: var(--ui-border); border-radius: var(--ui-radius); padding: 26px 28px; box-shadow: var(--ui-shadow); }
+.attempt-question legend { letter-spacing: -.015em; }
+.attempt-option { border-color: var(--ui-border); border-radius: 10px; padding: 14px 16px; background: #fff; transition: background-color .16s ease, border-color .16s ease; }
+.attempt-option:hover { background: #f5fafc; border-color: #9dc3d0; }
+.attempt-option:has(input:checked) { background: #e8f5f9; border-color: #4d9db5; }
+.attempt-score { border-radius: var(--ui-radius); padding: 30px 34px; background: linear-gradient(130deg,#eaf6fa,#f8fbfd); border-color: #b1d4df; }
+.attempt-score-value { letter-spacing: -.045em; }
+.attempt-history-list { gap: 14px; }
+.attempt-history-list li { padding: 14px 18px; border-radius: 10px; background: white; border: 1px solid var(--ui-border); }
+.attempt-insights { margin-top: 28px; padding-top: 24px; }
+.attempt-insights-nav { gap: 10px; }
+@media (max-width: 640px) { .attempt-shell { padding: 28px 18px 60px; } .attempt-question, .attempt-feedback { padding: 20px; } .attempt-score { padding: 22px; } }

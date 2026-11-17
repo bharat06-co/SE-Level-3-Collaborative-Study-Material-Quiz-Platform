@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { http } from '../../api/http';
 import MaterialSignIn from '../materials/MaterialSignIn';
 import { useMaterialSession } from '../materials/MaterialSession';
+import './profile.css';
 
 const config = (token) => ({ headers: { Authorization: `Bearer ${token}` } });
 
@@ -19,9 +20,17 @@ export default function ProfilePage() {
     signIn(nextSession);
   }
   return (
-    <main className="shell auth-shell">
-      <Link to="/">← Home</Link>
-      <h1>My profile</h1>
+    <main className="shell profile-page">
+      <nav className="profile-breadcrumb" aria-label="Breadcrumb">
+        <Link to="/">← Back to home</Link>
+        <span aria-hidden="true">/</span>
+        <span>Account</span>
+      </nav>
+      <div className="profile-page-heading">
+        <p className="profile-overline">YOUR ACCOUNT</p>
+        <h1>My profile</h1>
+        <p>View your account details and keep your display name up to date.</p>
+      </div>
       {session ? (
         <ProfileForm key={session.token} token={session.token} clearSession={expireSession} logout={logout} />
       ) : <MaterialSignIn heading="Sign in to edit your profile" onSignedIn={handleSignIn} />}
@@ -81,19 +90,52 @@ function ProfileForm({ token, clearSession, logout }) {
     }
   }
 
+  const initials = (profile?.name || '')
+    .trim().split(/\s+/).slice(0, 2)
+    .map((part) => part.charAt(0)).join('').toUpperCase() || 'U';
+
   return (
-    <section className="auth-panel">
+    <section className="profile-layout" aria-label="Your profile">
       {!profile && !error && <p role="status">Loading profile…</p>}
-      {profile && <p>Signed in as {profile.name} · {profile.email} · {profile.role}</p>}
-      <form onSubmit={save} noValidate>
-        <label htmlFor="profile-name">Display name</label>
-        <input id="profile-name" name="name" autoComplete="name" maxLength={60} disabled={!profile || busy}
-          value={name} onChange={(event) => setName(event.target.value)} />
-        {error && <p role="alert">{error}</p>}
-        {notice && <p role="status">{notice}</p>}
-        <button disabled={!profile || busy} type="submit">{busy ? 'Saving…' : 'Save changes'}</button>
-      </form>
-      <button type="button" onClick={logout}>Sign out</button>
+      {profile && (
+        <div className="profile-summary">
+          <div className="profile-avatar" aria-hidden="true">{initials}</div>
+          <div className="profile-summary-copy">
+            <p className="profile-summary-label">ACCOUNT OVERVIEW</p>
+            <h2>{profile.name}</h2>
+            <p className="profile-summary-email">{profile.email}</p>
+          </div>
+          <span className="profile-role">{profile.role}</span>
+        </div>
+      )}
+      <div className="profile-card">
+        <div className="profile-card-heading">
+          <div>
+            <h2>Personal information</h2>
+            <p>Update the name displayed across your account.</p>
+          </div>
+        </div>
+        <form className="profile-form" onSubmit={save} noValidate>
+          <div className="profile-form-field">
+            <label htmlFor="profile-name">Display name</label>
+            <input id="profile-name" name="name" autoComplete="name" maxLength={60} disabled={!profile || busy}
+              value={name} onChange={(event) => setName(event.target.value)} />
+            <p className="profile-field-note">This name is visible on your profile.</p>
+          </div>
+          {profile && (
+            <div className="profile-form-field">
+              <span className="profile-readonly-label">Email address</span>
+              <p className="profile-readonly-value">{profile.email}</p>
+            </div>
+          )}
+          {error && <p className="profile-feedback profile-feedback-error" role="alert">{error}</p>}
+          {notice && <p className="profile-feedback profile-feedback-success" role="status">{notice}</p>}
+          <div className="profile-actions">
+            <button disabled={!profile || busy} type="submit">{busy ? 'Saving…' : 'Save changes'}</button>
+            <button className="profile-signout" type="button" onClick={logout}>Sign out</button>
+          </div>
+        </form>
+      </div>
     </section>
   );
 }

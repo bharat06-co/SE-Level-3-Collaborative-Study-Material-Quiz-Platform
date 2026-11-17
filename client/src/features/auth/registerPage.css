@@ -1,0 +1,39 @@
+/* Registration-only presentation: does not affect authentication or other pages. */
+.register-page {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 42px 24px 72px;
+}
+.register-back { display: inline-block; margin-bottom: 28px; font-weight: 500; }
+.register-heading { margin-bottom: 28px; }
+.register-heading h1 { margin: 0 0 12px; font-size: clamp(2.25rem, 4vw, 3.2rem); line-height: 1.15; letter-spacing: -.035em; }
+.register-heading p { margin: 0; color: #516a7b; font-size: 1.05rem; }
+.register-card {
+  background: #fff;
+  border: 1px solid #d8e2eb;
+  border-radius: 20px;
+  padding: clamp(24px, 4vw, 38px);
+  box-shadow: 0 12px 32px rgba(22, 50, 71, .06);
+}
+.register-form { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; margin: 0; }
+.register-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: 100%; }
+.register-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.register-field label { color: #213a4d; font-weight: 650; font-size: .96rem; margin: 0; }
+.register-field input {
+  width: 100%; min-width: 0; min-height: 54px; padding: 12px 15px;
+  border: 1px solid #bdcfdd; border-radius: 11px; background: #fff;
+  color: #172b3a; font: inherit;
+}
+.register-field input:focus { outline: 3px solid rgba(22, 104, 130, .17); outline-offset: 1px; border-color: #166882; }
+.register-field input[aria-invalid='true'] { border-color: #c44747; }
+.register-field p[role='alert'], .register-server-error { margin: 0; color: #a32121; font-size: .9rem; }
+.register-server-error { width: 100%; }
+.register-submit { min-width: 160px; min-height: 52px; border-radius: 11px; font-weight: 650; padding: 12px 28px; margin: 0; }
+.register-signin { margin: 22px 0 0; color: #50667a; }
+.register-signin a { font-weight: 650; }
+.register-success p { margin: 0 0 12px; }
+@media (max-width: 640px) {
+  .register-page { padding: 26px 16px 48px; }
+  .register-fields { grid-template-columns: minmax(0, 1fr); gap: 19px; }
+  .register-card { border-radius: 16px; }
+}

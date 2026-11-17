@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { http } from '../../api/http';
 import { validateEmail } from '../../utils/formValidation';
+import './registerPage.css';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -40,27 +41,42 @@ export default function RegisterPage() {
     }
   }
 
-  return <main className="shell auth-shell">
-    <Link to="/">← Home</Link>
-    <h1>Create an account</h1>
-    {success ? <section><p role="status">Account created. Sign in to continue.</p><Link to="/profile">Sign in</Link></section> : (
-      <form onSubmit={submit} noValidate>
-        {errors.server && <p role="alert">{errors.server}</p>}
-        <label htmlFor="register-name">Full name</label>
-        <input id="register-name" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? 'register-name-error' : undefined} autoComplete="name" maxLength={60} value={name} onChange={event => setName(event.target.value)} />
-        {errors.name && <p id="register-name-error" role="alert">{errors.name}</p>}
-        <label htmlFor="register-email">Email</label>
-        <input id="register-email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'register-email-error' : undefined} type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} />
-        {errors.email && <p id="register-email-error" role="alert">{errors.email}</p>}
-        <label htmlFor="register-password">Password</label>
-        <input id="register-password" aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? 'register-password-error' : undefined} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} />
-        {errors.password && <p id="register-password-error" role="alert">{errors.password}</p>}
-        <label htmlFor="register-confirm">Confirm password</label>
-        <input id="register-confirm" aria-invalid={Boolean(errors.confirm)} aria-describedby={errors.confirm ? 'register-confirm-error' : undefined} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} />
-        {errors.confirm && <p id="register-confirm-error" role="alert">{errors.confirm}</p>}
-        <button type="submit" disabled={busy}>{busy ? 'Creating account…' : 'Register'}</button>
-      </form>
-    )}
-    {!success && <p><Link to="/profile">Already registered? Sign in</Link></p>}
+  return <main className="shell register-page">
+    <Link className="register-back" to="/">← Home</Link>
+    <header className="register-heading">
+      <h1>Create an account</h1>
+      <p>Join the study platform to explore materials and take quizzes.</p>
+    </header>
+    <section className="register-card">
+      {success ? <div className="register-success"><p role="status">Account created. Sign in to continue.</p><Link to="/profile">Sign in</Link></div> : (
+        <form className="register-form" onSubmit={submit} noValidate>
+          {errors.server && <p className="register-server-error" role="alert">{errors.server}</p>}
+          <div className="register-fields">
+            <div className="register-field">
+              <label htmlFor="register-name">Full name</label>
+              <input id="register-name" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? 'register-name-error' : undefined} autoComplete="name" maxLength={60} value={name} onChange={event => setName(event.target.value)} />
+              {errors.name && <p id="register-name-error" role="alert">{errors.name}</p>}
+            </div>
+            <div className="register-field">
+              <label htmlFor="register-email">Email</label>
+              <input id="register-email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'register-email-error' : undefined} type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} />
+              {errors.email && <p id="register-email-error" role="alert">{errors.email}</p>}
+            </div>
+            <div className="register-field">
+              <label htmlFor="register-password">Password</label>
+              <input id="register-password" aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? 'register-password-error' : undefined} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} />
+              {errors.password && <p id="register-password-error" role="alert">{errors.password}</p>}
+            </div>
+            <div className="register-field">
+              <label htmlFor="register-confirm">Confirm password</label>
+              <input id="register-confirm" aria-invalid={Boolean(errors.confirm)} aria-describedby={errors.confirm ? 'register-confirm-error' : undefined} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} />
+              {errors.confirm && <p id="register-confirm-error" role="alert">{errors.confirm}</p>}
+            </div>
+          </div>
+          <button className="register-submit" type="submit" disabled={busy}>{busy ? 'Creating account…' : 'Register'}</button>
+        </form>
+      )}
+      {!success && <p className="register-signin">Already registered? <Link to="/profile">Sign in</Link></p>}
+    </section>
   </main>;
 }

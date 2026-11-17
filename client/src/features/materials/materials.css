@@ -30,3 +30,47 @@
 @media (max-width: 720px) {
   .material-filters, .material-form-row, .material-detail dl { grid-template-columns: 1fr; }
 }
+/* UI refinement: consistent material cards, forms and responsive layout. */
+.materials-page { width: min(1080px, 100%); padding: 40px 32px 84px; }
+.materials-page > header { margin: 14px 0 30px; }
+.materials-page > header p { max-width: 720px; color: var(--ui-muted); }
+.materials-page h1 { margin: 12px 0; }
+.materials-session { padding: 15px 18px; margin: 24px 0; background: #fff; border: 1px solid var(--ui-border); border-radius: 12px; }
+.material-signin, .material-form, .material-filters, .material-comment-form, .material-report-form,
+.material-detail, .material-list li, .material-comments li, .material-revisions li, .report-queue li {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow);
+}
+.material-signin, .material-form, .material-comment-form, .material-report-form { padding: 26px; gap: 16px; }
+.material-filters { padding: 24px; gap: 16px; margin: 25px 0 34px; }
+.material-form-row { gap: 18px; }
+.material-filters label { min-width: 0; }
+.materials-page input:not([type="checkbox"]):not([type="radio"]), .materials-page select, .materials-page textarea {
+  border-color: #c3d0db; padding: 10px 12px; border-radius: 9px; min-height: 44px;
+}
+.materials-page label { gap: 8px; }
+.material-list { gap: 16px; margin-top: 18px; }
+.material-list li { padding: 22px 24px; transition: border-color .16s ease, box-shadow .16s ease; }
+.material-list li:hover { border-color: #a7c7d2; box-shadow: 0 12px 26px rgba(19,57,79,.07); }
+.material-list h3 { font-size: 1.14rem; }
+.material-list p { margin: 8px 0; }
+.material-meta { margin-bottom: 0; color: var(--ui-muted); }
+.material-detail { padding: 28px; margin: 20px 0; }
+.material-detail dl { gap: 18px; padding: 17px 0; }
+.material-detail dt { color: var(--ui-muted); font-size: .88rem; }
+.material-detail dd { font-weight: 550; }
+.material-comments li, .material-revisions li, .report-queue li { padding: 18px 20px; }
+.material-pagination, .material-form-actions, .report-actions, .material-filters-actions { gap: 12px; flex-wrap: wrap; }
+.material-pagination { margin: 18px 0; }
+@media (max-width: 760px) {
+  .materials-page { padding: 28px 18px 60px; }
+  .material-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .material-form-row { grid-template-columns: 1fr; }
+  .material-signin, .material-form, .material-filters, .material-detail { padding: 20px; }
+}
+@media (max-width: 520px) {
+  .material-filters, .material-detail dl { grid-template-columns: 1fr; }
+  .materials-session { flex-wrap: wrap; }
+}
