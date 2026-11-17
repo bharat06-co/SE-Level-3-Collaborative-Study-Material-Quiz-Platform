@@ -8,3 +8,13 @@
 .quiz-editor [role="alert"] { color: #a12020; }
 .quiz-editor-actions { margin-top: 20px; }
 .quiz-editor button { justify-self: start; }
+/* UI refinement: question editor and controls. */
+.quiz-editor { max-width: 1020px; padding: 28px 30px; margin: 22px auto; background: #fff; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.quiz-editor form, .quiz-editor fieldset { gap: 20px; }
+.quiz-editor label { gap: 9px; font-weight: 600; }
+.quiz-editor input:not([type="checkbox"]), .quiz-editor select { border-color: #c3d0db; padding: 10px 12px; border-radius: 9px; min-height: 44px; }
+.quiz-editor fieldset:not(.quiz-editor-form-fields) { border: 1px solid var(--ui-border); border-radius: 12px; background: #fbfcfd; padding: 20px 22px; }
+.quiz-editor legend { font-weight: 700; color: #25485f; padding: 0 8px; }
+.quiz-editor-check { gap: 10px !important; }
+.quiz-editor-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 640px) { .quiz-editor { padding: 20px; } .quiz-editor fieldset:not(.quiz-editor-form-fields) { padding: 15px; } }

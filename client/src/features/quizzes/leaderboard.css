@@ -8,3 +8,16 @@
 .leaderboard-page table { border-collapse: collapse; width: 100%; margin: 16px 0; }
 .leaderboard-page th, .leaderboard-page td { border-bottom: 1px solid #d7dee3; padding: 10px; text-align: left; }
 .leaderboard-page [role="alert"] { color: #b42318; }
+/* UI refinement: leaderboard filters and tables. */
+.leaderboard-page { width: min(1000px, 100%); padding: 40px 32px 84px; }
+.leaderboard-page h1 { margin: 16px 0 20px; }
+.leaderboard-page form { padding: 22px 24px; border: 1px solid var(--ui-border); background: white; border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); gap: 15px; }
+.leaderboard-page label { gap: 8px; }
+.leaderboard-page input { min-height: 44px; border: 1px solid #c3d0db; border-radius: 9px; padding: 10px 12px; }
+.leaderboard-tabs, .leaderboard-page nav { gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+.leaderboard-page table { width: 100%; margin: 20px 0; background: white; border: 1px solid var(--ui-border); border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden; box-shadow: var(--ui-shadow); }
+.leaderboard-page th, .leaderboard-page td { padding: 15px 18px; border-bottom: 1px solid #e7edf1; }
+.leaderboard-page th { background: #f4f8fa; color: #35566c; font-size: .85rem; font-weight: 700; }
+.leaderboard-page tbody tr:last-child td { border-bottom: 0; }
+.leaderboard-page tbody tr:hover { background: #f8fbfc; }
+@media (max-width: 640px) { .leaderboard-page { padding: 28px 18px 64px; } .leaderboard-page th, .leaderboard-page td { padding: 12px 9px; } .leaderboard-page form { padding: 18px; } }
